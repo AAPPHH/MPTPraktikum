@@ -1,0 +1,16 @@
+.. Machine Perception and Tracking - Praktikum documentation master file, created by
+   sphinx-quickstart on Sun May  4 09:09:55 2025.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Machine Perception and Tracking - Praktikum
+===========================================
+
+In diesem Dokument finden Sie die verschiedenen Aufgaben und Beispiele zum MPT-Praktikum inklusive Musterlösungen. 
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Aufgaben:
+
+   Histogram of Oriented Gradients <../HOG/index>
+
