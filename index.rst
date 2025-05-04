@@ -12,6 +12,8 @@ In diesem Dokument finden Sie die verschiedenen Aufgaben und Beispiele zum MPT-P
    :maxdepth: 1
    :caption: Aufgaben:
 
+   Die Webcam öffnen <../webcam/index>
+   Objekterkennung mit YOLO <../YOLO/index>
    AdaBoost <../AdaBoost/index>
    Histogram of Oriented Gradients <../HOG/index>
 
