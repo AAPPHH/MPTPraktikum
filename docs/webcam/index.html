@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Die Webcam - Einfache Bildnormalisierungen &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/webcam/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="AdaBoost - Praktikumsaufgabe" href="../AdaBoost/index.html" />
+    <link rel="prev" title="Machine Perception and Tracking - Praktikum" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Die Webcam öffnen</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1-ein-bild-von-der-webcam-anzeigen">Aufgabe 1: Ein Bild von der Webcam anzeigen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-2-eine-sinnvolle-endloszschleife">Aufgabe 2: Eine sinnvolle Endloßschleife</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-3-grauwertbilder-und-histogramme">Aufgabe 3: Grauwertbilder und Histogramme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-4-helligkeit-und-kontrast-normalisieren">Aufgabe 4: Helligkeit und Kontrast normalisieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-5-interaktion">Aufgabe 5 - Interaktion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#webcam-musterlosung">WebCam - Musterlösung</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Die Webcam - Einfache Bildnormalisierungen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/webcam/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="die-webcam-einfache-bildnormalisierungen">
+<h1>Die Webcam - Einfache Bildnormalisierungen<a class="headerlink" href="#die-webcam-einfache-bildnormalisierungen" title="Link to this heading"></a></h1>
+<p>Mit OpenCV ist es recht einfach die Webcam zu öffnen.</p>
+<section id="aufgabe-1-ein-bild-von-der-webcam-anzeigen">
+<h2>Aufgabe 1: Ein Bild von der Webcam anzeigen<a class="headerlink" href="#aufgabe-1-ein-bild-von-der-webcam-anzeigen" title="Link to this heading"></a></h2>
+<p>Öffnen Sie einen s.g. <a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html">VideoCapture</a>,
+lesen Sie ein Bild von der Webcam mit der <a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1">read</a>-Methode und zeigen Sie dieses
+mit <a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1">cv2.imshow</a> an. Übergeben Sie dann
+die Kontrolle an das Betriebssystem damit es das Fenster mit dem Bild zeichnen kann indem Sie
+<a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-waitkey-function/">cv2.waitKey</a> aufrufen. Rufen Sie <cite>cv2.waitKey</cite> mit dem Parameter 0 auf
+um unendlich lange auf einen Tastendruck zu warten</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot open camera&quot;</span><span class="p">)</span>
+    <span class="n">exit</span><span class="p">()</span>
+
+<span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Kamerabild&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-2-eine-sinnvolle-endloszschleife">
+<h2>Aufgabe 2: Eine sinnvolle Endloßschleife<a class="headerlink" href="#aufgabe-2-eine-sinnvolle-endloszschleife" title="Link to this heading"></a></h2>
+<p>Um immer wieder ein neues Bild von der Webcam zu lesen macht es Sinn das lesen des Bildes (<a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1">read</a>)
+sowie das Anzeigen in einer Endloßschleife durchzuführen. Diese können Sie recht leicht beginnen mit</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>Warten Sie nur 1 Millisekunde und beenden Sie das Programm, wenn der Benutzer die Taste <cite>q</cite> drückt.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot open camera&quot;</span><span class="p">)</span>
+    <span class="n">exit</span><span class="p">()</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+  <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Kamerabild&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
+    <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-3-grauwertbilder-und-histogramme">
+<h2>Aufgabe 3: Grauwertbilder und Histogramme<a class="headerlink" href="#aufgabe-3-grauwertbilder-und-histogramme" title="Link to this heading"></a></h2>
+<p>OpenCV verwendet im Unterbau die bekannte numpy-Bibliothek, so sind z.B. die Bilder stets NumPy-Arrays.</p>
+<p>Sie können das Bild von der Webcam leicht in ein Grauwertbild umrechnen. Verwenden Sie dazu die Methode
+<a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-cvtcolor-method/">cv2.cvtColor</a> mit dem Parameter <cite>cv2.COLOR_BGR2GRAY</cite>.</p>
+<p>Implementieren Sie dann eine Methode</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>welche das Grauwertbild erhält und ein neues Bild mit dem Histogram der Grauwerte zeichnet.</p>
+<p>Verwenden Sie dazu zunächst <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.histogram.html">np.histogram</a> und übergeben Sie mit <cite>range(256)</cite> konkrete Grenzen für die Histogram-Bins.
+Sie benötigen nur den ersten der beiden Rückgabewerte, der zweite kann ignoriert werden. Wandeln Sie das Histogramm in einen
+<a class="reference external" href="https://numpy.org/doc/stable/user/basics.types.html">np.float32</a> um und normieren Sie das Histogram, indem Sie durch den höchsten vorkommenden Wert teilen.</p>
+<p>Hinweis: Diesen können Sie mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.max.html">np.max</a> relativ leicht finden.</p>
+<p>Nun zeichen wir das Histogramm als Balkendiagramm. Erzeugen Sie dazu ein Bild der Größe (128 x 256) gefüllt mit Nullen (verwenden Sie <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.zeros.html">np.zeros</a>).
+Iterieren Sie über alle Einträge im Histogram und verwenden Sie <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-line-method/">cv2.line</a> um eine vertikale Linie (den Balken) in dem Bild zu zeichen.
+Verwenden Sie den Index des Bins als X-Koordinate. Verwenden Sie den Wert des Histogramms als Höhe des Balkens. Rechnen Sie Anfangs- und Endkoordinate entsprechend aus und zeichen sie.</p>
+<p>Geben Sie das Bild zurück ohne es anzuzeigen.
+Hinweis: Sie können ihre Hauptschleife im Programm so anpassen, das Sie zu jedem Kamerabild auch das Histogram des Grauwertbildes berechnen
+und dieses dann ebenfalls anzeigen.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
+  <span class="n">hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">))</span>
+  <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+  <span class="n">hist</span> <span class="o">=</span> <span class="n">hist</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+
+  <span class="n">H</span> <span class="o">=</span> <span class="mi">128</span>
+  <span class="n">histImage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">H</span><span class="p">,</span> <span class="mi">256</span><span class="p">))</span>
+  <span class="k">for</span> <span class="nb">bin</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hist</span><span class="p">):</span>
+      <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">,</span> <span class="n">H</span>
+      <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">value</span><span class="p">))</span>
+      <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">histImage</span><span class="p">,</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">),</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="nb">bin</span> <span class="o">/</span> <span class="mf">256.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">histImage</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-4-helligkeit-und-kontrast-normalisieren">
+<h2>Aufgabe 4: Helligkeit und Kontrast normalisieren<a class="headerlink" href="#aufgabe-4-helligkeit-und-kontrast-normalisieren" title="Link to this heading"></a></h2>
+<p>Schreiben Sie eine Methode <cite>adjustBrightness</cite> mit folgender Signatur</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>Berechnen Sie mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.mean.html">np.mean</a> und
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.std.html">np.std</a> Mittelwert (<span class="math notranslate nohighlight">\(\mu\)</span>) und Standardabweichung (<span class="math notranslate nohighlight">\(\sigma\)</span>) des Grauwertbildes.</p>
+<p>Normieren Sie dann die Grauwerte des Bildes derart, das diese den mit <cite>brightness</cite> übergeben Mittelwert und die mittels <cite>contrast</cite> übergebene
+Standardabweichung haben. Diese Normalisierung erreichen Sie, indem Sie setzen</p>
+<div class="math notranslate nohighlight">
+\[I = brightness + contrast \cdot \frac{I - \mu}{\sigma}\]</div>
+<p>Verwenden Sie <a class="reference external" href="https://numpy.org/doc/2.1/reference/generated/numpy.clip.html">np.clip</a> um die Werte im Bereich zwischen 0.0 und 1.0 zu begrenzen (abzuschneiden)
+und wandeln Sie das Bild in in <cite>np.uint8</cite>-Bild um. Multiplizieren Sie vorher mit 255.0 um dem neuen Datenbereich gerecht zu werden.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">):</span>
+    <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">gray</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">gray</span><span class="p">)</span>
+
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">brightness</span> <span class="o">+</span> <span class="n">contrast</span> <span class="o">*</span> <span class="p">(</span><span class="n">gray</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">norm</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">255.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-5-interaktion">
+<h2>Aufgabe 5 - Interaktion<a class="headerlink" href="#aufgabe-5-interaktion" title="Link to this heading"></a></h2>
+<p>Passen Sie ihre Hauptschleife so an, dass Sie zu jedem Bild das Grauwertbild berechnen und dieses
+mit der Methode <cite>adjustBrightness</cite> normalisieren (<span class="math notranslate nohighlight">\(\mu = 0.5, \sigma = 0.5\)</span>).
+Zeigen Sie dann beide Bilder inklusive dem dazugehörige Grauwerthistogram an. Machen Sie die gewünschte
+Brightness sowie den gewünschten Kontrast Variabel und verändern Sie die Zielgröße basierend auf der vom Benutzer gedrückten Taste.
+Sie können z.B. mit <strong>+</strong> und <strong>-</strong> den Kontrast erhöhen bzw. verringer sowie mit <strong>1</strong> und <strong>2</strong> die Helligkeit.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">brightness</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">contrast</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+  <span class="c1"># Capture frame-by-frame</span>
+  <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+  <span class="c1"># if frame is read correctly ret is True</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+      <span class="n">exit</span><span class="p">()</span>
+
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Kamerabild&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+
+  <span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2GRAY</span><span class="p">)</span>
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Graubild&quot;</span><span class="p">,</span> <span class="n">gray</span><span class="p">)</span>
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Graubild - Histogramm&quot;</span><span class="p">,</span> <span class="n">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">))</span>
+
+  <span class="n">norm</span> <span class="o">=</span> <span class="n">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">)</span>
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Normalisiert&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span>
+  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Normalisiert - Histogramm&quot;</span><span class="p">,</span> <span class="n">drawHistogram</span><span class="p">(</span><span class="n">norm</span><span class="p">))</span>
+
+  <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
+      <span class="n">contrast</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">contrast</span> <span class="o">+</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+      <span class="n">contrast</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">contrast</span> <span class="o">-</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
+      <span class="n">brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">brightness</span> <span class="o">-</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
+      <span class="n">brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">brightness</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">):</span>
+      <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="webcam-musterlosung">
+<h2>WebCam - Musterlösung<a class="headerlink" href="#webcam-musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="doc">WebCam - Musterlösung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Machine Perception and Tracking - Praktikum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../AdaBoost/index.html" class="btn btn-neutral float-right" title="AdaBoost - Praktikumsaufgabe" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
