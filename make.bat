@@ -2,7 +2,7 @@
 
 pushd %~dp0
 
-sphinx-build -M html . docs
+sphinx-build -b html -D html_baseurl=https://dmu1981.github.io/MPTPraktikum/ . ./docs
 exit
 
 REM Command file for Sphinx documentation
