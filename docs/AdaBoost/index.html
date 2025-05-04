@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaBoost - Praktikumsaufgabe &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/AdaBoost/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Histogram of Oriented Gradients" href="../HOG/index.html" />
+    <link rel="prev" title="Machine Perception and Tracking - Praktikum" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">AdaBoost</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adaboost-highlevel">AdaBoost - Highlevel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#die-daten-im-detail">Die Daten im Detail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#der-adaboost-algorithmus-im-detail">Der Adaboost-Algorithmus im Detail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#die-fehlerfunktion">Die Fehlerfunktion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auswahl-eines-geeigneten-neuen-klassifikators-fur-die-kaskade">Auswahl eines geeigneten neuen Klassifikators für die Kaskade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#der-alpha-wert">Der Alpha-Wert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ein-uberblick-uber-den-code">Ein Überblick über den Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#erste-aufgabe-der-schwache-klassifikator">Erste Aufgabe: Der schwache Klassifikator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#zweite-aufgabe-auswahl-eines-neuen-klassifikators">Zweite Aufgabe: Auswahl eines neuen Klassifikators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dritte-aufgabe-bestimmung-des-alpha-wertes-und-der-neuen-gewichte">Dritte Aufgabe: Bestimmung des Alpha-Wertes und der neuen Gewichte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vierte-aufgabe-die-gesamte-kaskade-pradizieren">Vierte Aufgabe: Die gesamte Kaskade prädizieren</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">AdaBoost - Praktikumsaufgabe</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/AdaBoost/index.md.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="adaboost-praktikumsaufgabe">
+<h1>AdaBoost - Praktikumsaufgabe<a class="headerlink" href="#adaboost-praktikumsaufgabe" title="Link to this heading"></a></h1>
+<p>In dieser Praktikumsaufgabe implementieren Sie den AdaBoost Algorithmus am Beispiel des „Digits“-Datensatz aus SciKit Learn.
+Der Digits-Datensatz besteht aus Schwarz-weiß Bildern von handgezeichneten Ziffern mit 8x8 Pixeln Auflösung. Jeder Pixel kann 16
+verschiedene Helligkeitsstufen annehmen und es sind alle Ziffern von 0 bis 9 im Datensatz abgebildet.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p><img alt="image" src="../_images/ziffer0.png" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>Beispiele für die Ziffer 0*</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p><img alt="image" src="../_images/ziffer4.png" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>Beispiele für die Ziffer 4*</p></td>
+</tr>
+</tbody>
+</table>
+<section id="adaboost-highlevel">
+<h2>AdaBoost - Highlevel<a class="headerlink" href="#adaboost-highlevel" title="Link to this heading"></a></h2>
+<p>AdaBoost ist ein Verfahren aus dem Bereich „Data Science“ und „Maschinellem Lernen“. Die Idee ist es aus einer Vielzahl s.g. schwacher Klassifikatoren eine geeignete Kombination auszuwählen, so dass diese Kombination gemeinsam das Klassifikationsproblem zufriedenstellen lösen kann. Dabei bezeichnet der Begriff „Schwacher Klassifikator“ einen Klassifikator, der gerade besser ist als einfaches Raten, der also gerade eben mehr als 50% Genauigkeit erreicht.</p>
+<p>AdaBoost verwaltet nun eine gewichtete Liste aller Trainingsbeispiele, initial ist dabei jedes Sample gleich wichtig, bekommt also das Gewicht 1 zugewiesen. Der Algorithmus bewertet alle möglichen Schwachen Klassifikatoren und wählt denjenigen Klassifikator aus, der den geringsten gewichtete Fehler verursacht. Es wird also zu jedem potentiellen Klassifikator und jedem Trainigsbeispiel überprüft, ob der Klassifikator dieses korrekt bzw. fehlerhaft klassifizieren würde. Dann werden die aktuellen Gewichte der fehlerhaft klassifizierten Trainingsbeispiele aufsummiert. Nachdem dies für alle potentiellen schwachen Klassifikatoren passiert ist wählt AdaBoost denjenigen Klassifikator aus, der diesen summarischen Fehler minimiert. Dieser Schritt ist in der Regel mit großem Rechenaufwand verbunden, weil zu jedem Klassifikator sämtliche Trainingsbeispiele bewertet werden müssen.</p>
+<p>Nachdem der aktuell bestmögliche aus den verfügbaren Klassifikatoren gewählt wurde ordnet AdaBoost diesem Klassifikator einen s.g. Alphawert zu. Dieser gibt an wie wichtig die Einzelentscheidung dieses Klassifikators später in der Gesamtentscheidung wird. Die finale Entscheidung der s.g. AdaBoost-Kasskade ergibt sich dabei als mit diesen Alphawerten gewichtete Summe der Einzelentscheidungen. Dabei wird in jedem Schritt der Alphawert so bestimmt, dass diese finale Entscheidung möglichst gut (also möglichst häufig richtig) wird.</p>
+<p>Nach Auswahl eines geeigneten Klassifikators sowie Bestimmung des dazugehörigen Alphawertes müssen alle Trainingsbeispiele für den nächsten Durchlauf neu gewichtet werden. Dabei werden solche Trainingsbeispiele höher (stärker) gewichtet, die bisher fehlerhaft klassifziert wurden. Gleichzeitig werden Trainingsbeipsiel, die bislang korrekt klassifiziert werden, niedriger (schwächer) gewichtet. Dies führt dazu das in der nächsten Auswahlrunde ein schwacher Klassifikator gewählt wird der mehr Wert auf die bisher fehlerhaften Trainingsdaten legt und daher tendenziell diese (bisherigen) Fehlentscheidungen wieder korrigieren kann.</p>
+</section>
+<section id="die-daten-im-detail">
+<h2>Die Daten im Detail<a class="headerlink" href="#die-daten-im-detail" title="Link to this heading"></a></h2>
+<p>Der Digits-Datensatz besteht aus insgesamt 1797 Bildern mit einer Auflösung von jeweils 8x8 Pixeln.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">digits</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="mi">1797</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Jedes Bild ist es 2D NumPy Array mit 8 Zeilen und 8 Spalten. Ein einzelnes solches Bild sieht dabei so aus</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="nb">print</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">300</span><span class="p">])</span>
+
+    <span class="p">[[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">1.</span> <span class="mf">11.</span> <span class="mf">16.</span> <span class="mf">16.</span> <span class="mf">10.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span> <span class="mf">13.</span> <span class="mf">14.</span>  <span class="mf">8.</span> <span class="mf">12.</span> <span class="mf">11.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">4.</span>  <span class="mf">0.</span>  <span class="mf">0.</span> <span class="mf">13.</span>  <span class="mf">4.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">3.</span> <span class="mf">15.</span>  <span class="mf">0.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">2.</span> <span class="mf">15.</span> <span class="mf">16.</span> <span class="mf">16.</span>  <span class="mf">9.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">3.</span> <span class="mf">13.</span> <span class="mf">16.</span>  <span class="mf">8.</span>  <span class="mf">1.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">7.</span> <span class="mf">10.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span><span class="p">]</span>
+     <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span> <span class="mf">13.</span>  <span class="mf">3.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Bereits hier ist die grundlegende Struktur erkennbar, bei diesem Bild handelt es sich allem Anschein nach um eine sieben.</p>
+<p>Da die zwei-dimensionale Struktur für das weitere Vorgehen nicht relevant ist wandeln wir die Daten in 1-dimensionale Vektoren der Länge 64 um.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">positive_class</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">positive_class</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">1.</span> <span class="mf">11.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">7.</span>  <span class="mf">8.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>
+      <span class="mf">1.</span> <span class="mf">13.</span>  <span class="mf">6.</span>  <span class="mf">2.</span>  <span class="mf">2.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">7.</span> <span class="mf">15.</span>  <span class="mf">0.</span>  <span class="mf">9.</span>  <span class="mf">8.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">5.</span> <span class="mf">16.</span> <span class="mf">10.</span>
+      <span class="mf">0.</span> <span class="mf">16.</span>  <span class="mf">6.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">4.</span> <span class="mf">15.</span> <span class="mf">16.</span> <span class="mf">13.</span> <span class="mf">16.</span>  <span class="mf">1.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">3.</span> <span class="mf">15.</span> <span class="mf">10.</span>
+      <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">2.</span> <span class="mf">16.</span>  <span class="mf">4.</span>  <span class="mf">0.</span>  <span class="mf">0.</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>In diesem Beispiel wählen wir zunächst alle Bilder aus, die der Zielklasse „vier“ zugeordnet sind, die also vieren zeigen. Diese Bilder werden dann in 1-dimensionale Vektoren umgewandelt. In dieser Darstellung ist die Struktur nur noch bedingt erkennbar. Ordnen wir die Daten jedoch wieder anders an, erkennt man weiterhin die in dem Bild enthaltene vier</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="p">[</span> <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">1.</span> <span class="mf">11.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">7.</span>  <span class="mf">8.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">1.</span> <span class="mf">13.</span>  <span class="mf">6.</span>  <span class="mf">2.</span>  <span class="mf">2.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">7.</span> <span class="mf">15.</span>  <span class="mf">0.</span>  <span class="mf">9.</span>  <span class="mf">8.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">5.</span> <span class="mf">16.</span> <span class="mf">10.</span>  <span class="mf">0.</span> <span class="mf">16.</span>  <span class="mf">6.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">4.</span> <span class="mf">15.</span> <span class="mf">16.</span> <span class="mf">13.</span> <span class="mf">16.</span>  <span class="mf">1.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">3.</span> <span class="mf">15.</span> <span class="mf">10.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  
+      <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">2.</span> <span class="mf">16.</span>  <span class="mf">4.</span>  <span class="mf">0.</span>  <span class="mf">0.</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Beachte: Dies sind die selben ein-dimensionalen Daten wie oben, es wurde lediglich für die Anzeige nach jeder achten Dimension ein Zeilenbruch eingefügt.</p>
+<p>Das Laden und Umstrukturieren der Daten geschieht in der load_digits Methode. Hier werden ebenfalls die Labels sowie die initialen Gewichte für die Daten festgelegt. Die Methode gibt dann drei NumPy Arrays zurück. Das erste enthält die konkatenierten 1D Daten für beide Klassen, das zweite die Klassenlabels, also eine 1 oder -1, jenachdem zu welcher der beiden Klasse das Bild gehört. Die Gewichte sind initial alle mit einer konstanten 1 gefüllt.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">():</span>
+      <span class="c1"># Load the Digits dataset</span>
+      <span class="c1"># The digits dataset contains images of resolution 8x8 pixels. Each pixel contains values between 0 and 15. </span>
+      <span class="c1"># They resemble images of the hand-written digits 0 to 9</span>
+      <span class="n">digits</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+
+      <span class="c1"># Select two digits for classification. Flatten the images as we don´t need the 2D structure anyway</span>
+      <span class="n">positive_class</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span>
+      <span class="n">negative_class</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span>
+      <span class="n">positive_label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">positive_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+      <span class="n">negative_label</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">negative_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+      <span class="c1"># Concatenate both into the same set  </span>
+      <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">positive_class</span><span class="p">,</span> <span class="n">negative_class</span><span class="p">])</span>
+      <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">positive_label</span><span class="p">,</span> <span class="n">negative_label</span><span class="p">])</span>
+
+      <span class="c1"># Start with equal weights for each sample</span>
+      <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+      <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span>
+
+
+    <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="o">----</span>
+
+    <span class="p">(</span><span class="mi">355</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+    <span class="p">(</span><span class="mi">355</span><span class="p">,)</span>
+    <span class="p">(</span><span class="mi">355</span><span class="p">,)</span>
+</pre></div>
+</div>
+</section>
+<section id="der-adaboost-algorithmus-im-detail">
+<h2>Der Adaboost-Algorithmus im Detail<a class="headerlink" href="#der-adaboost-algorithmus-im-detail" title="Link to this heading"></a></h2>
+<p>Es sei <span class="math notranslate nohighlight">\(\{(x_1, y_1), \dots (x_n, y_n)\}\)</span> ein Datensatz, wobei jedes Feature <span class="math notranslate nohighlight">\(x_i\)</span> eine dazugehörige Klasse <span class="math notranslate nohighlight">\(y_i\in\{-1, 1\}\)</span> hat.</p>
+<p>Ausserdem sei <span class="math notranslate nohighlight">\(\mathcal{K} = \{\kappa_1,\dots,\kappa_L\}\)</span> eine Menge von möglichen Klassifikatoren.</p>
+<p>Dabei ist <span class="math notranslate nohighlight">\(\kappa_j(x_i) \in \{-1, 1\}\)</span>, d.h. jeder Klassifikator <span class="math notranslate nohighlight">\(\kappa_j\)</span> ordnet jedem Trainingsbeispiel <span class="math notranslate nohighlight">\(x_i\)</span> ebenfalls entweder eine <span class="math notranslate nohighlight">\(-1\)</span> oder eine <span class="math notranslate nohighlight">\(1\)</span> zu.</p>
+<p>AdaBoost sucht nun eine Linearkombination von Klassifikatoren</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  C_m(x_i) = \sum_{i=1}^m \alpha_i \kappa_i(x_i)
+\end{equation}  
+\]</div>
+<p>also zu jedem Klassifikator <span class="math notranslate nohighlight">\(\kappa_i\)</span> ein dazugehöriges <span class="math notranslate nohighlight">\(\alpha_i\)</span> (Alphawert), so dass die gewichtete Summe der Einzelentscheidungen eine neue Gesamtentscheidung gibt.</p>
+<p>Die Idee ist nun diese Klassifikatoren iterativ auszuwählen, also zunächst mit nur einem Klassifikator zu starten und dann sukzesive neue Klassifikatoren auszuwählen.</p>
+</section>
+<section id="die-fehlerfunktion">
+<h2>Die Fehlerfunktion<a class="headerlink" href="#die-fehlerfunktion" title="Link to this heading"></a></h2>
+<p>Wir definieren dazu eine geeignete Fehlerfunktion</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  E = \sum_{i=1}^N \exp\left(-y_i C_m(x_i)\right)
+\end{equation}
+\]</div>
+<p>Dabei ist der Exponent <span class="math notranslate nohighlight">\(-y_i C_m(x_i)\)</span> genau dann negativ, wenn <span class="math notranslate nohighlight">\(y_i\)</span> und <span class="math notranslate nohighlight">\(C_m(x_i)\)</span> das selbe Vorzeichen haben, die Kaskade <span class="math notranslate nohighlight">\(C_m\)</span> das Trainingsbeispiel also korrekt vorhersagt. In diesem Fall ist der Term <span class="math notranslate nohighlight">\(\exp(-y_i C_m(x_i))\)</span> kleiner 1 und konvergiert gegen 0, je (betragsmäßig) größer der Wert <span class="math notranslate nohighlight">\(C_m(x_i)\)</span> wird. Das entspricht der Idee, dass je sicherer der Klassifikator <span class="math notranslate nohighlight">\(C_m\)</span> in seiner Entscheidung ist, um so geringer ist der angenommene Fehler <span class="math notranslate nohighlight">\(E\)</span>.</p>
+<p>Gleichzeit ist der Exponent <span class="math notranslate nohighlight">\(-y_i C_m(x_i)\)</span> genau dann positiv, wenn <span class="math notranslate nohighlight">\(y_i\)</span> und <span class="math notranslate nohighlight">\(C_m(x_i)\)</span> unterschiedliche Vvorzeichen haben, die Kaskade <span class="math notranslate nohighlight">\(C_m\)</span> das Trainingsbeispiel also falsch vorhersagt. Der Term <span class="math notranslate nohighlight">\(\exp(-y_i C_m(x_i))\)</span> ist dann größer 1 und konvergiert gegen unendlich für größere Konfidenz <span class="math notranslate nohighlight">\(C_m\)</span>.</p>
+<p>Insgesamt macht die vorgeschlagene Fehlerfunktion <span class="math notranslate nohighlight">\(E\)</span> also Sinn.</p>
+</section>
+<section id="auswahl-eines-geeigneten-neuen-klassifikators-fur-die-kaskade">
+<h2>Auswahl eines geeigneten neuen Klassifikators für die Kaskade<a class="headerlink" href="#auswahl-eines-geeigneten-neuen-klassifikators-fur-die-kaskade" title="Link to this heading"></a></h2>
+<p>Um einen neuen Klassifikator in die Kaskade aufzunehmen müssen wir ein geeignetes Kriterium finden, nachdem dieser ausgewählt werden soll. Dazu schreiben wir Gleichung (1) als</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  C_m(x_i) = C_{(m-1)}(x_i)
+           + \alpha_m \kappa_m(x_i)
+\end{equation}           
+\]</div>
+<p>Damit können wir die Fehlerfunktion (2) schreiben als</p>
+<div class="math notranslate nohighlight">
+\[
+  E = \sum_{i=1}^N \exp(-y_i C_{(m-1)}(x_i))
+              \cdot \exp(-y_i \alpha_m \kappa_m(x_i))
+\]</div>
+<p>Dabei ist der erste Produktterm unabhängig von <span class="math notranslate nohighlight">\(\alpha_m\)</span> oder der Wahl des Klassifikators <span class="math notranslate nohighlight">\(\kappa_m(x_i)\)</span>. Wir kürzen ab und schreiben
+<span class="math notranslate nohighlight">\(\omega_i^{(m)} = \exp(-y_i C_{(m-1)}(x_i))\)</span>, also auch</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  E = \sum_{i=1}^N \omega_i^{(m)}
+              \cdot \exp(-y_i \alpha_m \kappa_m(x_i))
+\end{equation}              
+\]</div>
+<p>Nun trennen wir die Summe in Gleichung (4) indem wir über die korrekt klassifizierten sowie die nicht korrekt klassifizierten Beispiel nacheinander summieren. Die korrekt klassifizierten Trainingsbeispiele zeichnen sich durch die Eigenschaft <span class="math notranslate nohighlight">\(y_i = \kappa_m(x_i)\)</span> aus, in diesem Fall ist das Vorzeichen von <span class="math notranslate nohighlight">\(y_i\cdot \kappa_m(x_i)\)</span> positiv. Die falsch klassifizierten Trainingsbeispiele erfüllen <span class="math notranslate nohighlight">\(y_i\neq\kappa_m(x_i)\)</span>, also auch <span class="math notranslate nohighlight">\(y_i\cdot\kappa_m(x_i) &lt; 0\)</span> mit negativem Vorzeichen. Damit schreiben wir (4) als</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  E = \sum_{y_i=\kappa_m(x_i)} \omega_i^{(m)} \exp(-\alpha_m)
+    + \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)} \exp(\alpha_m)
+\end{equation}              
+\]</div>
+<p>Wenn wir nun in der linken Summe stattdessen wieder über alle Terme summieren und die zusätzlichen Terme in der rechten Summe wieder abziehen finden wir</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  E = \sum_{i=1}^N \omega_i^{(m)} \exp(-\alpha_m)
+    + \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)} \left(
+      \exp(\alpha_m) - \exp(-\alpha_m)\right)
+\end{equation}              
+\]</div>
+<p>Nun sieht man das der linke Summand wieder nicht von der Wahl des konkreten Klassifikators <span class="math notranslate nohighlight">\(\kappa_m\)</span> abhängt. Damit wird der Fehler <span class="math notranslate nohighlight">\(E\)</span> minimal, wenn</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)}
+\end{equation}  
+\]</div>
+<p>minimal wird. Das bedeutet wir müssen aus allen möglichen Klassifikatoren <span class="math notranslate nohighlight">\(\kappa_m\)</span> denjenigen auswählen, bei dem die gewichtete Summe über die <em>fehlerhaft</em> klassifizierten Trainingsbeispiele minimal wird.</p>
+</section>
+<section id="der-alpha-wert">
+<h2>Der Alpha-Wert<a class="headerlink" href="#der-alpha-wert" title="Link to this heading"></a></h2>
+<p>Nachdem der geeignete Klassifikator <span class="math notranslate nohighlight">\(\kappa_m\)</span> bestimmt wurde bleibt noch der diesem Klassifikator zugeordnete Alpha-Wert zu bestimmen. Dazu leiten wird Gleichung (5) nach <span class="math notranslate nohighlight">\(\alpha_m\)</span> ab und finden zunächst</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  \frac{\partial E}{\partial \alpha_m} = -\sum_{y_i=\kappa_m(x_i)} \omega_i^{(m)} \exp(-\alpha_m)
+    + \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)} \exp(\alpha_m)
+\end{equation}              
+\]</div>
+<p>Nullsetzen und umformen liefert dann</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  \exp(-\alpha_m)
+    \sum_{y_i=\kappa_m(x_i)} \omega_i^{(m)} =
+  \exp(\alpha_m)
+    \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)} 
+\end{equation}
+\]</div>
+<p>Logarithmieren liefert dann</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  -\alpha_m
+  +
+  \ln\left(\sum_{y_i=\kappa_m(x_i)} \omega_i^{(m)}\right) =
+  \alpha_m
+  +
+  \ln\left(\sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)}\right)
+\end{equation}
+\]</div>
+<p>und schließlich auch
+$<span class="math notranslate nohighlight">\(\begin{equation}
+  \alpha_m =
+  \frac{1}{2}
+  \ln\left(
+     \frac{
+        \sum_{y_i=\kappa_m(x_i)} \omega_i^{(m)}
+     }{
+        \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)} 
+     }
+    \right)
+\end{equation}\)</span>$</p>
+<p>Mit der gewichteten Fehlerrate</p>
+<div class="math notranslate nohighlight">
+\[
+\epsilon_m = 
+\frac{
+        \sum_{y_i\neq\kappa_m(x_i)} \omega_i^{(m)}
+     }{
+        \sum_1^N \omega_i^{(m)} 
+     }
+\]</div>
+<p>können wir Gleichung (11) schreiben als</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+  \alpha_m = \frac12\ln\left(\frac{1-\epsilon_m}{\epsilon_m}\right)
+\end{equation}  
+\]</div>
+</section>
+<section id="ein-uberblick-uber-den-code">
+<h2>Ein Überblick über den Code<a class="headerlink" href="#ein-uberblick-uber-den-code" title="Link to this heading"></a></h2>
+<p>In diesem Repository finden Sie die Datei</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>adaboost_task.py
+</pre></div>
+</div>
+<p>Diese enthält viel Rahmenwerk welches nötig ist um die AdaBoost Cascade auf dem Digits-Datensatz von SciKit-Learn zu trainieren und auszuwerten. Die Kern-Methoden sind jedoch nicht implementiert und müssen von Ihnen befüllt werden.</p>
+<p>Am unteren Ende der Datei finden Sie den eigentlichen Loop, mit welchem die Kaskade konkret aufgebaut wird</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># Start with an empty cascade</span>
+    <span class="n">cascade</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Add 50 weak classifiers </span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+      <span class="c1"># Generate a new set of weak classifier</span>
+      <span class="n">classifiers</span> <span class="o">=</span> <span class="n">generate_weak_classifiers</span><span class="p">()</span>  
+
+      <span class="c1"># Pick one and re-evaluate the weights for each samples</span>
+      <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span> <span class="o">=</span> <span class="n">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">)</span>
+      
+      <span class="c1"># Calculate predictions for the whole cascade</span>
+      <span class="n">predictions</span> <span class="o">=</span> <span class="n">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">)</span>
+
+      <span class="c1"># Count wrong samples</span>
+      <span class="n">wrong</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">!=</span> <span class="n">labels</span>
+      <span class="n">total_wrong</span> <span class="o">=</span> <span class="n">wrong</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+      <span class="c1"># Also calculate total error value</span>
+      <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">predictions</span> <span class="o">*</span> <span class="n">labels</span><span class="p">))</span>
+
+      <span class="c1"># Output</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stage </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">, E=</span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, total wrong = </span><span class="si">{</span><span class="n">total_wrong</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Der Code wird erst dann korrekt funktionieren nachdem alle vier Aufgaben korrekt abgeschlossen sind.</p>
+</section>
+<section id="erste-aufgabe-der-schwache-klassifikator">
+<h2>Erste Aufgabe: Der schwache Klassifikator<a class="headerlink" href="#erste-aufgabe-der-schwache-klassifikator" title="Link to this heading"></a></h2>
+<p><strong>In dieser Aufgabe müssen sie die Klasse „WeakClassifier“ sinnvoll implementieren</strong>.</p>
+<p>Zunächst muß ein möglicher schwacher Klassifikator entwickelt werden. Das Ziel ist es dabei einen möglichst einfach Ansatz zu finden mit dem Trainingsbeispiele vielleicht (nicht notwendigerweise immer) korrekt klassifiziert werden können. Dabei ist es nicht nötig hohe Genauigkeiten zu erreichen. Es reicht völlig wenn der Klassifikator besser ist als Raten, also mehr als 50% Genauigkeit erreicht. Da im AdaBoost Algorithmus ohnehin aus einer Vielzahl von möglichen Kandidaten ein geeigneter Klassifikator ausgewählt wird ist es nicht einmal nötig das jeder einzelne Klassifikator sinnvoll ist. Es reicht völlig wenn in der Auswahl an möglichen Klassifikatoren mindestens einer dabei ist, der besser ist als einfaches Raten.</p>
+<p><strong>Implementieren Sie</strong> dazu einen ganz einfachen schwachen Klassifikator. Wählen Sie dazu zufällig zwei Dimensionen aus dem 64-dimensionalen Datenvektor aus. Vergleichen Sie dann die Einträge in beiden Dimensionen und klassifizieren Sie ein Trainingsbeispiel als positiv wenn der Wert in der ersten Dimension größer oder gleich dem Wert in der zweiten Dimension ist.</p>
+<p>Hinweis: Die gewählten Dimensionen müssen für jeden Klassifikator fixiert werden, d.h. für alle Trainingsbeispiele müssen die selben Dimensionen verglichen werden. Initialisieren Sie diese zufällige Wahl sinnvollerweise im Konstruktur der Klasse.</p>
+<p>Hinweis 2: In den meisten Kombinationen von zwei Feature-Dimensionen entsteht so kein sinnvoller Klassifikator. Das ist aber auch nicht wichtig solange nur die Chance besteht das mit etwas Glück auch ein sinnvoller Klassifikator dabei ist. Der AdaBoost Algorithmus wird diesen dann später finden und auswählen.</p>
+<p><img alt="image" src="../_images/weakclassifier.PNG" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">class</span><span class="w"> </span><span class="nc">WeakClassifier</span><span class="p">:</span>
+      <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">):</span>
+        <span class="c1"># TODO: Initialize stuff you need here</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># The Alpha-Value for later if this classifier is picked</span>
+
+        <span class="c1"># The weak classifier shall pick two random dimensions out of the </span>
+        <span class="c1"># feature vector. It will classify a sample as positive if featureA is bigger or equal than featureB</span>
+      
+      <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+        <span class="c1"># TODO: Implement classifier prediction</span>
+        <span class="c1"># Predict is an (N x 64) array, holding all feature vectors of </span>
+        <span class="c1"># the N samples, each 64-dimensional. </span>
+        <span class="c1"># Your task is to (weakly) classify each individual sample</span>
+        <span class="c1"># as described in the task description. </span>
+        <span class="c1"># The expected return value is an (N x 1) array with only </span>
+        <span class="c1"># +1 or -1 in it. Return +1 if the sample is classified positve</span>
+        <span class="c1"># and -1 if the sample is classified negative. Return nothing else</span>
+        <span class="c1"># than -1 or +1. </span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="zweite-aufgabe-auswahl-eines-neuen-klassifikators">
+<h2>Zweite Aufgabe: Auswahl eines neuen Klassifikators<a class="headerlink" href="#zweite-aufgabe-auswahl-eines-neuen-klassifikators" title="Link to this heading"></a></h2>
+<p><strong>In dieser Aufgabe müssen Sie die Methode pick_weak_classifier sinnvoll implementieren</strong></p>
+<p>Um einen geeigenten schwachen Klassifikator auszuwählen erhält die Methode alle Daten mit dazugehörigen Labels und Gewichten sowie eine Auswahl an möglichen schwachen Klassifikatoren. Gemäß Gleichung (7) (vgl. oben) müssen wir denjenigen Klassifikator wählen, welcher die Summe der Gewichte für alle <em>falschklassifizierten</em> Samples minimiert.</p>
+<p><strong>Implementieren Sie die Methode entsprechend</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">pick_weak_classifier</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">):</span>
+      <span class="c1"># TODO: Implement the picking stage of the AdaBoost Algorithm.</span>
+      <span class="c1"># We try to find the one classifier out of the given classifiers</span>
+      <span class="c1"># which minimize the sum of weights for wrongly classifier samples</span>
+      <span class="c1">#</span>
+      <span class="c1"># data is a (N x 64) array containing all the training samples</span>
+      <span class="c1"># labels is a (N x 1) array containing 1 or -1 depending on whether </span>
+      <span class="c1"># the sample is positive or negative</span>
+      <span class="c1"># weights is a (N x 1) array containing the weights for each sample</span>
+      <span class="c1"># classifiers is a list of potential WeakClassifiers (see above)</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="dritte-aufgabe-bestimmung-des-alpha-wertes-und-der-neuen-gewichte">
+<h2>Dritte Aufgabe: Bestimmung des Alpha-Wertes und der neuen Gewichte<a class="headerlink" href="#dritte-aufgabe-bestimmung-des-alpha-wertes-und-der-neuen-gewichte" title="Link to this heading"></a></h2>
+<p><strong>In dieser Aufgabe müssen Sie die Methode build_one_stage implementieren</strong></p>
+<p>Nachdem ein geeigneter Klassifikator ausgewählt wurde müssen Sie zunächst dessen Alpha-Wert bestimmen, vergleichen Sie dazu Gleichung (12) (s. oben).</p>
+<p>Mit bekanntem Klassifikator und Alpha-Wert können dann auch die Gewichte für den nächsten Durchlauf bestimmt werden. Schauen Sie dazu Gleichung (4) an und überlegen Sie, wie sich die Gewichte im nächsten Durchlauf verändern.</p>
+<p><strong>Implementieren Sie die Methode entsprechend</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+      <span class="c1"># Pick the best weak classifier given current weights</span>
+      <span class="n">classifier</span> <span class="o">=</span> <span class="n">pick_weak_classifier</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">)</span>
+
+      <span class="c1"># TODO: Calculate the alpha-value for the choosen classifier</span>
+      <span class="c1"># according to the script and store it within the classifier object </span>
+      <span class="c1"># for later reference</span>
+
+      <span class="c1"># TODO: Update weights for each samples according to script</span>
+      
+      <span class="c1"># Remember alpha and add choosen classifier to cascade</span>
+      <span class="n">classifier</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># TODO: Replace with calculated alpha</span>
+      <span class="n">cascade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classifier</span><span class="p">)</span>
+      
+      <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span>
+</pre></div>
+</div>
+</section>
+<section id="vierte-aufgabe-die-gesamte-kaskade-pradizieren">
+<h2>Vierte Aufgabe: Die gesamte Kaskade prädizieren<a class="headerlink" href="#vierte-aufgabe-die-gesamte-kaskade-pradizieren" title="Link to this heading"></a></h2>
+<p><strong>In dieser Aufgaben müssen Sie die predict_cascade Methode implementieren.</strong>
+Um die gesamte AdaBoost Kaskade auszuwerten muß die mit den Alphawerten gewichtete Summe aller einzelnen Klassifikatorentscheidungen gebildet werden. Vergleichen Sie dazu Gleichung (1) (s. oben)</p>
+<p><strong>Implementieren Sie nun die Methode entsprechend</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+      <span class="c1"># TODO: Implement evaluation of the whole AdaBoost cascade</span>
+      <span class="c1"># Data is an (N x 64) array containing all data samples</span>
+      <span class="c1"># Cascade is a list of choosen classifiers. Their respective </span>
+      <span class="c1"># Alpha values are stored within the classifier object. </span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Machine Perception and Tracking - Praktikum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../HOG/index.html" class="btn btn-neutral float-right" title="Histogram of Oriented Gradients" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
