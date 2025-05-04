@@ -258,9 +258,7 @@ $$
 $$
 
 ## Ein Überblick über den Code
-In diesem Repository finden Sie die Datei
-
-    adaboost_task.py
+In diesem Repository finden Sie die Datei [adaboost_task.py](https://github.com/dmu1981/MPTPraktikum/blob/master/AdaBoost/adaboost_task.py)
 
 Diese enthält viel Rahmenwerk welches nötig ist um die AdaBoost Cascade auf dem Digits-Datensatz von SciKit-Learn zu trainieren und auszuwerten. Die Kern-Methoden sind jedoch nicht implementiert und müssen von Ihnen befüllt werden. 
 
@@ -329,6 +327,25 @@ Hinweis 2: In den meisten Kombinationen von zwei Feature-Dimensionen entsteht so
         pass
 ```
 
+```{admonition} Lösung
+:class: toggle
+
+```python
+  class WeakClassifier:
+    def __init__(self, nFeatures):
+      # The alpha value for later if this classifier is picked into the cascade
+      self.alpha = 1.0
+
+      # The weak classifier will pick two random dimensions out of the feature vector
+      # It will classify a sample as positive if featureA is bigger or equal than featureB
+      self.featureA = int(np.random.uniform(0, nFeatures))
+      self.featureB = int(np.random.uniform(0, nFeatures))
+
+    def predict(self, samples):
+      values = samples[:, self.featureA] - samples[:, self.featureB]
+      return 2 * (values >= 0) - 1
+```
+
 ## Zweite Aufgabe: Auswahl eines neuen Klassifikators
 **In dieser Aufgabe müssen Sie die Methode pick_weak_classifier sinnvoll implementieren** 
 
@@ -347,6 +364,36 @@ Um einen geeigenten schwachen Klassifikator auszuwählen erhält die Methode all
       # weights is a (N x 1) array containing the weights for each sample
       # classifiers is a list of potential WeakClassifiers (see above)
       pass
+```
+
+```{admonition} Lösung
+:class: toggle
+
+```python
+  def pick_weak_classifiers(data, labels, weights, classifiers):
+    # We try to find the one classifier out of the given classifiers
+    # which minimize the sum of weights for wrongly classifier samples
+    minimalSum = None
+    bestClassifier = None
+    
+    # Iterate over all options
+    for classifier in classifiers:
+      # Make a prediction for each samples
+      predictions = classifier.predict(data)
+
+      # Wrong samples are those whose prediction differs from the label
+      wrong = predictions != labels
+
+      # Sum the current weights for wrongly predicted samples
+      sumW = weights[wrong].sum()
+
+      # If this is lower, keep this classifier as current best
+      if bestClassifier is None or sumW < minimalSum:
+        bestClassifier = classifier
+        minimalSum = sumW
+
+    # Return best classifier
+    return bestClassifier
 ```
 
 ## Dritte Aufgabe: Bestimmung des Alpha-Wertes und der neuen Gewichte
@@ -375,6 +422,35 @@ Mit bekanntem Klassifikator und Alpha-Wert können dann auch die Gewichte für d
       return weights, cascade
 ```
 
+```{admonition} Lösung
+:class: toggle
+
+```python
+  def build_one_stage(data, labels, weights, classifiers, cascade):
+    # Pick the best weak classifier given current weights
+    classifier = pick_weak_classifiers(data, labels, weights, classifiers)
+
+    # Calculate predictions
+    predictions = classifier.predict(data)
+    wrong = predictions != labels
+
+    # Calculate weighted error sum
+    e = weights[wrong].sum() / weights.sum()
+
+    # Calculate alpha value
+    alpha = 0.5 * np.log((1 - e) / e)
+    #print(e, alpha)
+
+    # Update weights for each samples
+    weights = weights * np.exp(-alpha * classifier.predict(data) * labels)
+
+    # Remember alpha and add to cascade
+    classifier.alpha = alpha
+    cascade.append(classifier)
+    
+    return weights, cascade
+```
+
 ## Vierte Aufgabe: Die gesamte Kaskade prädizieren
 **In dieser Aufgaben müssen Sie die predict_cascade Methode implementieren.**
 Um die gesamte AdaBoost Kaskade auszuwerten muß die mit den Alphawerten gewichtete Summe aller einzelnen Klassifikatorentscheidungen gebildet werden. Vergleichen Sie dazu Gleichung (1) (s. oben)
@@ -389,3 +465,20 @@ Um die gesamte AdaBoost Kaskade auszuwerten muß die mit den Alphawerten gewicht
       # Alpha values are stored within the classifier object. 
       pass
 ```    
+
+```{admonition} Lösung
+:class: toggle
+
+```python
+def predict_cascade(data, cascade):
+  # Evaluate the cascaded classifier
+  # This is the weighted (with alpha) sum of all individual classification decisions
+  values = np.zeros(data.shape[0])
+  for classifier in cascade:
+    values = values + classifier.alpha * classifier.predict(data)
+  
+  return 2 * (values >= 0) - 1
+```
+
+## Musterlösung
+[AdaBoost - Musterlösung](source.rst)

@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaBoost - Musterlösung &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/AdaBoost/source.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">AdaBoost - Musterlösung</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/AdaBoost/source.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="adaboost-musterlosung">
+<h1>AdaBoost - Musterlösung<a class="headerlink" href="#adaboost-musterlosung" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  3</span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="linenos">  4</span>
+<span class="linenos">  5</span><span class="k">class</span><span class="w"> </span><span class="nc">WeakClassifier</span><span class="p">:</span>
+<span class="linenos">  6</span>  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">):</span>
+<span class="linenos">  7</span>    <span class="c1"># The alpha value for later if this classifier is picked into the cascade</span>
+<span class="linenos">  8</span>    <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="linenos">  9</span>
+<span class="linenos"> 10</span>    <span class="c1"># The weak classifier will pick two random dimensions out of the feature vector</span>
+<span class="linenos"> 11</span>    <span class="c1"># It will classify a sample as positive if featureA is bigger or equal than featureB</span>
+<span class="linenos"> 12</span>    <span class="bp">self</span><span class="o">.</span><span class="n">featureA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">))</span>
+<span class="linenos"> 13</span>    <span class="bp">self</span><span class="o">.</span><span class="n">featureB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">))</span>
+<span class="linenos"> 14</span>
+<span class="linenos"> 15</span>  <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+<span class="linenos"> 16</span>    <span class="n">values</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">featureA</span><span class="p">]</span> <span class="o">-</span> <span class="n">samples</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">featureB</span><span class="p">]</span>
+<span class="linenos"> 17</span>    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="linenos"> 18</span>  
+<span class="linenos"> 19</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">():</span>
+<span class="linenos"> 20</span>  <span class="c1"># Load the Digits dataset</span>
+<span class="linenos"> 21</span>  <span class="c1"># The digits dataset contains images of resolution 8x8 pixels. Each pixel contains values between 0 and 15. </span>
+<span class="linenos"> 22</span>  <span class="c1"># They resemble images of the hand-written digits 0 to 9</span>
+<span class="linenos"> 23</span>  <span class="n">digits</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+<span class="linenos"> 24</span>
+<span class="linenos"> 25</span>  <span class="c1"># Select two digits for classification. Flatten the images as we don´t need the 2D structure anyway</span>
+<span class="linenos"> 26</span>  <span class="n">positive_class</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span>
+<span class="linenos"> 27</span>  <span class="n">negative_class</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span>
+<span class="linenos"> 28</span>  <span class="n">positive_label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">positive_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos"> 29</span>  <span class="n">negative_label</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">negative_class</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos"> 30</span>
+<span class="linenos"> 31</span>  <span class="c1"># Concatenate both into the same set  </span>
+<span class="linenos"> 32</span>  <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">positive_class</span><span class="p">,</span> <span class="n">negative_class</span><span class="p">])</span>
+<span class="linenos"> 33</span>  <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">positive_label</span><span class="p">,</span> <span class="n">negative_label</span><span class="p">])</span>
+<span class="linenos"> 34</span>
+<span class="linenos"> 35</span>  <span class="c1"># Start with equal weights for each sample</span>
+<span class="linenos"> 36</span>  <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+<span class="linenos"> 37</span>
+<span class="linenos"> 38</span>  <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span>
+<span class="linenos"> 39</span>
+<span class="linenos"> 40</span><span class="k">def</span><span class="w"> </span><span class="nf">generate_weak_classifiers</span><span class="p">():</span>
+<span class="linenos"> 41</span>  <span class="c1"># Generate a random selection of weak classifiers. The AdaBoost Algorithm</span>
+<span class="linenos"> 42</span>  <span class="c1"># will pick one of these for the next cascade stage</span>
+<span class="linenos"> 43</span>  <span class="n">weakClassifiers</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos"> 44</span>    
+<span class="linenos"> 45</span>  <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+<span class="linenos"> 46</span>    <span class="n">weakClassifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WeakClassifier</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span>
+<span class="linenos"> 47</span>  
+<span class="linenos"> 48</span>  <span class="k">return</span> <span class="n">weakClassifiers</span>
+<span class="linenos"> 49</span>
+<span class="linenos"> 50</span><span class="k">def</span><span class="w"> </span><span class="nf">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">):</span>
+<span class="linenos"> 51</span>  <span class="c1"># We try to find the one classifier out of the given classifiers</span>
+<span class="linenos"> 52</span>  <span class="c1"># which minimize the sum of weights for wrongly classifier samples</span>
+<span class="linenos"> 53</span>  <span class="n">minimalSum</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 54</span>  <span class="n">bestClassifier</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 55</span>  
+<span class="linenos"> 56</span>  <span class="c1"># Iterate over all options</span>
+<span class="linenos"> 57</span>  <span class="k">for</span> <span class="n">classifier</span> <span class="ow">in</span> <span class="n">classifiers</span><span class="p">:</span>
+<span class="linenos"> 58</span>    <span class="c1"># Make a prediction for each samples</span>
+<span class="linenos"> 59</span>    <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="linenos"> 60</span>
+<span class="linenos"> 61</span>    <span class="c1"># Wrong samples are those whose prediction differs from the label</span>
+<span class="linenos"> 62</span>    <span class="n">wrong</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">!=</span> <span class="n">labels</span>
+<span class="linenos"> 63</span>
+<span class="linenos"> 64</span>    <span class="c1"># Sum the current weights for wrongly predicted samples</span>
+<span class="linenos"> 65</span>    <span class="n">sumW</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">wrong</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="linenos"> 66</span>
+<span class="linenos"> 67</span>    <span class="c1"># If this is lower, keep this classifier as current best</span>
+<span class="linenos"> 68</span>    <span class="k">if</span> <span class="n">bestClassifier</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">sumW</span> <span class="o">&lt;</span> <span class="n">minimalSum</span><span class="p">:</span>
+<span class="linenos"> 69</span>      <span class="n">bestClassifier</span> <span class="o">=</span> <span class="n">classifier</span>
+<span class="linenos"> 70</span>      <span class="n">minimalSum</span> <span class="o">=</span> <span class="n">sumW</span>
+<span class="linenos"> 71</span>
+<span class="linenos"> 72</span>  <span class="c1"># Return best classifier</span>
+<span class="linenos"> 73</span>  <span class="k">return</span> <span class="n">bestClassifier</span>
+<span class="linenos"> 74</span>
+<span class="linenos"> 75</span><span class="k">def</span><span class="w"> </span><span class="nf">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+<span class="linenos"> 76</span>  <span class="c1"># Pick the best weak classifier given current weights</span>
+<span class="linenos"> 77</span>  <span class="n">classifier</span> <span class="o">=</span> <span class="n">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">)</span>
+<span class="linenos"> 78</span>
+<span class="linenos"> 79</span>  <span class="c1"># Calculate predictions</span>
+<span class="linenos"> 80</span>  <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="linenos"> 81</span>  <span class="n">wrong</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">!=</span> <span class="n">labels</span>
+<span class="linenos"> 82</span>
+<span class="linenos"> 83</span>  <span class="c1"># Calculate weighted error sum</span>
+<span class="linenos"> 84</span>  <span class="n">e</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">wrong</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="linenos"> 85</span>
+<span class="linenos"> 86</span>  <span class="c1"># Calculate alpha value</span>
+<span class="linenos"> 87</span>  <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">/</span> <span class="n">e</span><span class="p">)</span>
+<span class="linenos"> 88</span>  <span class="c1">#print(e, alpha)</span>
+<span class="linenos"> 89</span>
+<span class="linenos"> 90</span>  <span class="c1"># Update weights for each samples</span>
+<span class="linenos"> 91</span>  <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="n">labels</span><span class="p">)</span>
+<span class="linenos"> 92</span>
+<span class="linenos"> 93</span>  <span class="c1"># Remember alpha and add to cascade</span>
+<span class="linenos"> 94</span>  <span class="n">classifier</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+<span class="linenos"> 95</span>  <span class="n">cascade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classifier</span><span class="p">)</span>
+<span class="linenos"> 96</span>  
+<span class="linenos"> 97</span>  <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span>
+<span class="linenos"> 98</span>
+<span class="linenos"> 99</span><span class="k">def</span><span class="w"> </span><span class="nf">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+<span class="linenos">100</span>  <span class="c1"># Evaluate the cascaded classifier</span>
+<span class="linenos">101</span>  <span class="c1"># This is the weighted (with alpha) sum of all individual classification decisions</span>
+<span class="linenos">102</span>  <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos">103</span>  <span class="k">for</span> <span class="n">classifier</span> <span class="ow">in</span> <span class="n">cascade</span><span class="p">:</span>
+<span class="linenos">104</span>    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">+</span> <span class="n">classifier</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="linenos">105</span>  
+<span class="linenos">106</span>  <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="linenos">107</span>
+<span class="linenos">108</span>
+<span class="linenos">109</span><span class="c1"># Load the data</span>
+<span class="linenos">110</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">()</span>
+<span class="linenos">111</span>
+<span class="linenos">112</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>  <span class="c1"># figure size in inches</span>
+<span class="linenos">113</span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="linenos">114</span>
+<span class="linenos">115</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">64</span><span class="p">):</span>
+<span class="linenos">116</span>    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[])</span>
+<span class="linenos">117</span>    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+<span class="linenos">118</span>
+<span class="linenos">119</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
+<span class="linenos">120</span>
+<span class="linenos">121</span><span class="c1"># Start with an empty cascade</span>
+<span class="linenos">122</span><span class="n">cascade</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">123</span>
+<span class="linenos">124</span><span class="c1"># Add 50 weak classifiers </span>
+<span class="linenos">125</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+<span class="linenos">126</span>  <span class="c1"># Generate a new set of weak classifier</span>
+<span class="linenos">127</span>  <span class="n">classifiers</span> <span class="o">=</span> <span class="n">generate_weak_classifiers</span><span class="p">()</span>  
+<span class="linenos">128</span>
+<span class="linenos">129</span>  <span class="c1"># Pick one and re-evaluate the weights for each samples</span>
+<span class="linenos">130</span>  <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span> <span class="o">=</span> <span class="n">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">)</span>
+<span class="linenos">131</span>  
+<span class="linenos">132</span>  <span class="c1"># Calculate predictions for the whole cascade</span>
+<span class="linenos">133</span>  <span class="n">predictions</span> <span class="o">=</span> <span class="n">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">)</span>
+<span class="linenos">134</span>
+<span class="linenos">135</span>  <span class="c1"># Count wrong samples</span>
+<span class="linenos">136</span>  <span class="n">wrong</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">!=</span> <span class="n">labels</span>
+<span class="linenos">137</span>  <span class="n">total_wrong</span> <span class="o">=</span> <span class="n">wrong</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="linenos">138</span>
+<span class="linenos">139</span>  <span class="c1"># Also calculate total error value</span>
+<span class="linenos">140</span>  <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">predictions</span> <span class="o">*</span> <span class="n">labels</span><span class="p">))</span>
+<span class="linenos">141</span>
+<span class="linenos">142</span>  <span class="c1"># Output</span>
+<span class="linenos">143</span>  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stage </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">, E=</span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, total wrong = </span><span class="si">{</span><span class="n">total_wrong</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

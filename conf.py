@@ -15,7 +15,8 @@ project = 'Machine Perception and Tracking - Praktikum'
 copyright = '2025, Prof. Dr. Dennis Müller'
 author = 'Prof. Dr. Dennis Müller'
 
-extensions = ['sphinx.ext.autodoc', 
+extensions = ['myst_parser', 
+              'sphinx.ext.autodoc', 
               'sphinx.ext.autosummary', 
               'sphinx.ext.intersphinx',
               'sphinx.ext.viewcode',
@@ -30,7 +31,17 @@ extensions = ['sphinx.ext.autodoc',
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+
 language = 'de'
+
+myst_enable_extensions = [
+    "dollarmath",
+    "amsmath",
+]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

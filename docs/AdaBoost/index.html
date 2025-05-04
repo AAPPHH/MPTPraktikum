@@ -67,6 +67,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#zweite-aufgabe-auswahl-eines-neuen-klassifikators">Zweite Aufgabe: Auswahl eines neuen Klassifikators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dritte-aufgabe-bestimmung-des-alpha-wertes-und-der-neuen-gewichte">Dritte Aufgabe: Bestimmung des Alpha-Wertes und der neuen Gewichte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#vierte-aufgabe-die-gesamte-kaskade-pradizieren">Vierte Aufgabe: Die gesamte Kaskade prädizieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
@@ -352,10 +353,7 @@ $<span class="math notranslate nohighlight">\(\begin{equation}
 </section>
 <section id="ein-uberblick-uber-den-code">
 <h2>Ein Überblick über den Code<a class="headerlink" href="#ein-uberblick-uber-den-code" title="Link to this heading"></a></h2>
-<p>In diesem Repository finden Sie die Datei</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>adaboost_task.py
-</pre></div>
-</div>
+<p>In diesem Repository finden Sie die Datei <a class="reference external" href="https://github.com/dmu1981/MPTPraktikum/blob/master/AdaBoost/adaboost_task.py">adaboost_task.py</a></p>
 <p>Diese enthält viel Rahmenwerk welches nötig ist um die AdaBoost Cascade auf dem Digits-Datensatz von SciKit-Learn zu trainieren und auszuwerten. Die Kern-Methoden sind jedoch nicht implementiert und müssen von Ihnen befüllt werden.</p>
 <p>Am unteren Ende der Datei finden Sie den eigentlichen Loop, mit welchem die Kaskade konkret aufgebaut wird</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># Start with an empty cascade</span>
@@ -414,6 +412,24 @@ $<span class="math notranslate nohighlight">\(\begin{equation}
         <span class="k">pass</span>
 </pre></div>
 </div>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="k">class</span><span class="w"> </span><span class="nc">WeakClassifier</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">):</span>
+      <span class="c1"># The alpha value for later if this classifier is picked into the cascade</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+      <span class="c1"># The weak classifier will pick two random dimensions out of the feature vector</span>
+      <span class="c1"># It will classify a sample as positive if featureA is bigger or equal than featureB</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">featureA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">featureB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+      <span class="n">values</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">featureA</span><span class="p">]</span> <span class="o">-</span> <span class="n">samples</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">featureB</span><span class="p">]</span>
+      <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="zweite-aufgabe-auswahl-eines-neuen-klassifikators">
 <h2>Zweite Aufgabe: Auswahl eines neuen Klassifikators<a class="headerlink" href="#zweite-aufgabe-auswahl-eines-neuen-klassifikators" title="Link to this heading"></a></h2>
@@ -432,6 +448,35 @@ $<span class="math notranslate nohighlight">\(\begin{equation}
       <span class="c1"># classifiers is a list of potential WeakClassifiers (see above)</span>
       <span class="k">pass</span>
 </pre></div>
+</div>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="k">def</span><span class="w"> </span><span class="nf">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">):</span>
+    <span class="c1"># We try to find the one classifier out of the given classifiers</span>
+    <span class="c1"># which minimize the sum of weights for wrongly classifier samples</span>
+    <span class="n">minimalSum</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">bestClassifier</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># Iterate over all options</span>
+    <span class="k">for</span> <span class="n">classifier</span> <span class="ow">in</span> <span class="n">classifiers</span><span class="p">:</span>
+      <span class="c1"># Make a prediction for each samples</span>
+      <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+      <span class="c1"># Wrong samples are those whose prediction differs from the label</span>
+      <span class="n">wrong</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">!=</span> <span class="n">labels</span>
+
+      <span class="c1"># Sum the current weights for wrongly predicted samples</span>
+      <span class="n">sumW</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">wrong</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+      <span class="c1"># If this is lower, keep this classifier as current best</span>
+      <span class="k">if</span> <span class="n">bestClassifier</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">sumW</span> <span class="o">&lt;</span> <span class="n">minimalSum</span><span class="p">:</span>
+        <span class="n">bestClassifier</span> <span class="o">=</span> <span class="n">classifier</span>
+        <span class="n">minimalSum</span> <span class="o">=</span> <span class="n">sumW</span>
+
+    <span class="c1"># Return best classifier</span>
+    <span class="k">return</span> <span class="n">bestClassifier</span>
+</pre></div>
+</div>
 </div>
 </section>
 <section id="dritte-aufgabe-bestimmung-des-alpha-wertes-und-der-neuen-gewichte">
@@ -457,6 +502,34 @@ $<span class="math notranslate nohighlight">\(\begin{equation}
       <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span>
 </pre></div>
 </div>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="k">def</span><span class="w"> </span><span class="nf">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+    <span class="c1"># Pick the best weak classifier given current weights</span>
+    <span class="n">classifier</span> <span class="o">=</span> <span class="n">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">)</span>
+
+    <span class="c1"># Calculate predictions</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">wrong</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">!=</span> <span class="n">labels</span>
+
+    <span class="c1"># Calculate weighted error sum</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">wrong</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="c1"># Calculate alpha value</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">/</span> <span class="n">e</span><span class="p">)</span>
+    <span class="c1">#print(e, alpha)</span>
+
+    <span class="c1"># Update weights for each samples</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="n">labels</span><span class="p">)</span>
+
+    <span class="c1"># Remember alpha and add to cascade</span>
+    <span class="n">classifier</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+    <span class="n">cascade</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classifier</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="vierte-aufgabe-die-gesamte-kaskade-pradizieren">
 <h2>Vierte Aufgabe: Die gesamte Kaskade prädizieren<a class="headerlink" href="#vierte-aufgabe-die-gesamte-kaskade-pradizieren" title="Link to this heading"></a></h2>
@@ -471,6 +544,23 @@ Um die gesamte AdaBoost Kaskade auszuwerten muß die mit den Alphawerten gewicht
       <span class="k">pass</span>
 </pre></div>
 </div>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+  <span class="c1"># Evaluate the cascaded classifier</span>
+  <span class="c1"># This is the weighted (with alpha) sum of all individual classification decisions</span>
+  <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="k">for</span> <span class="n">classifier</span> <span class="ow">in</span> <span class="n">cascade</span><span class="p">:</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">+</span> <span class="n">classifier</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="std std-doc">AdaBoost - Musterlösung</span></a></p>
 </section>
 </section>
 
