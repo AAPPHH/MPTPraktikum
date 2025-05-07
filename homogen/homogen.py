@@ -62,18 +62,16 @@ def rotateZ(radians):
     [ 0.0, 0.0, 0.0, 1.0],
   ])
 
-def projection(c, skew, xh, yh):
-  far = 2000.0
-  near = 512.0
+def projection(c):
   return np.array([
     [c,  0.0,   0.0,  0.0],
     [0.0,  c,   0.0,  0.0],
-    [0.0, 0.0,  (far + near) / (near - far), (2*far*near)/(near-far)],
+    [0.0, 0.0,  -1, -2.0],
     [0.0, 0.0, -1.0, 0.0]
   ]).T
 
 def to_eucl2d_rounded(xyw):
-  return (int(xyw[0] / xyw[3]), int(xyw[1] / xyw[3]))
+  return (int(xyw[0] / xyw[3]), int(xyw[1] / xyw[3])), (xyw[2] / xyw[3]).item()
 
 def to_homo3d(x, y, z):
   return np.array([[x, y, z, 1.0]]).T
@@ -81,25 +79,25 @@ def to_homo3d(x, y, z):
 
 image_shape = (640, 640)
 
-r = 0.0
+r = 0
 while True:
-  object_to_world = rotateX(0.05*r) @ identity_transform() # translate_3d((0.0, -256.0, 0.1))
-  world_to_camera = translate_3d((0, -100, 0.01)) #@ 
-  camera_to_sensor = projection(1.0 / 512.0, image_shape[0] / image_shape[1], 0.0, 0.0)
+  object_to_world = identity_transform() @ rotateY(0.002 * r) @ rotateX(0.02 * r) @ identity_transform()
+  world_to_camera = translate_3d((0, -16.0, 164.0)) @ rotateX(-0.5)
+  camera_to_sensor = projection(1.73, image_shape[0] / image_shape[1], 0.0, 0.0)
   sensor_to_image = translate_3d((image_shape[1] / 2.0, image_shape[0] / 2.0, 0.0)) @ scale((image_shape[1], image_shape[0], 1.0))
 
   P = sensor_to_image @ camera_to_sensor @ world_to_camera @ object_to_world
-  #print(P)
-  #exit()
   canvas = np.zeros(image_shape)
 
-  for x in np.linspace(-512.0, 512.0, 20):
-    for z in np.linspace(0.0, 512.0, 20):
-        x1 = to_eucl2d_rounded(P @ to_homo3d(x, 0.0, z))
-        cv2.circle(canvas, x1, 5, (255, 255,255))
-
-        x1 = to_eucl2d_rounded(P @ to_homo3d(x, 512.0, z))
-        cv2.circle(canvas, x1, 5, (255, 0, 0))
+  for x in np.linspace(-64.0, 64.0, 16):
+    for z in np.linspace(-64.0, 64.0, 16):  
+      x1, zClip1= to_eucl2d_rounded(P @ to_homo3d(x, 0.0, z))
+      x2, zClip2 = to_eucl2d_rounded(P @ to_homo3d(x + 8.0, 0.0, z))
+      x3, zClip3 = to_eucl2d_rounded(P @ to_homo3d(x, 0.0, z + 8.0))
+      if zClip1 > 0.5 and zClip2 > 0.5 and zClip3 > 0.5:
+        cv2.line(canvas, x1, x2, 255)
+        cv2.line(canvas, x1, x3, 255)
+        #cv2.circle(canvas, x1, 5, (255, 255,255))
 
   cv2.imshow("Canvas", canvas)
   if cv2.waitKey(33) == 27:
