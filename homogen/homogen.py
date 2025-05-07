@@ -76,6 +76,20 @@ def to_eucl2d_rounded(xyw):
 def to_homo3d(x, y, z):
   return np.array([[x, y, z, 1.0]]).T
 
+def build_grid(xRange, zRange):
+  vertices = np.zeros((4, len(xRange)))
+  indices = np.zeros((len(xRange)-1)*2)
+  for xIndex, xValue in enumerate(xRange):
+    vertices[:, xIndex] = to_homo3d(xValue, 0.0, 0.0)
+    if xIndex > 0:
+      indices[2*xIndex-2] = xIndex-1
+      indices[2*xIndex-1] = xIndex
+
+  return vertices
+    
+
+
+build_grid(np.linspace(-64.0, 64.0, 32), np.linspace(-64.0, 64.0, 32))  
 
 image_shape = (640, 640)
 
@@ -83,7 +97,7 @@ r = 0
 while True:
   object_to_world = identity_transform() @ rotateY(0.002 * r) @ rotateX(0.02 * r) @ identity_transform()
   world_to_camera = translate_3d((0, -16.0, 164.0)) @ rotateX(-0.5)
-  camera_to_sensor = projection(1.73, image_shape[0] / image_shape[1], 0.0, 0.0)
+  camera_to_sensor = projection(1.73)
   sensor_to_image = translate_3d((image_shape[1] / 2.0, image_shape[0] / 2.0, 0.0)) @ scale((image_shape[1], image_shape[0], 1.0))
 
   P = sensor_to_image @ camera_to_sensor @ world_to_camera @ object_to_world
