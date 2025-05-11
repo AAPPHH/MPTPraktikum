@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homogene Koordinaten &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/homogen/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="prev" title="Histogram of Oriented Gradients" href="../HOG/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rechnen mit homogene Koordinaten</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#einmal-von-euklidisch-nach-homogen-und-zuruck">Einmal von euklidisch nach homogen und zurück</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#translationen-in-homogenen-koordinaten">Translationen in homogenen Koordinaten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#skalierung-in-homogenen-koordinaten">Skalierung in homogenen Koordinaten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mehrere-transformationen-zusammenfassen">Mehrere Transformationen zusammenfassen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rotationen">Rotationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unsere-eigene-kleine-3d-rendering-engine">Unsere eigene kleine 3D Rendering Engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lokale-und-weltkoordinaten">Lokale und Weltkoordinaten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#die-projektion-von-3d-nach-2d">Die Projektion von 3D nach 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#abbildung-in-bild-koordinaten-pixel">Abbildung in Bild-Koordinaten (Pixel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#homogen.identity_transform"><code class="docutils literal notranslate"><span class="pre">identity_transform()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Homogene Koordinaten</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/homogen/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="homogene-koordinaten">
+<h1>Homogene Koordinaten<a class="headerlink" href="#homogene-koordinaten" title="Link to this heading"></a></h1>
+<p>Homogene Koordinaten erlauben es Verschiebungen (Translation), Rotationen (Drehungen) sowie Skalierungen (Größenänderung)
+einheitlich über Matrixmultiplikationen abzubilden. Die Verkettung mehrerer
+solcher Operationen läßt sich dann mit Hilfe des Assoziativgesetzes zu einer einzigen
+Matrix zusammenfassen. Die perspektivische Projektion von 3D Koordinaten auf eine
+zwei-dimensionale Ebene (Pinhole Kamera) läßt sich ebenfalls durch eine entsprechende Matrixmultiplikation
+ausdrücken. Damit lässt sich die gesame Abbildung von Objektlokalen 3D Koordinaten in Sensorlokale 2D Koordinaten
+direkt über eine einzige Matrix-Multiplikation ausdrücken. In diesem Praktikum
+betrachten wir diese Abbildungsmöglichkeiten.</p>
+<a class="reference internal image-reference" href="../_images/screenshot.jpg"><img alt="3D Abbildungen" class="align-center" src="../_images/screenshot.jpg" style="width: 1024px;" />
+</a>
+<section id="einmal-von-euklidisch-nach-homogen-und-zuruck">
+<h2>Einmal von euklidisch nach homogen und zurück<a class="headerlink" href="#einmal-von-euklidisch-nach-homogen-und-zuruck" title="Link to this heading"></a></h2>
+<p>Eine Darstellung <span class="math notranslate nohighlight">\(\mathcal{p}\)</span> heißt <em>homogen</em>, wenn für alle <span class="math notranslate nohighlight">\(\lambda\neq 0\)</span>
+gilt :</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{p} = \lambda \mathcal{p}\]</div>
+<p>beschreibt das selbe Objekt. Für einen Punkt in euklischen Koordinaten</p>
+<div class="math notranslate nohighlight">
+\[\textbf{p} = (x_p, y_p, z_p)\]</div>
+<p>schreiben wir in homogenen Koordinaten</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{p} = (x_p, y_p, z_p, 1)\]</div>
+<p>d.h. wir fügen eine Konstante 1 in der letzten Komponente an. Diese letzte Komponente
+nennen wir einheitlich <span class="math notranslate nohighlight">\(w\)</span>.</p>
+<p>Um eine homogene Koordinate <span class="math notranslate nohighlight">\(\mathcal{q}=(x_q, y_q, z_q, w_q)\)</span> wieder in euklische Koordinaten
+zu überführen dividieren wir durch die <span class="math notranslate nohighlight">\(w\)</span>-Komponente und erhalten</p>
+<div class="math notranslate nohighlight">
+\[\textbf{q} = (x_q / w_q, y_q / w_q, z_q / w_q)\]</div>
+</section>
+<section id="translationen-in-homogenen-koordinaten">
+<h2>Translationen in homogenen Koordinaten<a class="headerlink" href="#translationen-in-homogenen-koordinaten" title="Link to this heading"></a></h2>
+<p>Um einen Punkt <span class="math notranslate nohighlight">\(\textbf{p}\)</span> in homogenen Koordinaten um einen Vektor
+<span class="math notranslate nohighlight">\(\vec v\)</span> zu verschieben multiplizieren wir mit der folgenden Matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; x_v\\
+    0 &amp; 1 &amp; 0 &amp; y_v\\
+    0 &amp; 0 &amp; 1 &amp; z_v\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}\cdot
+\begin{pmatrix}
+x_p\\y_p\\z_p\\1
+\end{pmatrix}
+=
+\begin{pmatrix}
+x_p + x_v\\y_p + y_v\\z_p + z_v\\1
+\end{pmatrix}\end{split}\]</div>
+</section>
+<section id="skalierung-in-homogenen-koordinaten">
+<h2>Skalierung in homogenen Koordinaten<a class="headerlink" href="#skalierung-in-homogenen-koordinaten" title="Link to this heading"></a></h2>
+<p>Um einen Punkt <span class="math notranslate nohighlight">\(\textbf{p}\)</span> in homogenen Koordinaten entlang der
+Hauptachsen zu skalieren (relativ zum Urspung <span class="math notranslate nohighlight">\((0,0,0)\)</span>) multiplizieren wir mit der folgenden Matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    x_s &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; y_s &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; z_s &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}\cdot
+\begin{pmatrix}
+x_p\\y_p\\z_p\\1
+\end{pmatrix}
+=
+\begin{pmatrix}
+x_s \cdot x_p\\y_s \cdot y_p\\z_s \cdot z_p\\1
+\end{pmatrix}\end{split}\]</div>
+</section>
+<section id="mehrere-transformationen-zusammenfassen">
+<h2>Mehrere Transformationen zusammenfassen<a class="headerlink" href="#mehrere-transformationen-zusammenfassen" title="Link to this heading"></a></h2>
+<p>Um mehrere Transformationen nacheinander auszuführen multiplizieren
+wir die entsprechenden Transformationsmatrizen jeweils <strong>von links</strong>.
+Dabei spielt die Reihenfolge eine Rolle (Matrix-Multiplikation ist nicht kommutativ),
+die jeweils weiter rechts stehende Matrix wird dabei zuerst ausgeführt.</p>
+<p><strong>Beispiel</strong>: Zuerst verschieben, dann skalieren</p>
+<p>Wollen wir den Punkt <span class="math notranslate nohighlight">\((1,2,3)\)</span> zuerst um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span> verschieben und dann um den Faktor 4 gleichmässig skalieren, multiplizieren wir mit den
+folgenden Matrizen</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; 4 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 4 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; -2\\
+    0 &amp; 1 &amp; 0 &amp; -2\\
+    0 &amp; 0 &amp; 1 &amp; -2\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    1\\2\\3\\1
+\end{pmatrix}\end{split}\]</div>
+<p>Multiplizieren wir <strong>manuell</strong> von rechts nach links finden wir zunächst den verschobenen Punkt</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; -2\\
+    0 &amp; 1 &amp; 0 &amp; -2\\
+    0 &amp; 0 &amp; 1 &amp; -2\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    1\\2\\3\\1
+\end{pmatrix}
+=
+\begin{pmatrix}
+    -1\\0\\1\\1
+\end{pmatrix}\end{split}\]</div>
+<p>Nach Skalierung finden wir dann mit</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; 4 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 4 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    -1\\0\\1\\1
+\end{pmatrix}
+=
+\begin{pmatrix}
+    -4\\0\\4\\1
+\end{pmatrix}\end{split}\]</div>
+<p>den finalen Punkt. Alternativ können wir mit dem Assoziativgesetz auch die
+beiden Matrix zuerst multiplizieren und finden</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; 4 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 4 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; -2\\
+    0 &amp; 1 &amp; 0 &amp; -2\\
+    0 &amp; 0 &amp; 1 &amp; -2\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; -8\\
+    0 &amp; 4 &amp; 0 &amp; -8\\
+    0 &amp; 0 &amp; 4 &amp; -8\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}\end{split}\]</div>
+<p>Diese Matrix kodiert die Kombination aus beiden Transformationen in der richtigen Reihenfolge.</p>
+<p><strong>Beispiel</strong>: Zuerst skalieren, dann verschieben</p>
+<p>Vertauschen wir die Reihenfolge
+indem wir den Punkt <span class="math notranslate nohighlight">\((1,2,3)\)</span> zuerst um den Faktor 4 gleichmäßig skalieren und dann
+um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span> verschieben, vertauschen wir die Matrizen</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; -2\\
+    0 &amp; 1 &amp; 0 &amp; -2\\
+    0 &amp; 0 &amp; 1 &amp; -2\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; 4 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 4 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    1\\2\\3\\1
+\end{pmatrix}\end{split}\]</div>
+<p>Multiplizieren wir wieder die Matrizen zuerst, finden wir eine andere Abbildungsmatrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; -2\\
+    0 &amp; 1 &amp; 0 &amp; -2\\
+    0 &amp; 0 &amp; 1 &amp; -2\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; 0\\
+    0 &amp; 4 &amp; 0 &amp; 0\\
+    0 &amp; 0 &amp; 4 &amp; 0\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+    4 &amp; 0 &amp; 0 &amp; -2\\
+    0 &amp; 4 &amp; 0 &amp; -2\\
+    0 &amp; 0 &amp; 4 &amp; -2\\
+    0 &amp; 0 &amp; 0 &amp; 1\\
+\end{pmatrix}\end{split}\]</div>
+</section>
+<section id="rotationen">
+<h2>Rotationen<a class="headerlink" href="#rotationen" title="Link to this heading"></a></h2>
+<p>Um einen Punkt um den Ursprung um die X-Achse zu rotieren verwenden wir die folgende Rotationsmatrix:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}R_x(\alpha) =
+\begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; \cos(\alpha) &amp; -\sin(\alpha) &amp; 0\\
+0 &amp; \sin(\alpha) &amp;  \cos(\alpha) &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\end{split}\]</div>
+<p>Für eine Rotation um die Y-Achse verwenden wir die folgende Matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}R_y(\alpha) =
+\begin{pmatrix}
+\cos(\alpha) &amp; 0 &amp; \sin(\alpha) &amp; 0\\
+0 &amp; 1 &amp; 0 &amp; 0\\
+-\sin(\alpha) &amp; 0 &amp;  \cos(\alpha) &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\end{split}\]</div>
+<p>Für eine Rotation um die Z-Achse verwenden wir die folgende Matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}R_z(\alpha) =
+\begin{pmatrix}
+\cos(\alpha) &amp; -\sin(\alpha) &amp; 0 &amp; 0\\
+\sin(\alpha) &amp; \cos(\alpha) &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\end{split}\]</div>
+</section>
+<section id="unsere-eigene-kleine-3d-rendering-engine">
+<h2>Unsere eigene kleine 3D Rendering Engine<a class="headerlink" href="#unsere-eigene-kleine-3d-rendering-engine" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum wollen wir eine einfache kleine 3D Rendering Engine
+implementieren welche Punkte im 3D über eine Kamera in 2D-Koordinaten überführt und zeichnet.
+Dazu orientieren wir uns stark an dem von <a class="reference external" href="https://learnopengl.com/Getting-started/Coordinate-Systems">OpenGL</a>
+verwendeten Ansatz und betrachten im folgenden fünf verschiedene Koordinatensystem.</p>
+<a class="reference internal image-reference" href="../_images/coordinate_systems.png"><img alt="Koordinatensysteme" class="align-center" src="../_images/coordinate_systems.png" style="width: 800px;" />
+</a>
+<ul class="simple">
+<li><p>Lokale Koordinaten sind die Koordinaten des Objekts relativ zu seinem lokalen Ursprung; das sind die Koordinaten, in denen sich das Objekt anfangs befindet.</p></li>
+<li><p>Der nächste Schritt besteht darin, die lokalen Koordinaten in Weltkoordinaten zu transformieren, also Koordinaten im Bezug auf eine globale Welt. Diese Koordinaten sind relativ zu einem globalen Ursprung der Welt, zusammen mit vielen anderen Objekten, die ebenfalls relativ zu diesem Weltursprung platziert sind.</p></li>
+<li><p>Als Nächstes transformieren wir die Weltkoordinaten in Ansichtskoordinaten (View-Space-Koordinaten), sodass jede Koordinate aus der Sicht der Kamera oder des Betrachters dargestellt wird.</p></li>
+<li><p>Nachdem sich die Koordinaten im View-Space befinden, möchten wir sie in NDC-Koordinaten projizieren. NDC-Koordinaten werden auf den Bereich von -1,0 bis 1,0 normiert und bestimmen, welche Scheitelpunkte (Vertices) letztlich auf dem Bildschirm erscheinen.</p></li>
+<li><p>Schließlich transformieren wir die NDC-Koordinaten in Bildschirmkoordinaten. Dabei werden die Koordinaten von -1,0 bis 1,0 in Pixelkoordiaten im Zielbild überführt.</p></li>
+</ul>
+</section>
+<section id="lokale-und-weltkoordinaten">
+<h2>Lokale und Weltkoordinaten<a class="headerlink" href="#lokale-und-weltkoordinaten" title="Link to this heading"></a></h2>
+<p>Die <a href="#id1"><span class="problematic" id="id2">:code-block:`local_to_world`</span></a> Transformation beschreibt wie sich die
+lokalen Koordinaten eines Objektes in Weltkoordinaten überführen lassen.
+Von dort werden die Koordinaten mit der <a href="#id3"><span class="problematic" id="id4">:code-block:`world_to_camera`</span></a> Transformation
+in Kamerakoordinaten überführt, also die Koordinaten relativ zum Kamerakoordinatensystem.</p>
+<p>Beide Transformationen können über eine Kombination von Translationen, Skalierungen sowie
+Rotationen ausgedrückt werden.</p>
+</section>
+<section id="die-projektion-von-3d-nach-2d">
+<h2>Die Projektion von 3D nach 2D<a class="headerlink" href="#die-projektion-von-3d-nach-2d" title="Link to this heading"></a></h2>
+<p>Für die Projektion unserer 3D Koordinaten auf die zwei-dimensionale
+Abbildungsebene verwenden wir das s.g. Pinhole-Kamera Model (Lochkameramodel).</p>
+<a class="reference internal image-reference" href="../_images/pinhole1.png"><img alt="Lochkameramodel" class="align-center" src="../_images/pinhole1.png" style="width: 600px;" />
+</a>
+<p>Punkte im 3D werden dabei über den <a class="reference external" href="https://de.wikipedia.org/wiki/Strahlensatz">Strahlensatz</a>.
+abgebildet. Für einen Punkt <span class="math notranslate nohighlight">\(P(x_1,x_2,x_3)\)</span>, wobei <span class="math notranslate nohighlight">\(x_1\)</span> die vertikale Komponente und <span class="math notranslate nohighlight">\(x_3\)</span>
+die longitudinale (Entfernung) darstellt finden wir die folgende Strahlensatzfigur</p>
+<a class="reference internal image-reference" href="../_images/pinhole3.png"><img alt="Lochkameramodel" class="align-center" src="../_images/pinhole3.png" style="width: 500px;" />
+</a>
+<p>und damit auch den Zusammenhang</p>
+<div class="math notranslate nohighlight">
+\[\frac{-y_1}{f} = \frac{x_1}{x_3}\]</div>
+<p>oder alternativ</p>
+<div class="math notranslate nohighlight">
+\[y_1 = \frac{-f\cdot x_1}{x_3}\]</div>
+<p>Dabei ist <span class="math notranslate nohighlight">\(f\)</span> die so genannte <em>Brennweite</em>.
+Für <span class="math notranslate nohighlight">\(y_2\)</span> und <span class="math notranslate nohighlight">\(x_2\)</span> findet sich ein entsprechender Zusammenhang. In homogenen
+Koordinaten ausgedrückt läßt sich diese Projektion darstellen als.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+-c &amp;  0 &amp; 0 &amp; 0\\
+0 &amp; -c &amp; 0 &amp; 0\\
+0 &amp;  0 &amp; 1 &amp; 0\\
+0 &amp;  0 &amp; 1 &amp; 0
+\end{pmatrix}\end{split}\]</div>
+<p>Die so erhaltenden Koordinaten sind s.g. <strong>Normalized Device Coordinates</strong> (NDC)</p>
+<a class="reference internal image-reference" href="../_images/ndcspace.png"><img alt="Clipping-Koordinaten" class="align-center" src="../_images/ndcspace.png" style="width: 500px;" />
+</a>
+<p>Hierbei haben Punkte <em>vor</em> der Kamera ein <span class="math notranslate nohighlight">\(z &gt; 0\)</span> während Punkte <em>hinter</em>
+der Kamera ein <span class="math notranslate nohighlight">\(z &lt; 0\)</span> haben. Das wird später wichtig werden weil wir
+natürlich nur Punkte vor der Kamera zeichnen wollen.</p>
+</section>
+<section id="abbildung-in-bild-koordinaten-pixel">
+<h2>Abbildung in Bild-Koordinaten (Pixel)<a class="headerlink" href="#abbildung-in-bild-koordinaten-pixel" title="Link to this heading"></a></h2>
+<p>Um die NDC-Koordinaten in Pixelkoordinaten für unser Zielbild zu transformieren
+multiplizieren wir zunächst mit der halben Bildbreite bzw. Höhe und verschieben
+den Mittelpunkt <span class="math notranslate nohighlight">\((0,0,0)\)</span> dann in die Bildmitte. Dazu benötigen wir die kombinierte
+Matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\frac{W}{2} &amp; 0 &amp; 0 &amp; \frac{W}{2}\\
+0 &amp; \frac{H}{2} &amp; 0 &amp; \frac{H}{2}\\
+0 &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\end{split}\]</div>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="homogen.identity_transform">
+<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">identity_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#identity_transform"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.identity_transform" title="Link to this definition"></a></dt>
+<dd><p>Returns the identity transformation</p>
+</dd></dl>
+
+<p><a class="reference internal" href="source.html"><span class="doc">Homogene Koordinaten - Musterlösung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../HOG/index.html" class="btn btn-neutral float-left" title="Histogram of Oriented Gradients" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

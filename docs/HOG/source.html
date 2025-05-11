@@ -51,8 +51,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
 </ul>
 
         </div>
@@ -137,44 +140,45 @@
 <span class="linenos">54</span>
 <span class="linenos">55</span>  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Gradient Direction&quot;</span><span class="p">,</span> <span class="n">binColor</span><span class="p">)</span>
 <span class="linenos">56</span>
-<span class="linenos">57</span>  <span class="n">cellSize</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="linenos">58</span>  <span class="n">hogImage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">gray</span><span class="p">)</span>
-<span class="linenos">59</span>  <span class="k">for</span> <span class="n">x0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">gray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cellSize</span><span class="p">):</span>
-<span class="linenos">60</span>     <span class="k">for</span> <span class="n">y0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">gray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cellSize</span><span class="p">):</span>
-<span class="linenos">61</span>        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">cellSize</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">cellSize</span>
+<span class="linenos">57</span>  <span class="c1"># cellSize = 8</span>
+<span class="linenos">58</span>  <span class="c1"># hogImage = np.zeros_like(gray)</span>
+<span class="linenos">59</span>  <span class="c1"># for x0 in range(0, gray.shape[1], cellSize):</span>
+<span class="linenos">60</span>  <span class="c1">#    for y0 in range(0, gray.shape[0], cellSize):</span>
+<span class="linenos">61</span>  <span class="c1">#       x1, y1 = x0 + cellSize, y0 + cellSize</span>
 <span class="linenos">62</span>
-<span class="linenos">63</span>        <span class="n">cellVector</span> <span class="o">=</span> <span class="n">hog_cell</span><span class="p">(</span><span class="n">mag</span><span class="p">[</span><span class="n">y0</span><span class="p">:</span><span class="n">y1</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span><span class="n">x1</span><span class="p">],</span> <span class="n">winningBin</span><span class="p">[</span><span class="n">y0</span><span class="p">:</span><span class="n">y1</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span><span class="n">x1</span><span class="p">],</span> <span class="n">totalDirections</span><span class="p">)</span>
-<span class="linenos">64</span>        <span class="n">img</span> <span class="o">=</span> <span class="n">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">hogDirections</span><span class="p">,</span> <span class="p">(</span><span class="n">cellSize</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">))</span>
-<span class="linenos">65</span>
-<span class="linenos">66</span>        <span class="n">hogImage</span><span class="p">[</span><span class="n">y0</span><span class="p">:</span><span class="n">y1</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span><span class="n">x1</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span>
-<span class="linenos">67</span>
-<span class="linenos">68</span>  
-<span class="linenos">69</span>  <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;HOG Vector&quot;</span><span class="p">,</span> <span class="n">hogImage</span><span class="p">)</span>
-<span class="linenos">70</span>
+<span class="linenos">63</span>
+<span class="linenos">64</span>  <span class="c1">#       cellVector = hog_cell(mag[y0:y1, x0:x1], winningBin[y0:y1, x0:x1], totalDirections)</span>
+<span class="linenos">65</span>  <span class="c1">#       img = visualize_hog_cell(cellVector, hogDirections, (cellSize, cellSize))</span>
+<span class="linenos">66</span>
+<span class="linenos">67</span>  <span class="c1">#       hogImage[y0:y1, x0:x1] = img</span>
+<span class="linenos">68</span>
+<span class="linenos">69</span>  
+<span class="linenos">70</span>  <span class="c1"># cv2.imshow(&quot;HOG Vector&quot;, hogImage)</span>
 <span class="linenos">71</span>
 <span class="linenos">72</span>
-<span class="linenos">73</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos">74</span>  <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  
-<span class="linenos">75</span>  <span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
-<span class="linenos">76</span>      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot open camera&quot;</span><span class="p">)</span>
-<span class="linenos">77</span>      <span class="n">exit</span><span class="p">()</span>
-<span class="linenos">78</span>
-<span class="linenos">79</span>  <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-<span class="linenos">80</span>      <span class="c1"># Capture frame-by-frame</span>
-<span class="linenos">81</span>      <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="linenos">82</span>
-<span class="linenos">83</span>      <span class="c1"># if frame is read correctly ret is True</span>
-<span class="linenos">84</span>      <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
-<span class="linenos">85</span>          <span class="n">exit</span><span class="p">()</span>
-<span class="linenos">86</span>
-<span class="linenos">87</span>      <span class="c1"># Convert image to gray scale</span>
-<span class="linenos">88</span>      <span class="n">gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span>
-<span class="linenos">89</span>
-<span class="linenos">90</span>      <span class="n">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">)</span>
-<span class="linenos">91</span>
-<span class="linenos">92</span>      <span class="c1"># Display the resulting frame</span>
-<span class="linenos">93</span>      <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">):</span>
-<span class="linenos">94</span>          <span class="k">break</span>
+<span class="linenos">73</span>
+<span class="linenos">74</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">75</span>  <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  
+<span class="linenos">76</span>  <span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+<span class="linenos">77</span>      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot open camera&quot;</span><span class="p">)</span>
+<span class="linenos">78</span>      <span class="n">exit</span><span class="p">()</span>
+<span class="linenos">79</span>
+<span class="linenos">80</span>  <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">81</span>      <span class="c1"># Capture frame-by-frame</span>
+<span class="linenos">82</span>      <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos">83</span>
+<span class="linenos">84</span>      <span class="c1"># if frame is read correctly ret is True</span>
+<span class="linenos">85</span>      <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+<span class="linenos">86</span>          <span class="n">exit</span><span class="p">()</span>
+<span class="linenos">87</span>
+<span class="linenos">88</span>      <span class="c1"># Convert image to gray scale</span>
+<span class="linenos">89</span>      <span class="n">gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span>
+<span class="linenos">90</span>
+<span class="linenos">91</span>      <span class="n">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">)</span>
+<span class="linenos">92</span>
+<span class="linenos">93</span>      <span class="c1"># Display the resulting frame</span>
+<span class="linenos">94</span>      <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">):</span>
+<span class="linenos">95</span>          <span class="k">break</span>
 </pre></div>
 </div>
 </section>

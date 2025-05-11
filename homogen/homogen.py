@@ -3,6 +3,9 @@ import numpy as np
 from enum import IntEnum
 
 def identity_transform():
+  """
+  Returns the identity transformation
+  """
   return np.array([
     [1.0, 0.0, 0.0, 0.0],
     [0.0, 1.0, 0.0, 0.0],
@@ -57,11 +60,11 @@ def rotateZ(radians):
 
 def projection(c):
   return np.array([
-    [c,  0.0,   0.0,  0.0],
-    [0.0,  c,   0.0,  0.0],
-    [0.0, 0.0, -1.0, -2.0],
-    [0.0, 0.0, -1.0,  0.0]
-  ]).T
+    [-c, 0.0,   0.0,  0.0],
+    [0.0, -c,   0.0,  0.0],
+    [0.0, 0.0,  1.0,  0.0],
+    [0.0, 0.0,  1.0,  0.0]
+  ])
 
 def to_homo3d(x, y, z):
   return np.array([[x, y, z, 1.0]]).T
@@ -180,9 +183,9 @@ axisZ = build_axis(0.0, 0.0, 32.0)
 
 image_shape = (1024, 1024)
 
-world_to_camera = translate_3d(0, 0.0, 256.0) @ rotateX(-0.35) @ rotateY(0.57)
-camera_to_sensor = projection(2.5)
-sensor_to_image = translate_3d(image_shape[1] / 2.0, image_shape[0] / 2.0, -1.0) @ scale(image_shape[1], image_shape[0], 2.0)
+world_to_camera = translate_3d(0, 16.0, 164.0) @ rotateX(-0.45) @ rotateY(0.6)
+camera_to_sensor = projection(1.25)
+sensor_to_image = translate_3d(image_shape[1] / 2.0, image_shape[0] / 2.0, 0.0) @ scale(image_shape[1] / 2.0, image_shape[0] / 2.0, 1.0)
 world_to_image = sensor_to_image @ camera_to_sensor @ world_to_camera
 axis_to_world = translate_3d(-64.0, -16.0, -64.0)
 grid_to_world = translate_3d(0.0, -16.0, 0.0)
@@ -193,107 +196,108 @@ class Mode(IntEnum):
   ROTATE = 3
   ORBIT = 4
 
-r = 0
-mode = Mode.SCALE
+if __name__ == "__main__":
+  r = 0
+  mode = Mode.SCALE
 
-modeTexts = ["(1) Scale", "(2) Translate", "(3) Rotate", "(4) Orbit"]
-sx, sy, sz = 1.0, 1.0, 1.0
-tx, ty, tz = 0.0, 0.0, 0.0
-rx, ry, rz = 0.0, 0.0, 0.0
-ox, oy, oz = 0.0, 0.0, 0.0
+  modeTexts = ["(1) Scale", "(2) Translate", "(3) Rotate", "(4) Orbit"]
+  sx, sy, sz = 1.0, 1.0, 1.0
+  tx, ty, tz = 0.0, 0.0, 0.0
+  rx, ry, rz = 0.0, 0.0, 0.0
+  ox, oy, oz = 0.0, 0.0, 0.0
 
-while True:
-  rotate = rotateZ(rz * np.pi / 180.0) @ rotateY(ry * np.pi / 180.0) @ rotateX(rx * np.pi / 180.0)
-  orbit = rotateZ(oz * np.pi / 180.0) @ rotateY(oy * np.pi / 180.0) @ rotateX(ox * np.pi / 180.0)
+  while True:
+    rotate = rotateZ(rz * np.pi / 180.0) @ rotateY(ry * np.pi / 180.0) @ rotateX(rx * np.pi / 180.0)
+    orbit = rotateZ(oz * np.pi / 180.0) @ rotateY(oy * np.pi / 180.0) @ rotateX(ox * np.pi / 180.0)
 
-  object_to_world = orbit @ translate_3d(tx, ty, tz) @ scale(sx * 16.0, sy * 16.0, sz * 16.0) @ rotate
-  
-  
-
-  canvas = np.zeros((image_shape[0], image_shape[1], 3))
-
-  draw(gridMesh, world_to_image @ grid_to_world, canvas, (0.2, 0.2, 0.2))
-  draw(axisX, world_to_image @ axis_to_world, canvas, (0.0, 0.0, 1.0))
-  draw(axisY, world_to_image @ axis_to_world, canvas, (0.0, 1.0, 0.0))
-  draw(axisZ, world_to_image @ axis_to_world, canvas, (1.0, 0.0, 0.0))
-  draw(cubeMesh, world_to_image @ object_to_world, canvas, (1.0, 1.0, 1.0))
-  
-  for index, modeText in enumerate(modeTexts):
-    x = 16 + 120 * index
-    col = (1.0, 1.0, 1.0)
-    if index == int(mode) - 1:
-      col = (0.4, 0.6, 1.0)
-
-      if mode == Mode.TRANSLATE:
-        vx, vy, vz = tx, ty, tz
-
-      if mode == Mode.SCALE:
-        vx, vy, vz = sx, sy, sz
-
-      if mode == Mode.ROTATE:
-        vx, vy, vz = rx, ry, rz
-
-      if mode == Mode.ORBIT:
-        vx, vy, vz = ox, oy, oz
-
-      cv2.putText(canvas, f"{vx:.2f}, {vy:.2f}, {vz:.2f}", (x, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0.7, 0.7, 0.7), 2)
+    local_to_world = orbit @ translate_3d(tx, ty, tz) @ rotate @ scale(sx * 16.0, sy * 16.0, sz * 16.0)
     
-    cv2.putText(canvas, modeText, (x, 16), cv2.FONT_HERSHEY_SIMPLEX, 0.5, col, 2)
+    
+
+    canvas = np.zeros((image_shape[0], image_shape[1], 3))
+
+    draw(gridMesh, world_to_image @ grid_to_world, canvas, (0.2, 0.2, 0.2))
+    draw(axisX, world_to_image @ axis_to_world, canvas, (0.0, 0.0, 1.0))
+    draw(axisY, world_to_image @ axis_to_world, canvas, (0.0, 1.0, 0.0))
+    draw(axisZ, world_to_image @ axis_to_world, canvas, (1.0, 0.0, 0.0))
+    draw(cubeMesh, world_to_image @ local_to_world, canvas, (1.0, 1.0, 1.0))
+    
+    for index, modeText in enumerate(modeTexts):
+      x = 16 + 120 * index
+      col = (1.0, 1.0, 1.0)
+      if index == int(mode) - 1:
+        col = (0.4, 0.6, 1.0)
+
+        if mode == Mode.TRANSLATE:
+          vx, vy, vz = tx, ty, tz
+
+        if mode == Mode.SCALE:
+          vx, vy, vz = sx, sy, sz
+
+        if mode == Mode.ROTATE:
+          vx, vy, vz = rx, ry, rz
+
+        if mode == Mode.ORBIT:
+          vx, vy, vz = ox, oy, oz
+
+        cv2.putText(canvas, f"{vx:.2f}, {vy:.2f}, {vz:.2f}", (x, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0.7, 0.7, 0.7), 2)
+      
+      cv2.putText(canvas, modeText, (x, 16), cv2.FONT_HERSHEY_SIMPLEX, 0.5, col, 2)
 
 
 
-  cv2.imshow("Canvas", canvas)
+    cv2.imshow("Canvas", canvas)
 
-  key = cv2.waitKey(33)
-  if key == ord('1'):
-    mode = Mode.SCALE
+    key = cv2.waitKey(33)
+    if key == ord('1'):
+      mode = Mode.SCALE
 
-  if key == ord('2'):
-    mode = Mode.TRANSLATE
+    if key == ord('2'):
+      mode = Mode.TRANSLATE
 
-  if key == ord('3'):
-    mode = Mode.ROTATE
+    if key == ord('3'):
+      mode = Mode.ROTATE
 
-  if key == ord('4'):
-    mode = Mode.ORBIT
+    if key == ord('4'):
+      mode = Mode.ORBIT
 
-  dx, dy, dz = 0.0, 0.0, 0.0
-  if key == ord('a'):
-    dx = 1.0
-  if key == ord('d'):
-    dx = -1.0
-  if key == ord('w'):
-    dy = 1.0
-  if key == ord('s'):
-    dy = -1.0
-  if key == ord('+'):
-    dz = 1.0
-  if key == ord('-'):
-    dz = -1.0
+    dx, dy, dz = 0.0, 0.0, 0.0
+    if key == ord('a'):
+      dx = 1.0
+    if key == ord('d'):
+      dx = -1.0
+    if key == ord('w'):
+      dy = 1.0
+    if key == ord('s'):
+      dy = -1.0
+    if key == ord('+'):
+      dz = 1.0
+    if key == ord('-'):
+      dz = -1.0
 
-  if mode == Mode.SCALE:
-    sx += dx * 0.1
-    sy += dy * 0.1
-    sz += dz * 0.1
+    if mode == Mode.SCALE:
+      sx += dx * 0.1
+      sy += dy * 0.1
+      sz += dz * 0.1
 
-  if mode == Mode.TRANSLATE:
-    tx += dx
-    ty += dy
-    tz += dz
+    if mode == Mode.TRANSLATE:
+      tx += dx
+      ty += dy
+      tz += dz
 
-  if mode == Mode.ROTATE:
-    rx += dx
-    ry += dy
-    rz += dz
+    if mode == Mode.ROTATE:
+      rx += dx
+      ry += dy
+      rz += dz
 
-  if mode == Mode.ORBIT:
-    ox += dx
-    oy += dy
-    oz += dz
+    if mode == Mode.ORBIT:
+      ox += dx
+      oy += dy
+      oz += dz
 
 
 
-  if key == 27:
-    break
+    if key == 27:
+      break
 
-  r += 1
+    r += 1

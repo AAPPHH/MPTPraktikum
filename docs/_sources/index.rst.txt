@@ -16,4 +16,5 @@ In diesem Dokument finden Sie die verschiedenen Aufgaben und Beispiele zum MPT-P
    Objekterkennung mit YOLO <../YOLO/index>
    AdaBoost <../AdaBoost/index>
    Histogram of Oriented Gradients <../HOG/index>
+   Rechnen mit homogene Koordinaten <../homogen/index>
 
