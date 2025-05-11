@@ -54,19 +54,20 @@ def process_hog(gray, totalDirections = 12):
 
   cv2.imshow("Gradient Direction", binColor)
 
-  cellSize = 8
-  hogImage = np.zeros_like(gray)
-  for x0 in range(0, gray.shape[1], cellSize):
-     for y0 in range(0, gray.shape[0], cellSize):
-        x1, y1 = x0 + cellSize, y0 + cellSize
+  # cellSize = 8
+  # hogImage = np.zeros_like(gray)
+  # for x0 in range(0, gray.shape[1], cellSize):
+  #    for y0 in range(0, gray.shape[0], cellSize):
+  #       x1, y1 = x0 + cellSize, y0 + cellSize
 
-        cellVector = hog_cell(mag[y0:y1, x0:x1], winningBin[y0:y1, x0:x1], totalDirections)
-        img = visualize_hog_cell(cellVector, hogDirections, (cellSize, cellSize))
 
-        hogImage[y0:y1, x0:x1] = img
+  #       cellVector = hog_cell(mag[y0:y1, x0:x1], winningBin[y0:y1, x0:x1], totalDirections)
+  #       img = visualize_hog_cell(cellVector, hogDirections, (cellSize, cellSize))
+
+  #       hogImage[y0:y1, x0:x1] = img
 
   
-  cv2.imshow("HOG Vector", hogImage)
+  # cv2.imshow("HOG Vector", hogImage)
 
 
 
