@@ -1,10 +1,14 @@
 import cv2 
 import numpy as np
 from enum import IntEnum
+from misc import build_axis, build_cube, build_grid, draw
 
 def identity_transform():
   """
-  Returns the identity transformation
+  **TODO**: Return the identity transformation
+
+  :return: Identity matrix
+  :return type: 4x4 np.array
   """
   return np.array([
     [1.0, 0.0, 0.0, 0.0],
@@ -13,6 +17,12 @@ def identity_transform():
     [0.0, 0.0, 0.0, 1.0]])
 
 def translate_3d(x, y, z):
+  """
+  **TODO**: Return a homogeneous translation matrix which moves coordinates by (x, y, z) as presented during lecture.
+
+  :return: Translation matrix moving coordinates by (x, y, z)
+  :return type: 4x4 np.array
+  """
   return np.array([
     [1.0, 0.0, 0.0, x],
     [0.0, 1.0, 0.0, y],
@@ -21,6 +31,12 @@ def translate_3d(x, y, z):
   ])
 
 def scale(x, y, z):
+  """
+  **TODO**: Return a homogeneous scaling matrix which scales axes by (x, y, z) as presented during lecture.
+
+  :return: Scaling matrix by (x, y, z)
+  :return type: 4x4 np.array
+  """
   return np.array([
     [x, 0.0, 0.0, 0.0],
     [0.0, y, 0.0, 0.0],
@@ -29,6 +45,14 @@ def scale(x, y, z):
   ])
 
 def rotateX(radians):
+  """
+  **TODO**: Return a homogeneous rotation matrix which rotates around the 
+  X-axis by a given amount as presented during the lecture. 
+
+  :param radians: Angle by how far to rotate (in radians)
+  :return: Rotation matrix around X-axis by given amount
+  :return type: 4x4 np.array
+  """
   s, c = np.sin(radians), np.cos(radians)
 
   return np.array([
@@ -39,6 +63,14 @@ def rotateX(radians):
   ])
 
 def rotateY(radians):
+  """
+  **TODO**: Return a homogeneous rotation matrix which rotates around the 
+  Y-axis by a given amount as presented during the lecture. 
+
+  :param radians: Angle by how far to rotate (in radians)
+  :return: Rotation matrix around X-axis by given amount
+  :return type: 4x4 np.array
+  """
   s, c = np.sin(radians), np.cos(radians)
 
   return np.array([
@@ -49,6 +81,14 @@ def rotateY(radians):
   ])
 
 def rotateZ(radians):
+  """
+  **TODO**: Return a homogeneous rotation matrix which rotates around the 
+  Z-axis by a given amount as presented during the lecture. 
+
+  :param radians: Angle by how far to rotate (in radians)
+  :return: Rotation matrix around X-axis by given amount
+  :return type: 4x4 np.array
+  """
   s, c = np.sin(radians), np.cos(radians)
 
   return np.array([
@@ -58,7 +98,27 @@ def rotateZ(radians):
     [ 0.0, 0.0, 0.0, 1.0],
   ])
 
+def rotateXYZ(x, y, z):
+  """
+  **TODO** Return a combined rotation matrix which first rotates around X, then Y then Z 
+  by the given amounts of radians.
+
+  :param x: Angle to rotate around X (in radians)
+  :param y: Angle to rotate around Y (in radians)
+  :param z: Angle to rotate around Z (in radians)
+  :return: Homogeneous matrix applying rotations around X, Y and Z 
+  :return type: 4x4 np.array
+  """
+  return rotateZ(z) @ rotateY(y) @ rotateX(x)
+
 def projection(c):
+  """
+  **TODO**: Return a projection matrix which projects along the Z-axis as presented during the lecture. 
+
+  :param c: Focal length of pin hole camera
+  :return: Projection matrix 
+  :return type: 4x4 np.array
+  """
   return np.array([
     [-c, 0.0,   0.0,  0.0],
     [0.0, -c,   0.0,  0.0],
@@ -66,111 +126,59 @@ def projection(c):
     [0.0, 0.0,  1.0,  0.0]
   ])
 
-def to_homo3d(x, y, z):
-  return np.array([[x, y, z, 1.0]]).T
+def ndc_to_image(W, H):
+  """
+    **TODO**: Return the matrix which transforms NDC-coordinates to pixel coordinates in the final image
 
-def build_grid(xRange, zRange):
-  # For now, we can only build quadratic (in number of vertices) grids
-  assert len(xRange) == len(zRange)
-  N = len(xRange)
-
-  # We need N x N vertices
-  vertices = np.zeros((4, N * N))
-  
-  # Create each vertex according to the positions in xRange and zRange
-  for xIndex, xValue in enumerate(xRange):
-    for zIndex, zValue in enumerate(zRange):
-      index = xIndex * N + zIndex
-      vertices[:, index] = to_homo3d(xValue, 0.0, zValue).flatten()
-
-  index = 0
-  # For each row, we need (N-1) segments. We have N rows in total.
-  # That gives (N-1)*N segments. We need the same columnwise, so that
-  # gives us (N-1)*N*2 segments in total.
-  # Note that for each segment, we need two vertices!
-  indices = np.zeros((N-1) * N * 2 * 2, dtype=np.int32)
-  
-  # Create line segments in Z direction
-  for xIndex, _ in enumerate(xRange):
-    for zIndex in range(N - 1):
-      indices[index] = xIndex * N + zIndex
-      indices[index+1] = xIndex * N + zIndex + 1
-      index += 2
-
-  # Create line segments in X direction
-  for zIndex, _ in enumerate(zRange):
-    for xIndex in range(N - 1):
-      indices[index] = xIndex * N + zIndex
-      indices[index+1] = (xIndex  + 1) * N + zIndex
-      index += 2
-
-  # A mesh is a combination of vertices and indices
-  return vertices, indices
-
-def build_cube():
-  # We need 8 vertices for the cube
-  vertices = np.zeros((4, 8))
-  vertices[:, 0] = to_homo3d(-1.0, -1.0, -1.0).flatten()
-  vertices[:, 1] = to_homo3d( 1.0, -1.0, -1.0).flatten()
-  vertices[:, 2] = to_homo3d(-1.0,  1.0, -1.0).flatten()
-  vertices[:, 3] = to_homo3d( 1.0,  1.0, -1.0).flatten()
-  vertices[:, 4] = to_homo3d(-1.0, -1.0,  1.0).flatten()
-  vertices[:, 5] = to_homo3d( 1.0, -1.0,  1.0).flatten()
-  vertices[:, 6] = to_homo3d(-1.0,  1.0,  1.0).flatten()
-  vertices[:, 7] = to_homo3d( 1.0,  1.0,  1.0).flatten()
-
-  # We need 12 line segments for the cube, each segment requires 2 vertices
-  indices = np.zeros(24, dtype=np.int32)
-  indices[0*2 + 0], indices[0*2 + 1]   = 0, 1
-  indices[1*2 + 0], indices[1*2 + 1]   = 1, 3
-  indices[2*2 + 0], indices[2*2 + 1]   = 3, 2
-  indices[3*2 + 0], indices[3*2 + 1]   = 2, 0
-
-  indices[4*2 + 0], indices[4*2 + 1]   = 4, 5
-  indices[5*2 + 0], indices[5*2 + 1]   = 5, 7
-  indices[6*2 + 0], indices[6*2 + 1]   = 7, 6
-  indices[7*2 + 0], indices[7*2 + 1]   = 6, 4
-
-  indices[8*2 + 0], indices[8*2 + 1]   = 0, 4
-  indices[9*2 + 0], indices[9*2 + 1]   = 1, 5
-  indices[10*2 + 0], indices[10*2 + 1] = 2, 6
-  indices[11*2 + 0], indices[11*2 + 1] = 3, 7
-
-  return vertices, indices
-
-def build_axis(x, y, z):
-  vertices = np.zeros((4, 2))
-  vertices[:, 0] = to_homo3d(0.0, 0.0, 0.0).flatten()
-  vertices[:, 1] = to_homo3d(x, y, z).flatten()
-  
-  indices = np.zeros(2, dtype=np.int32)
-  indices[0], indices[1] = 0, 1
-
-  return vertices, indices
-
+    Do the following transformation in this particular order
     
-def draw(mesh, P, canvas, col):
-  # Unpack mesh
-  vertices, indices = mesh
+    For this tutorial, you can use a combination of :py:func:`translate_3d` and :py:func:`scale`
+    or write the transformation matrix directly according to the script
 
-  # Project all vertices into clip Space
-  clipSpaceVertices = P @ vertices
+    - Scale by (W/2, H/2, 1.0)
+    - Translate by (W/2, H/2, 0.0)
+  """
+  return translate_3d(W / 2.0, H / 2.0, 0.0) @ scale(W / 2.0, H / 2.0, 1.0)  
 
-  # Bring into euclidean space
-  clipSpaceVertices /= clipSpaceVertices[3, :]
+def world_to_camera():
+  """
+  **TODO**: Return the matrix which transforms world to camera (view) coordinates. 
+  For this tutorial, use a combination of :py:func:`translate_3d`,
+  :py:func:`rotateX` and :py:func:`rotateY`.
 
-  # Go through list of indices
-  for lineIndex in range(0, indices.shape[0], 2):
-    # Indirect access
-    indexA = indices[lineIndex]
-    indexB = indices[lineIndex + 1]
-    A = clipSpaceVertices[:, indexA]
-    B = clipSpaceVertices[:, indexB]
+  Do the following transformation in this particular order
 
-    # If not clipped, draw line segment
-    if A[2] > 0.0 and B[2] > 0.0:
-      cv2.line(canvas, (int(A[0]), int(A[1])), (int(B[0]), int(B[1])), col)
+  - Rotate around Y by 35 degrees.
+  - Rotate around X by -30 degrees
+  - Translate by (0, 16, 164)
 
+  **Hint**: You can use `np.deg2rad <https://numpy.org/doc/2.1/reference/generated/numpy.deg2rad.html>`_ to convert degrees to radians. 
+
+  :return: Homogeneous matrix defining the transformation from world to camera coordinate space
+  :return type: 4x4 np.array
+  """
+  return translate_3d(0, 16.0, 164.0) @ rotateX(np.deg2rad(-30.0)) @ rotateY(np.deg2rad(35.0))
+
+def world_to_image(W, H, c):
+  """
+  **TODO**: Return the complete projection matrix mapping from world coordinates to image coordinates.
+  This is a concatenation of the `world_to_camera` matrix, the projection matrix and the mapping from 
+  NDC to image coordinates. Do the following transformations in the particular order
+
+  - Map :py:func:`world_to_camera` by calling the respective function
+  - Project along the z axis by calling :py:func:`projection`
+  - Map :py:func:`ndc_to_image` by calling the respective function
+
+  :return: Homogeneous matrix defining the transformation from world to image coordinates
+  :return type: 4x4 np.array
+  """
+  return ndc_to_image(W, H) @ projection(c) @ world_to_camera()
+
+def local_to_world(objectScale, objectRotate, objectTranslate, objectOrbit):
+  return rotateXYZ(objectOrbit[0], objectOrbit[1], objectOrbit[2]) @\
+         translate_3d(objectTranslate[0], objectTranslate[1], objectTranslate[2]) @\
+         rotateXYZ(objectRotate[0], objectRotate[1], objectRotate[2]) @\
+         scale(objectScale[0], objectScale[1], objectScale[2])
 
 
 
@@ -183,10 +191,8 @@ axisZ = build_axis(0.0, 0.0, 32.0)
 
 image_shape = (1024, 1024)
 
-world_to_camera = translate_3d(0, 16.0, 164.0) @ rotateX(-0.45) @ rotateY(0.6)
-camera_to_sensor = projection(1.25)
-sensor_to_image = translate_3d(image_shape[1] / 2.0, image_shape[0] / 2.0, 0.0) @ scale(image_shape[1] / 2.0, image_shape[0] / 2.0, 1.0)
-world_to_image = sensor_to_image @ camera_to_sensor @ world_to_camera
+w2i = world_to_image(image_shape[1], image_shape[0], 1.25)
+
 axis_to_world = translate_3d(-64.0, -16.0, -64.0)
 grid_to_world = translate_3d(0.0, -16.0, 0.0)
 
@@ -197,30 +203,25 @@ class Mode(IntEnum):
   ORBIT = 4
 
 if __name__ == "__main__":
-  r = 0
   mode = Mode.SCALE
 
   modeTexts = ["(1) Scale", "(2) Translate", "(3) Rotate", "(4) Orbit"]
-  sx, sy, sz = 1.0, 1.0, 1.0
-  tx, ty, tz = 0.0, 0.0, 0.0
-  rx, ry, rz = 0.0, 0.0, 0.0
-  ox, oy, oz = 0.0, 0.0, 0.0
+
+  objectScale = np.array([16.0, 16.0, 16.0])
+  objectTranslate = np.array([0.0, 0.0, 0.0])
+  objectRotate = np.array([0.0, 0.0, 0.0])
+  objectOrbit = np.array([0.0, 0.0, 0.0])
 
   while True:
-    rotate = rotateZ(rz * np.pi / 180.0) @ rotateY(ry * np.pi / 180.0) @ rotateX(rx * np.pi / 180.0)
-    orbit = rotateZ(oz * np.pi / 180.0) @ rotateY(oy * np.pi / 180.0) @ rotateX(ox * np.pi / 180.0)
-
-    local_to_world = orbit @ translate_3d(tx, ty, tz) @ rotate @ scale(sx * 16.0, sy * 16.0, sz * 16.0)
+    cube_to_world = local_to_world(objectScale, objectRotate, objectTranslate, objectOrbit)
     
-    
-
     canvas = np.zeros((image_shape[0], image_shape[1], 3))
 
-    draw(gridMesh, world_to_image @ grid_to_world, canvas, (0.2, 0.2, 0.2))
-    draw(axisX, world_to_image @ axis_to_world, canvas, (0.0, 0.0, 1.0))
-    draw(axisY, world_to_image @ axis_to_world, canvas, (0.0, 1.0, 0.0))
-    draw(axisZ, world_to_image @ axis_to_world, canvas, (1.0, 0.0, 0.0))
-    draw(cubeMesh, world_to_image @ local_to_world, canvas, (1.0, 1.0, 1.0))
+    draw(gridMesh, w2i @ grid_to_world, canvas, (0.2, 0.2, 0.2))
+    draw(axisX, w2i @ axis_to_world, canvas, (0.0, 0.0, 1.0))
+    draw(axisY, w2i @ axis_to_world, canvas, (0.0, 1.0, 0.0))
+    draw(axisZ, w2i @ axis_to_world, canvas, (1.0, 0.0, 0.0))
+    draw(cubeMesh, w2i @ cube_to_world, canvas, (1.0, 1.0, 1.0))
     
     for index, modeText in enumerate(modeTexts):
       x = 16 + 120 * index
@@ -229,22 +230,20 @@ if __name__ == "__main__":
         col = (0.4, 0.6, 1.0)
 
         if mode == Mode.TRANSLATE:
-          vx, vy, vz = tx, ty, tz
+          vx, vy, vz = objectTranslate[0], objectTranslate[1], objectTranslate[2]
 
         if mode == Mode.SCALE:
-          vx, vy, vz = sx, sy, sz
+          vx, vy, vz = objectScale[0], objectScale[1], objectScale[2]
 
         if mode == Mode.ROTATE:
-          vx, vy, vz = rx, ry, rz
+          vx, vy, vz = np.rad2deg(objectRotate[0]), np.rad2deg(objectRotate[1]), np.rad2deg(objectRotate[2])
 
         if mode == Mode.ORBIT:
-          vx, vy, vz = ox, oy, oz
+          vx, vy, vz = np.rad2deg(objectOrbit[0]), np.rad2deg(objectOrbit[1]), np.rad2deg(objectOrbit[2])
 
         cv2.putText(canvas, f"{vx:.2f}, {vy:.2f}, {vz:.2f}", (x, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0.7, 0.7, 0.7), 2)
       
       cv2.putText(canvas, modeText, (x, 16), cv2.FONT_HERSHEY_SIMPLEX, 0.5, col, 2)
-
-
 
     cv2.imshow("Canvas", canvas)
 
@@ -261,43 +260,31 @@ if __name__ == "__main__":
     if key == ord('4'):
       mode = Mode.ORBIT
 
-    dx, dy, dz = 0.0, 0.0, 0.0
+    delta = np.array([0.0, 0.0, 0.0])
     if key == ord('a'):
-      dx = 1.0
+      delta[0] = 1.0
     if key == ord('d'):
-      dx = -1.0
+      delta[0] = -1.0
     if key == ord('w'):
-      dy = 1.0
+      delta[1] = 1.0
     if key == ord('s'):
-      dy = -1.0
+      delta[1] = -1.0
     if key == ord('+'):
-      dz = 1.0
+      delta[2] = 1.0
     if key == ord('-'):
-      dz = -1.0
+      delta[2] = -1.0
 
     if mode == Mode.SCALE:
-      sx += dx * 0.1
-      sy += dy * 0.1
-      sz += dz * 0.1
+      objectScale += delta
 
     if mode == Mode.TRANSLATE:
-      tx += dx
-      ty += dy
-      tz += dz
+      objectTranslate += delta
 
     if mode == Mode.ROTATE:
-      rx += dx
-      ry += dy
-      rz += dz
+      objectRotate += np.deg2rad(delta)
 
     if mode == Mode.ORBIT:
-      ox += dx
-      oy += dy
-      oz += dz
-
-
+      objectOrbit += delta
 
     if key == 27:
       break
-
-    r += 1
