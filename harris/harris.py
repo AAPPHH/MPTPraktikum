@@ -12,23 +12,16 @@ def processImage(frame):
     gy = cv2.Sobel(frame, cv2.CV_32F, 0, 1, ksize=3) / 4.0
 
     # Calculate Ix^2, IxIy and Iy^2 images
-    gx2, gxgy, gy2 = gx ** 2, gx * gy, gy ** 2
+    Ix2, IxIy, Iy2 = gx ** 2, gx * gy, gy ** 2
 
-    # Apply filter
-    kernel = np.ones((7,7))
-    gx2 = signal.convolve2d(gx2, kernel) / 49
-    gy2 = signal.convolve2d(gy2, kernel) / 49 
-    gxgy = signal.convolve2d(gxgy, kernel) / 49
-    
-    
-    #gx2 = cv2.blur(gx2, ksize=(5,5))
-    #gy2 = cv2.blur(gy2, ksize=(5,5))
-    #gxgy = cv2.blur(gxgy, ksize=(5,5))
+    Ix2 = cv2.blur(Ix2, ksize=(5,5))
+    Iy2 = cv2.blur(Iy2, ksize=(5,5))
+    IxIy = cv2.blur(IxIy, ksize=(5,5))
 
     # Harris Corner Strength
     kappa = 0.04
-    det = gx2 * gy2 - gxgy ** 2
-    trace = gx2 + gy2
+    det = Ix2 * Iy2 - IxIy ** 2
+    trace = Ix2 + Iy2
     strength = det - kappa *  trace**2
     
     strength = np.clip(strength, 0.0, 1.0)

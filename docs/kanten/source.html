@@ -53,6 +53,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
@@ -88,78 +89,82 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
 <span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="k">def</span><span class="w"> </span><span class="nf">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
-<span class="linenos"> 5</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 6</span><span class="sd">    Process the provided image (3-channel BGR) and calculate</span>
-<span class="linenos"> 7</span><span class="sd">    gradients in X and Y direction as well as the gradient magnitude.</span>
-<span class="linenos"> 8</span>
-<span class="linenos"> 9</span><span class="sd">    gx and gy shall contain the gradient direction image with values between -1 and +1</span>
-<span class="linenos">10</span><span class="sd">    grad shall contain the gradient magnitude image with values between 0 and 1</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span><span class="sd">    :param frame: 3-channel BGR image (np.array)</span>
-<span class="linenos">13</span><span class="sd">    :return: 3-tupel (gx, gy, grad) containing the gradient image in X and Y direction as well as the gradient magnitude image (1-channel np.float32 images each).</span>
-<span class="linenos">14</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos">15</span>    <span class="c1"># TODO: Convert the image to grey using cv2.cvtColor</span>
-<span class="linenos">16</span>    <span class="n">frame_gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span>    <span class="c1"># TODO: Convert the image to np.float32 (divide by 255.0 first for normalization)</span>
-<span class="linenos">19</span>    <span class="n">frame_gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">frame_gray</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span>
-<span class="linenos">20</span>
-<span class="linenos">21</span>    <span class="c1"># TODO: Calculate Gradients and normalize</span>
-<span class="linenos">22</span>    <span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">frame_gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
-<span class="linenos">23</span>    <span class="n">gy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">frame_gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
-<span class="linenos">24</span>
-<span class="linenos">25</span>    <span class="c1"># Calculate Gradient Magnitude and normalize</span>
-<span class="linenos">26</span>    <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
-<span class="linenos">27</span>
-<span class="linenos">28</span>    <span class="c1"># Return 3-tupel with gradient images and gradient magnitude</span>
-<span class="linenos">29</span>    <span class="k">return</span> <span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span>
-<span class="linenos">30</span>
-<span class="linenos">31</span><span class="k">def</span><span class="w"> </span><span class="nf">displayImage</span><span class="p">(</span><span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span><span class="p">):</span>
-<span class="linenos">32</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos">33</span><span class="sd">    Apply appropriate scaling and display the provided images.</span>
-<span class="linenos">34</span>
-<span class="linenos">35</span><span class="sd">    :param gx: Gradient image in X-Direction (np.float32 image with values between -1 and +1)</span>
-<span class="linenos">36</span><span class="sd">    :param gy: Gradient image in Y-Direction (np.float32 image with values between -1 and +1)</span>
-<span class="linenos">37</span><span class="sd">    :param grad: Gradient magnitude image (np.float32 image with values between 0 and 1)</span>
-<span class="linenos">38</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos">39</span>    <span class="c1"># TODO: Display the gradient X and gradient Y image. Scale appropriately (values must be between 0 and 1)</span>
-<span class="linenos">40</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Gradient X&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">gx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="linenos">41</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Gradient Y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">gy</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="linenos">42</span>
-<span class="linenos">43</span>    <span class="c1"># TODO: Display the gradient magnitude image. Scale appropriately (e.g. multiply by 4 for more contrast)</span>
-<span class="linenos">44</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Gradient Magnitude&#39;</span><span class="p">,</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">grad</span><span class="p">)</span>
-<span class="linenos">45</span>
-<span class="linenos">46</span><span class="k">def</span><span class="w"> </span><span class="nf">mainLoop</span><span class="p">():</span>
-<span class="linenos">47</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos">48</span><span class="sd">    The main loop of this program</span>
-<span class="linenos">49</span><span class="sd">    &quot;&quot;&quot;</span>
-<span class="linenos">50</span>    <span class="c1"># TODO: Open the default camera</span>
-<span class="linenos">51</span>    <span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">52</span>
-<span class="linenos">53</span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-<span class="linenos">54</span>        <span class="c1"># TODO: Read next image from camera</span>
-<span class="linenos">55</span>        <span class="n">_</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="linenos">56</span>
-<span class="linenos">57</span>        <span class="c1"># TODO: Call processImage to retrieve properly scaled gradient direction and magnitude images</span>
-<span class="linenos">58</span>        <span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span> <span class="o">=</span> <span class="n">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="k">def</span><span class="w"> </span><span class="nf">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<span class="linenos"> 6</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 7</span><span class="sd">    Process the provided image (3-channel BGR) and calculate</span>
+<span class="linenos"> 8</span><span class="sd">    gradients in X and Y direction as well as the gradient magnitude.</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="sd">    gx and gy shall contain the gradient direction image with values between -1 and +1</span>
+<span class="linenos">11</span><span class="sd">    grad shall contain the gradient magnitude image with values between 0 and 1</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="sd">    :param frame: 3-channel BGR image (np.array)</span>
+<span class="linenos">14</span><span class="sd">    :return: 3-tupel (gx, gy, grad) containing the gradient image in X and Y direction as well as the gradient magnitude image (1-channel np.float32 images each).</span>
+<span class="linenos">15</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">16</span>    <span class="c1"># TODO: Convert the image to grey using cv2.cvtColor</span>
+<span class="linenos">17</span>    <span class="n">frame_gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>    <span class="c1"># TODO: Convert the image to np.float32 (divide by 255.0 first for normalization)</span>
+<span class="linenos">20</span>    <span class="n">frame_gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">frame_gray</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="c1"># TODO: Calculate Gradients and normalize</span>
+<span class="linenos">23</span>    <span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">frame_gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+<span class="linenos">24</span>    <span class="n">gy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">frame_gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span>    <span class="c1"># Calculate Gradient Magnitude and normalize</span>
+<span class="linenos">27</span>    <span class="n">grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span>    <span class="c1"># Return 3-tupel with gradient images and gradient magnitude</span>
+<span class="linenos">30</span>    <span class="k">return</span> <span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span><span class="k">def</span><span class="w"> </span><span class="nf">displayImage</span><span class="p">(</span><span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span><span class="p">):</span>
+<span class="linenos">34</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">35</span><span class="sd">    Apply appropriate scaling and display the provided images.</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span><span class="sd">    :param gx: Gradient image in X-Direction (np.float32 image with values between -1 and +1)</span>
+<span class="linenos">38</span><span class="sd">    :param gy: Gradient image in Y-Direction (np.float32 image with values between -1 and +1)</span>
+<span class="linenos">39</span><span class="sd">    :param grad: Gradient magnitude image (np.float32 image with values between 0 and 1)</span>
+<span class="linenos">40</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">41</span>    <span class="c1"># TODO: Display the gradient X and gradient Y image. Scale appropriately (values must be between 0 and 1)</span>
+<span class="linenos">42</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Gradient X&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">gx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="linenos">43</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Gradient Y&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">gy</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="linenos">44</span>
+<span class="linenos">45</span>    <span class="c1"># TODO: Display the gradient magnitude image. Scale appropriately (e.g. multiply by 4 for more contrast)</span>
+<span class="linenos">46</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Gradient Magnitude&quot;</span><span class="p">,</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">grad</span><span class="p">)</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span><span class="k">def</span><span class="w"> </span><span class="nf">mainLoop</span><span class="p">():</span>
+<span class="linenos">50</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">51</span><span class="sd">    The main loop of this program</span>
+<span class="linenos">52</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">53</span>    <span class="c1"># TODO: Open the default camera</span>
+<span class="linenos">54</span>    <span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">55</span>
+<span class="linenos">56</span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">57</span>        <span class="c1"># TODO: Read next image from camera</span>
+<span class="linenos">58</span>        <span class="n">_</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <span class="linenos">59</span>
-<span class="linenos">60</span>        <span class="c1"># TODO: Call displayImage to display the images</span>
-<span class="linenos">61</span>        <span class="n">displayImage</span><span class="p">(</span><span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span>
+<span class="linenos">60</span>        <span class="c1"># TODO: Call processImage to retrieve properly scaled gradient direction and magnitude images</span>
+<span class="linenos">61</span>        <span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span> <span class="o">=</span> <span class="n">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 <span class="linenos">62</span>
-<span class="linenos">63</span>        <span class="c1"># TODO: Also display the original camera image in color</span>
-<span class="linenos">64</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Camera&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">63</span>        <span class="c1"># TODO: Call displayImage to display the images</span>
+<span class="linenos">64</span>        <span class="n">displayImage</span><span class="p">(</span><span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span>
 <span class="linenos">65</span>
-<span class="linenos">66</span>        <span class="c1"># TODO: Break the infinite loop when the users presses ESCAPE (27)</span>
-<span class="linenos">67</span>        <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
-<span class="linenos">68</span>            <span class="k">break</span>
-<span class="linenos">69</span>        
-<span class="linenos">70</span>    <span class="c1"># TODO: Release the capture and writer objects</span>
-<span class="linenos">71</span>    <span class="n">cam</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
-<span class="linenos">72</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
-<span class="linenos">73</span>
-<span class="linenos">74</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos">75</span>    <span class="n">mainLoop</span><span class="p">()</span>
+<span class="linenos">66</span>        <span class="c1"># TODO: Also display the original camera image in color</span>
+<span class="linenos">67</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Camera&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">68</span>
+<span class="linenos">69</span>        <span class="c1"># TODO: Break the infinite loop when the users presses ESCAPE (27)</span>
+<span class="linenos">70</span>        <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+<span class="linenos">71</span>            <span class="k">break</span>
+<span class="linenos">72</span>
+<span class="linenos">73</span>    <span class="c1"># TODO: Release the capture and writer objects</span>
+<span class="linenos">74</span>    <span class="n">cam</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="linenos">75</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+<span class="linenos">76</span>
+<span class="linenos">77</span>
+<span class="linenos">78</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">79</span>    <span class="n">mainLoop</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

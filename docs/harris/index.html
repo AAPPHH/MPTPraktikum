@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Der Harris Eckendetektor &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/harris/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Objekterkennung mit YOLO" href="../YOLO/index.html" />
+    <link rel="prev" title="Kantendetektion mit Sobel" href="../kanten/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Der Harris Eckendetektor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-1-das-bild-in-graustufen-umwandeln"><strong>Schritt 1</strong>: Das Bild in Graustufen umwandeln</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-2-die-bildgradienten-berechnen"><strong>Schritt 2</strong>: Die Bildgradienten berechnen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-3-den-strukturtensor-m-vorbereiten"><strong>Schritt 3</strong>: Den Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> vorbereiten</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Der Harris Eckendetektor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/harris/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="der-harris-eckendetektor">
+<h1>Der Harris Eckendetektor<a class="headerlink" href="#der-harris-eckendetektor" title="Link to this heading"></a></h1>
+<p>1988 beschrieben Chris Harris und Mike Stephens einen verbesserten
+<a class="reference external" href="https://en.wikipedia.org/wiki/Harris_corner_detector">Eckendetektor</a> als
+Erweiterung des Eckendetektors von <a class="reference external" href="https://en.wikipedia.org/wiki/Corner_detection#Moravec_corner_detection_algorithm">Moravec</a>.</p>
+<p>Während Moravec die <em>Summe der quadratischen Differenzen</em></p>
+<div class="math notranslate nohighlight">
+\[f(\Delta x, \Delta y)
+=
+\sum_{(x_k, y_k)\in W} \left(
+    I(x_k, y_k) - I(x_k + \Delta x, y_k + \Delta y)
+\right)^2\]</div>
+<p>über einem Fenster <span class="math notranslate nohighlight">\(W\)</span> für vier grundlegende Richtungen (<span class="math notranslate nohighlight">\((\Delta x, \Delta y) \in \{ (1,0), (0, 1), (1,1), (1,-1) \}\)</span>)</p>
+<p>betrachtet, erweiteren Harris und Stephens diese Idee. Sie approximieren
+<span class="math notranslate nohighlight">\(I(x_k + \Delta x, y_k + \Delta y)\)</span> über die s.g. <a class="reference external" href="https://en.wikipedia.org/wiki/Taylor_series">Taylorapproximation</a>
+ersten Grades, also</p>
+<div class="math notranslate nohighlight">
+\[I(x_k + \Delta x, y_k + \Delta y)
+\approx
+I(x_k, y_k) + \Delta x \frac{\partial I}{\partial x} + \Delta y \frac{\partial I}{\partial y}\]</div>
+<p>und erhalten damit die Approximation</p>
+<div class="math notranslate nohighlight">
+\[f(\Delta x, \Delta y)
+\approx
+\sum_{(x_k, y_k)\in W} \left(
+    \Delta x \frac{\partial I}{\partial x} + \Delta y \frac{\partial I}{\partial y}
+\right)^2\]</div>
+<p>Diese Gleichung läßt sich mit</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}M = \sum_{(x_k,y_k)\in W}
+\begin{pmatrix}
+I_x^2 &amp; I_x I_y\\
+I_x I_y &amp; I_y^2
+\end{pmatrix}\end{split}\]</div>
+<p>schreiben als</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f(\Delta x, \Delta y)
+\approx
+\begin{pmatrix}
+\Delta x &amp; \Delta y
+\end{pmatrix}
+\cdot M \cdot
+\begin{pmatrix}
+\Delta x \\ \Delta y
+\end{pmatrix}\end{split}\]</div>
+<p>Dabei nennt man <span class="math notranslate nohighlight">\(M\)</span> <strong>Strukturtensor</strong>.
+Harris und Stephens berechnen dann die s.g. Eckenstärke als</p>
+<div class="math notranslate nohighlight">
+\[R = det(M) - tr(M)^2\]</div>
+<p>In diesem Praktikum implementieren wir den Eckendetektor „from scatch“.</p>
+<section id="schritt-1-das-bild-in-graustufen-umwandeln">
+<h2><strong>Schritt 1</strong>: Das Bild in Graustufen umwandeln<a class="headerlink" href="#schritt-1-das-bild-in-graustufen-umwandeln" title="Link to this heading"></a></h2>
+<p>Wir müssen zunächst das Bild in Graustufen umwandeln. Konvertieren Sie
+das Bild mit der <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-cvtcolor-method/">cv2.cvtColor</a> Methode.
+Wandeln Sie das Bild danach über <a class="reference external" href="https://numpy.org/doc/stable/user/basics.types.html">np.float32</a> in ein Float-Bild um.
+Normieren Sie die Grauwerte vorher indem Sie durch 255.0 teilen.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">frame_gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+<span class="n">frame_gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">frame_gray</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-2-die-bildgradienten-berechnen">
+<h2><strong>Schritt 2</strong>: Die Bildgradienten berechnen<a class="headerlink" href="#schritt-2-die-bildgradienten-berechnen" title="Link to this heading"></a></h2>
+<p>Berechnen Sie nun mit der <a class="reference external" href="https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html#gacea54f142e81b6758cb6f375ce782c8d">cv2.Sobel</a> Methode wieder die Bildableitungen in X- und Y-Richtung. Verwenden Sie <cite>ksize=3</cite> und <cite>ddepth=cv2.CV_32F</cite>.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+<span class="n">gy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-3-den-strukturtensor-m-vorbereiten">
+<h2><strong>Schritt 3</strong>: Den Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> vorbereiten<a class="headerlink" href="#schritt-3-den-strukturtensor-m-vorbereiten" title="Link to this heading"></a></h2>
+<p>Um den Strukturtensor berechnen zu können berechnen Sie zunächst</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+I_x^2 &amp;=&amp; \left(\frac{\partial I}{\partial x}\right)^2\\
+I_y^2 &amp;=&amp; \left(\frac{\partial I}{\partial y}\right)^2\\
+I_x\cdot I_y &amp;=&amp; \left(\frac{\partial I}{\partial x}\right)\cdot\left(\frac{\partial I}{\partial x}\right)
+\end{align}\end{split}\]</div>
+<p>und speichern die Ergebnisse in drei neuen Bildern.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Ix2</span>  <span class="o">=</span> <span class="n">gx</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">IxIy</span> <span class="o">=</span> <span class="n">gx</span> <span class="o">*</span> <span class="n">gy</span>
+<span class="n">Iy2</span>  <span class="o">=</span> <span class="n">gy</span> <span class="o">**</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../kanten/index.html" class="btn btn-neutral float-left" title="Kantendetektion mit Sobel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../YOLO/index.html" class="btn btn-neutral float-right" title="Objekterkennung mit YOLO" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

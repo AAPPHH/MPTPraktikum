@@ -1,0 +1,123 @@
+Der Harris Eckendetektor
+========================
+
+1988 beschrieben Chris Harris und Mike Stephens einen verbesserten 
+`Eckendetektor <https://en.wikipedia.org/wiki/Harris_corner_detector>`_ als
+Erweiterung des Eckendetektors von `Moravec <https://en.wikipedia.org/wiki/Corner_detection#Moravec_corner_detection_algorithm>`_.
+
+Während Moravec die *Summe der quadratischen Differenzen* 
+
+.. math::
+    f(\Delta x, \Delta y)
+    =
+    \sum_{(x_k, y_k)\in W} \left(
+        I(x_k, y_k) - I(x_k + \Delta x, y_k + \Delta y)
+    \right)^2
+
+über einem Fenster :math:`W` für vier grundlegende Richtungen (:math:`(\Delta x, \Delta y) \in \{ (1,0), (0, 1), (1,1), (1,-1) \}`)
+
+betrachtet, erweiteren Harris und Stephens diese Idee. Sie approximieren
+:math:`I(x_k + \Delta x, y_k + \Delta y)` über die s.g. `Taylorapproximation <https://en.wikipedia.org/wiki/Taylor_series>`_
+ersten Grades, also 
+
+.. math::
+    I(x_k + \Delta x, y_k + \Delta y)
+    \approx
+    I(x_k, y_k) + \Delta x \frac{\partial I}{\partial x} + \Delta y \frac{\partial I}{\partial y}
+
+und erhalten damit die Approximation
+
+.. math::
+    f(\Delta x, \Delta y)
+    \approx
+    \sum_{(x_k, y_k)\in W} \left(
+        \Delta x \frac{\partial I}{\partial x} + \Delta y \frac{\partial I}{\partial y}
+    \right)^2
+
+Diese Gleichung läßt sich mit 
+
+.. math::
+    M = \sum_{(x_k,y_k)\in W}
+    \begin{pmatrix}
+    I_x^2 & I_x I_y\\
+    I_x I_y & I_y^2
+    \end{pmatrix}
+
+schreiben als
+
+.. math::
+    f(\Delta x, \Delta y)
+    \approx
+    \begin{pmatrix}
+    \Delta x & \Delta y
+    \end{pmatrix}
+    \cdot M \cdot
+    \begin{pmatrix}
+    \Delta x \\ \Delta y
+    \end{pmatrix}
+
+Dabei nennt man :math:`M` **Strukturtensor**.
+Harris und Stephens berechnen dann die s.g. Eckenstärke als 
+
+.. math::
+
+    R = det(M) - tr(M)^2
+    
+In diesem Praktikum implementieren wir den Eckendetektor "from scatch".
+
+**Schritt 1**: Das Bild in Graustufen umwandeln
+-----------------------------------------------
+Wir müssen zunächst das Bild in Graustufen umwandeln. Konvertieren Sie 
+das Bild mit der `cv2.cvtColor <https://www.geeksforgeeks.org/python-opencv-cv2-cvtcolor-method/>`_ Methode.
+Wandeln Sie das Bild danach über `np.float32 <https://numpy.org/doc/stable/user/basics.types.html>`_ in ein Float-Bild um. 
+Normieren Sie die Grauwerte vorher indem Sie durch 255.0 teilen.
+
+.. admonition:: Lösung anzeigen
+   :class: toggle
+
+   .. code-block:: python
+
+        frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frame_gray = np.float32(frame_gray / 255.0)
+
+**Schritt 2**: Die Bildgradienten berechnen
+-------------------------------------------
+
+Berechnen Sie nun mit der `cv2.Sobel <https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html#gacea54f142e81b6758cb6f375ce782c8d>`_ Methode wieder die Bildableitungen in X- und Y-Richtung. Verwenden Sie `ksize=3` und `ddepth=cv2.CV_32F`. 
+
+.. admonition:: Lösung anzeigen
+   :class: toggle
+
+   .. code-block:: python
+
+        gx = cv2.Sobel(frame, cv2.CV_32F, 1, 0, ksize=3) / 4.0
+        gy = cv2.Sobel(frame, cv2.CV_32F, 0, 1, ksize=3) / 4.0
+
+**Schritt 3**: Den Strukturtensor :math:`M` vorbereiten
+-------------------------------------------------------
+
+Um den Strukturtensor berechnen zu können berechnen Sie zunächst
+
+.. math::
+    \begin{align}
+    I_x^2 &=& \left(\frac{\partial I}{\partial x}\right)^2\\
+    I_y^2 &=& \left(\frac{\partial I}{\partial y}\right)^2\\
+    I_x\cdot I_y &=& \left(\frac{\partial I}{\partial x}\right)\cdot\left(\frac{\partial I}{\partial x}\right)
+    \end{align}
+
+und speichern die Ergebnisse in drei neuen Bildern. 
+
+.. admonition:: Lösung anzeigen
+   :class: toggle
+
+   .. code-block:: python
+
+        Ix2  = gx ** 2
+        IxIy = gx * gy
+        Iy2  = gy ** 2
+
+**Schritt 4**: Den Strukturtensor berechnen
+-------------------------------------------
+
+Der Strukturtensor :math:`M` für jeden einzelnen Pixel ergibt sich durch 
+Summation 
