@@ -59,8 +59,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Rechnen mit homogene Koordinaten</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#der-code">Der Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#unsere-eigene-kleine-3d-rendering-engine">Unsere eigene kleine 3D Rendering Engine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lokale-und-weltkoordinaten">Lokale und Weltkoordinaten</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#einmal-von-euklidisch-nach-homogen-und-zuruck">Einmal von euklidisch nach homogen und zurück</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#translationen-in-homogenen-koordinaten">Translationen in homogenen Koordinaten</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktion-translate-3d"><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>translate_3d</em></a><ul>
@@ -112,9 +112,28 @@
 <li class="toctree-l4"><a class="reference internal" href="#homogen.world_to_camera"><code class="docutils literal notranslate"><span class="pre">world_to_camera()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#von-lokalen-koordinaten-nach-weltkoordinaten">Von lokalen Koordinaten nach Weltkoordinaten</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#homogen.local_to_world"><code class="docutils literal notranslate"><span class="pre">local_to_world()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#von-weltkoordiaten-nach-bildkoordinaten">Von Weltkoordiaten nach Bildkoordinaten</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id1"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#homogen.world_to_image"><code class="docutils literal notranslate"><span class="pre">world_to_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#die-datenstruktur-fur-geometriedaten">Die Datenstruktur für Geometriedaten</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#homogen.project_vertexbuffer"><code class="docutils literal notranslate"><span class="pre">project_vertexbuffer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#die-vertices-zeichnen">Die Vertices zeichnen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-draw"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>draw</em></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#homogen.draw"><code class="docutils literal notranslate"><span class="pre">draw()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -161,6 +180,14 @@ betrachten wir diese Abbildungsmöglichkeiten. Wir entwickeln unsere eigene klei
 über eine simulierte Kamera auf ein Bild umrechnet und damit Objekte zeichnet.</p>
 <a class="reference internal image-reference" href="../_images/screenshot.jpg"><img alt="3D Abbildungen" class="align-center" src="../_images/screenshot.jpg" style="width: 1024px;" />
 </a>
+<section id="der-code">
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<p>Für dieses Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">homogen</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>und implementieren nach und nach die verschiedenen Methoden. Die Erklärungen in diesem Dokument sollen Ihnen dabei helfen.</p>
+</section>
 <section id="unsere-eigene-kleine-3d-rendering-engine">
 <h2>Unsere eigene kleine 3D Rendering Engine<a class="headerlink" href="#unsere-eigene-kleine-3d-rendering-engine" title="Link to this heading"></a></h2>
 <p>In diesem Praktikum wollen wir eine einfache kleine 3D Rendering Engine
@@ -176,15 +203,6 @@ verwendeten Ansatz und betrachten im folgenden fünf verschiedene Koordinatensys
 <li><p>Nachdem sich die Koordinaten im View-Space befinden, möchten wir sie in NDC-Koordinaten projizieren. NDC-Koordinaten werden auf den Bereich von -1,0 bis 1,0 normiert und bestimmen, welche Scheitelpunkte (Vertices) letztlich auf dem Bildschirm erscheinen.</p></li>
 <li><p>Schließlich transformieren wir die NDC-Koordinaten in Bildschirmkoordinaten. Dabei werden die Koordinaten von -1,0 bis 1,0 in Pixelkoordiaten im Zielbild überführt.</p></li>
 </ul>
-</section>
-<section id="lokale-und-weltkoordinaten">
-<h2>Lokale und Weltkoordinaten<a class="headerlink" href="#lokale-und-weltkoordinaten" title="Link to this heading"></a></h2>
-<p>Die <cite>local_to_world</cite> Transformation beschreibt wie sich die
-lokalen Koordinaten eines Objektes in Weltkoordinaten überführen lassen.
-Von dort werden die Koordinaten mit der <cite>world_to_camera</cite> Transformation
-in Kamerakoordinaten überführt, also die Koordinaten relativ zum Kamerakoordinatensystem.</p>
-<p>Beide Transformationen können über eine Kombination von Translationen, Skalierungen sowie
-Rotationen ausgedrückt werden.</p>
 </section>
 <section id="einmal-von-euklidisch-nach-homogen-und-zuruck">
 <h2>Einmal von euklidisch nach homogen und zurück<a class="headerlink" href="#einmal-von-euklidisch-nach-homogen-und-zuruck" title="Link to this heading"></a></h2>
@@ -428,6 +446,10 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
     0 &amp; 0 &amp; 4 &amp; -2\\
     0 &amp; 0 &amp; 0 &amp; 1\\
 \end{pmatrix}\end{split}\]</div>
+<p><strong>Hinweis</strong>: In Python können wir zwei Matrizen mit dem <cite>&#64;</cite>-Operator multiplizieren, also</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">B</span>
+</pre></div>
+</div>
 </section>
 <section id="rotationen">
 <h2>Rotationen<a class="headerlink" href="#rotationen" title="Link to this heading"></a></h2>
@@ -463,7 +485,7 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
 <dl class="py function">
 <dt class="sig sig-object py" id="homogen.rotateX">
 <span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radians</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateX"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateX" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the 
+<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the
 X-axis by a given amount as presented during the lecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter<span class="colon">:</span></dt>
@@ -481,7 +503,7 @@ X-axis by a given amount as presented during the lecture.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="homogen.rotateY">
 <span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radians</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateY"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateY" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the 
+<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the
 Y-axis by a given amount as presented during the lecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter<span class="colon">:</span></dt>
@@ -499,7 +521,7 @@ Y-axis by a given amount as presented during the lecture.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="homogen.rotateZ">
 <span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radians</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateZ"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateZ" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the 
+<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the
 Z-axis by a given amount as presented during the lecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter<span class="colon">:</span></dt>
@@ -566,7 +588,7 @@ Z-axis by a given amount as presented during the lecture.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="homogen.rotateXYZ">
 <span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateXYZ"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateXYZ" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong> Return a combined rotation matrix which first rotates around X, then Y then Z 
+<dd><p><strong>TODO</strong> Return a combined rotation matrix which first rotates around X, then Y then Z
 by the given amounts of radians.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter<span class="colon">:</span></dt>
@@ -723,7 +745,7 @@ wir also die folgenden Transformationen durchzuführen</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="homogen.world_to_camera">
 <span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">world_to_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#world_to_camera"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.world_to_camera" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return the matrix which transforms world to camera (view) coordinates. 
+<dd><p><strong>TODO</strong>: Return the matrix which transforms world to camera (view) coordinates.
 For this tutorial, use a combination of <a class="reference internal" href="#homogen.translate_3d" title="homogen.translate_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate_3d()</span></code></a>,
 <a class="reference internal" href="#homogen.rotateX" title="homogen.rotateX"><code class="xref py py-func docutils literal notranslate"><span class="pre">rotateX()</span></code></a> and <a class="reference internal" href="#homogen.rotateY" title="homogen.rotateY"><code class="xref py py-func docutils literal notranslate"><span class="pre">rotateY()</span></code></a>.</p>
 <p>Do the following transformation in this particular order</p>
@@ -751,6 +773,57 @@ For this tutorial, use a combination of <a class="reference internal" href="#hom
 </div>
 </div>
 </section>
+<section id="von-lokalen-koordinaten-nach-weltkoordinaten">
+<h3>Von lokalen Koordinaten nach Weltkoordinaten<a class="headerlink" href="#von-lokalen-koordinaten-nach-weltkoordinaten" title="Link to this heading"></a></h3>
+<p>Um die lokalen Koordinaten unseres Objektes (z.B. eines Würfels) in globale Weltkoordiaten umzurechnen verwenden
+wir eine Kombination von Transformation in ganz bestimmter Reihenfolge.</p>
+<ul class="simple">
+<li><p>Zuerst wird das Objekt ggf. skaliert. Dazu kann <a class="reference internal" href="#homogen.scale" title="homogen.scale"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.scale()</span></code></a> verwendet werden.</p></li>
+<li><p>Anschließend wird das Objekt rotiert. Dabei wird nach Konvention zunächst um die X-Achse, dann um die Y-Achse und zuletzt um die Z-Achse gedreht. Dazu kann die Methode <a class="reference internal" href="#homogen.rotateXYZ" title="homogen.rotateXYZ"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateXYZ()</span></code></a> verwendet werden.</p></li>
+<li><p>Nun wird das Objekt in seinen neuen Ursprung verschoben, dazu kann <a class="reference internal" href="#homogen.translate_3d" title="homogen.translate_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.translate_3d()</span></code></a> verwendet werden.</p></li>
+<li><p>Zu guter letzt wird das Objekt noch einmal rotiert. Da es nun nicht mehr im Ursprung liegt rotiert es um eben diesen. Es umkeist (orbitet) somit den Ursprung des Weltkoordinatensystems.
+Dazu kann wieder :py:func`homogen.rotateXYZ` verwendet werden.</p></li>
+</ul>
+</section>
+<section id="aufgabe-implementieren-sie-die-funktionen-local-to-world">
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world" title="Link to this heading"></a></h3>
+<p>Implementieren Sie nun die Funktion <em>local_to_world</em></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="homogen.local_to_world">
+<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">local_to_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectScale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectRotate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectTranslate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectOrbit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#local_to_world"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.local_to_world" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>: Return the transformation from local coordinates to world coordinates.
+Apply the following transformations in this particular order</p>
+<ul class="simple">
+<li><p>Scale by the parameters provided in objectScale</p></li>
+<li><p>Rotate by the parameters provided in objectRotate</p></li>
+<li><p>Translate by the parameters provided in objectTranslate</p></li>
+<li><p>Rotate again by the parameters provided in objectOrbit.</p></li>
+</ul>
+<p><em>Note</em>: Because the second rotation happens after the translation it will „orbit“ around the
+center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objectScale</strong> – 3 element array with scaling parameters</p></li>
+<li><p><strong>objectRotate</strong> – 3 element array with rotation parameters (in radians)</p></li>
+<li><p><strong>objectTranslate</strong> – 3 element array with translation parameters</p></li>
+<li><p><strong>objectOrbit</strong> – 3 element array with orbiting parameters (in radians)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">local_to_world</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">rotateXYZ</span><span class="p">(</span><span class="n">objectOrbit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectOrbit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectOrbit</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span>\
+           <span class="n">translate_3d</span><span class="p">(</span><span class="n">objectTranslate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span>\
+           <span class="n">rotateXYZ</span><span class="p">(</span><span class="n">objectRotate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectRotate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectRotate</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span>\
+           <span class="n">scale</span><span class="p">(</span><span class="n">objectScale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectScale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectScale</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
 <section id="von-weltkoordiaten-nach-bildkoordinaten">
 <h3>Von Weltkoordiaten nach Bildkoordinaten<a class="headerlink" href="#von-weltkoordiaten-nach-bildkoordinaten" title="Link to this heading"></a></h3>
 <p>Solange die Kamera, die Projektion und das Mapping in Bildkoordinaten statisch ist (sich also nicht verändert)
@@ -763,7 +836,7 @@ kann die Transformation von Welt- nach Bildkoordinaten einmalig im vorraus berec
 <dt class="sig sig-object py" id="homogen.world_to_image">
 <span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">world_to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">W</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#world_to_image"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.world_to_image" title="Link to this definition"></a></dt>
 <dd><p><strong>TODO</strong>: Return the complete projection matrix mapping from world coordinates to image coordinates.
-This is a concatenation of the <cite>world_to_camera</cite> matrix, the projection matrix and the mapping from 
+This is a concatenation of the <cite>world_to_camera</cite> matrix, the projection matrix and the mapping from
 NDC to image coordinates. Do the following transformations in the particular order</p>
 <ul class="simple">
 <li><p>Map <a class="reference internal" href="#homogen.world_to_camera" title="homogen.world_to_camera"><code class="xref py py-func docutils literal notranslate"><span class="pre">world_to_camera()</span></code></a> by calling the respective function</p></li>
@@ -784,6 +857,159 @@ NDC to image coordinates. Do the following transformations in the particular ord
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">@</span> <span class="n">projection</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">@</span> <span class="n">world_to_camera</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="die-datenstruktur-fur-geometriedaten">
+<h2>Die Datenstruktur für Geometriedaten<a class="headerlink" href="#die-datenstruktur-fur-geometriedaten" title="Link to this heading"></a></h2>
+<p>Um Objekte in 3D zu repräsentieren (z.B. den Würfel) verwenden wir eine spezielle Datenstruktur.
+Insbesondere verwenden wir einen s.g. <strong>Vertex</strong>-Buffer welcher die Koordinaten alle Eckpunkte speichert sowie einen
+<strong>Index</strong>-Buffer, in dem gespeichert wird welche Ecken miteinander verbunden sind.</p>
+<a class="reference internal image-reference" href="../_images/datastructure.png"><img alt="Datenstruktur für Geometriedaten" class="align-center" src="../_images/datastructure.png" style="width: 1024px;" />
+</a>
+<p>Dabei werden die Vertexkoordinaten stets in lokalen Koordinaten gespeichert und über geeignete Transformationsmatrizen später
+ins Weltkoordiatensystem überführt. Im konkreten Falle des Würfels sieht der Vertex-Buffer so aus</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span> <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>während der Index-Buffer so aussieht</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">3</span> <span class="mi">3</span> <span class="mi">2</span> <span class="mi">2</span> <span class="mi">0</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">5</span> <span class="mi">7</span> <span class="mi">7</span> <span class="mi">6</span> <span class="mi">6</span> <span class="mi">4</span> <span class="mi">0</span> <span class="mi">4</span> <span class="mi">1</span> <span class="mi">5</span> <span class="mi">2</span> <span class="mi">6</span> <span class="mi">3</span> <span class="mi">7</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Der Vertexbuffer ist also eine <span class="math notranslate nohighlight">\(4\times n\)</span>-Matrix, wobei <span class="math notranslate nohighlight">\(n\)</span> die Anzahl der Vertices angibt. Die Vertices sind
+dabei spaltenweise in homogenen Koordinaten gespeichert. Um alle Vertices über eine Transformationsmatrix in ein anderes Koordinatensystem zu überführen
+genügt es demnach den Vertexbuffer <strong>von links</strong> mit der entsprechenden Matrix zu multiplizieren.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span> <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">local_to_image</span> <span class="o">@</span> <span class="n">vertices</span><span class="p">)</span>
+
+<span class="p">[[</span><span class="mf">989.64</span> <span class="mf">745.36</span> <span class="mf">933.</span>   <span class="mf">688.72</span> <span class="mf">912.78</span> <span class="mf">668.5</span>  <span class="mf">856.14</span> <span class="mf">611.86</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">881.22</span> <span class="mf">825.4</span>  <span class="mf">625.49</span> <span class="mf">569.67</span> <span class="mf">897.81</span> <span class="mf">841.99</span> <span class="mf">642.08</span> <span class="mf">586.27</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">1.72</span>   <span class="mf">1.49</span>   <span class="mf">1.58</span>   <span class="mf">1.34</span>   <span class="mf">1.89</span>   <span class="mf">1.65</span>   <span class="mf">1.74</span>   <span class="mf">1.51</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">1.72</span>   <span class="mf">1.49</span>   <span class="mf">1.58</span>   <span class="mf">1.34</span>   <span class="mf">1.89</span>   <span class="mf">1.65</span>   <span class="mf">1.74</span>   <span class="mf">1.51</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>In diesem Beispiel sein</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">local_to_image</span> <span class="o">=</span> <span class="n">ndc_to_image</span> <span class="o">@</span> <span class="n">camera_to_ndc</span> <span class="o">@</span> <span class="n">world_to_camera</span> <span class="o">@</span> <span class="n">local_to_world</span>
+</pre></div>
+</div>
+<p>die Projektionmatrix welche von lokalen Koordinaten in Bildkoordinaten abbildet. Da die Koordinaten immer noch homogen sind
+muß noch durch die <span class="math notranslate nohighlight">\(w\)</span>-Komponente dividiert werden um euklische Bildkoordinaten zu erhalten.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
+            <span class="p">[</span> <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]]</span>
+
+<span class="n">image_coordinates</span> <span class="o">=</span> <span class="n">local_to_image</span> <span class="o">@</span> <span class="n">vertices</span>
+<span class="n">image_coordinates</span> <span class="o">/=</span> <span class="n">image_coordinates</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">image_coordinates</span><span class="p">)</span>
+
+<span class="p">[[</span><span class="mf">575.09</span> <span class="mf">501.12</span> <span class="mf">591.44</span> <span class="mf">512.42</span> <span class="mf">483.91</span> <span class="mf">404.46</span> <span class="mf">491.21</span> <span class="mf">405.35</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">512.08</span> <span class="mf">554.93</span> <span class="mf">396.5</span>  <span class="mf">423.84</span> <span class="mf">475.97</span> <span class="mf">509.43</span> <span class="mf">368.39</span> <span class="mf">388.39</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>  <span class="p">]</span>
+ <span class="p">[</span>  <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>     <span class="mf">1.</span>  <span class="p">]]</span>
+</pre></div>
+</div>
+<section id="aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer">
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer" title="Link to this heading"></a></h3>
+<p>Implementieren Sie nun die Funktion <em>project_vertexbuffer</em></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="homogen.project_vertexbuffer">
+<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">project_vertexbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_to_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#project_vertexbuffer"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.project_vertexbuffer" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>: Project all vertices in the provided vertex buffer using the given transformation
+and convert to euclidean coordinates by dividing by the w-component of each vertex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertices</strong> – Vertex buffer (4xN Matrix)</p></li>
+<li><p><strong>local_to_image</strong> – Transformation matrix to apply (4x4 Matrix)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed vertices in euclidean space (w == 1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+    <span class="c1"># First, project all vertices using the given transformation</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">local_to_image</span> <span class="o">@</span> <span class="n">vertices</span>
+
+    <span class="c1"># Now divide by w to convert to euclidean coordinates</span>
+    <span class="n">vertices</span> <span class="o">/=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">vertices</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="die-vertices-zeichnen">
+<h2>Die Vertices zeichnen<a class="headerlink" href="#die-vertices-zeichnen" title="Link to this heading"></a></h2>
+<p>Um die Vertices nun zeichnen zu können müssen wir im Grunde nur noch den Indexbuffer abarbeiten.
+Immer zwei aufeinanderfolgende Indices entsprechen dabei einer zu zeichnenden Linie. Wir können diese Logik nun implementieren.</p>
+<section id="aufgabe-implementieren-sie-die-funktionen-draw">
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>draw</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-draw" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Als erstes entpacken Sie das Tupel <cite>mesh</cite> und extrahieren Sie so den Vertex- und den Indexbuffer.</p></li>
+<li><p>Projezieren Sie die Vertices dann mit der <code class="xref py py-func docutils literal notranslate"><span class="pre">project_vertexbuffer()</span></code> Methode in Bildkoordinaten.</p></li>
+<li><p>Iterieren Sie dann über den Index-Buffer und laden Sie die indices der zu zeichnenden Vertices, etwa so</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">lineIndex</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">indexA</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">lineIndex</span><span class="p">]</span>
+    <span class="n">indexB</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">lineIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Laden Sie anschließend die jeweiligen Vertices aus dem projezierten Vertexbuffer, runden Sie die X- und Y-Koordinaten
+und verwenden Sie <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-line-method/">cv2.line</a> um eine Linie in der
+angegebenen Farbe zu zeichnen.</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="homogen.draw">
+<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_to_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#draw"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.draw" title="Link to this definition"></a></dt>
+<dd><p>Draws a given mesh using the provided projection matrix into the given canvas using provided color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> – 2-Tuple (vertices, indices) containing both the vertex buffer as well as the index buffer</p></li>
+<li><p><strong>local_to_image</strong> – Transformation matrix to transform vertices from local space to image space</p></li>
+<li><p><strong>canvas</strong> – OpenCV image to draw into (3 channel RGB, np.float32)</p></li>
+<li><p><strong>col</strong> – Color to draw (3-Tuple with (B, G, R) color intensities ranging from 0.0 to 1.0 each)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+    <span class="c1"># Unpack mesh</span>
+    <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">mesh</span>
+
+    <span class="c1"># Project vertices</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">)</span>
+
+    <span class="c1"># Go through list of indices</span>
+    <span class="k">for</span> <span class="n">lineIndex</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># Indirect access</span>
+        <span class="n">indexA</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">lineIndex</span><span class="p">]</span>
+        <span class="n">indexB</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">lineIndex</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="n">indexA</span><span class="p">]</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="n">indexB</span><span class="p">]</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">col</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

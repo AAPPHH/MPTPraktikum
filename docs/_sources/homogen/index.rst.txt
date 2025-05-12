@@ -16,6 +16,15 @@ betrachten wir diese Abbildungsmöglichkeiten. Wir entwickeln unsere eigene klei
    :width: 1024px
    :align: center
 
+Der Code
+--------
+Für dieses Praktikum arbeiten Sie in der Datei
+
+.. code-block:: python 
+
+        homogen.py
+
+und implementieren nach und nach die verschiedenen Methoden. Die Erklärungen in diesem Dokument sollen Ihnen dabei helfen. 
 
 Unsere eigene kleine 3D Rendering Engine
 ----------------------------------------
@@ -36,15 +45,6 @@ verwendeten Ansatz und betrachten im folgenden fünf verschiedene Koordinatensys
 - Nachdem sich die Koordinaten im View-Space befinden, möchten wir sie in NDC-Koordinaten projizieren. NDC-Koordinaten werden auf den Bereich von -1,0 bis 1,0 normiert und bestimmen, welche Scheitelpunkte (Vertices) letztlich auf dem Bildschirm erscheinen.
 - Schließlich transformieren wir die NDC-Koordinaten in Bildschirmkoordinaten. Dabei werden die Koordinaten von -1,0 bis 1,0 in Pixelkoordiaten im Zielbild überführt.
 
-Lokale und Weltkoordinaten
---------------------------
-Die `local_to_world` Transformation beschreibt wie sich die 
-lokalen Koordinaten eines Objektes in Weltkoordinaten überführen lassen. 
-Von dort werden die Koordinaten mit der `world_to_camera` Transformation 
-in Kamerakoordinaten überführt, also die Koordinaten relativ zum Kamerakoordinatensystem. 
-
-Beide Transformationen können über eine Kombination von Translationen, Skalierungen sowie 
-Rotationen ausgedrückt werden. 
 
         
 
@@ -297,6 +297,12 @@ Multiplizieren wir wieder die Matrizen zuerst, finden wir eine andere Abbildungs
         0 & 0 & 4 & -2\\
         0 & 0 & 0 & 1\\
     \end{pmatrix}
+
+**Hinweis**: In Python können wir zwei Matrizen mit dem `@`-Operator multiplizieren, also 
+
+.. code-block:: python 
+
+    C = A @ B
 
 Rotationen
 ----------
@@ -553,6 +559,36 @@ Implementieren Sie nun die Funktion *world_to_camera*
         def world_to_camera(c):
             return translate_3d(0, 16.0, 164.0) @ rotateX(np.deg2rad(-30.0)) @ rotateY(np.deg2rad(35.0))
 
+Von lokalen Koordinaten nach Weltkoordinaten
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Um die lokalen Koordinaten unseres Objektes (z.B. eines Würfels) in globale Weltkoordiaten umzurechnen verwenden 
+wir eine Kombination von Transformation in ganz bestimmter Reihenfolge. 
+
+* Zuerst wird das Objekt ggf. skaliert. Dazu kann :py:func:`homogen.scale` verwendet werden. 
+* Anschließend wird das Objekt rotiert. Dabei wird nach Konvention zunächst um die X-Achse, dann um die Y-Achse und zuletzt um die Z-Achse gedreht. Dazu kann die Methode :py:func:`homogen.rotateXYZ` verwendet werden.
+* Nun wird das Objekt in seinen neuen Ursprung verschoben, dazu kann :py:func:`homogen.translate_3d` verwendet werden. 
+* Zu guter letzt wird das Objekt noch einmal rotiert. Da es nun nicht mehr im Ursprung liegt rotiert es um eben diesen. Es umkeist (orbitet) somit den Ursprung des Weltkoordinatensystems.
+  Dazu kann wieder :py:func`homogen.rotateXYZ` verwendet werden. 
+
+
+**Aufgabe**: Implementieren Sie die Funktionen *local_to_world*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Implementieren Sie nun die Funktion *local_to_world* 
+
+.. autofunction:: homogen.local_to_world
+
+.. admonition:: Lösung anzeigen
+   :class: toggle
+
+   .. code-block:: python
+
+        def local_to_world(c):
+            return rotateXYZ(objectOrbit[0], objectOrbit[1], objectOrbit[2]) @\
+                   translate_3d(objectTranslate[0], objectTranslate[1], objectTranslate[2]) @\
+                   rotateXYZ(objectRotate[0], objectRotate[1], objectRotate[2]) @\
+                   scale(objectScale[0], objectScale[1], objectScale[2])
+
 Von Weltkoordiaten nach Bildkoordinaten
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -572,6 +608,146 @@ Implementieren Sie nun die Funktion *world_to_image*
 
         def world_to_image(W, H, c):
             return ndc_to_image(W, H) @ projection(c) @ world_to_camera()
+
+Die Datenstruktur für Geometriedaten
+------------------------------------
+
+Um Objekte in 3D zu repräsentieren (z.B. den Würfel) verwenden wir eine spezielle Datenstruktur.
+Insbesondere verwenden wir einen s.g. **Vertex**-Buffer welcher die Koordinaten alle Eckpunkte speichert sowie einen 
+**Index**-Buffer, in dem gespeichert wird welche Ecken miteinander verbunden sind. 
+
+.. image:: ./datastructure.png
+   :alt: Datenstruktur für Geometriedaten
+   :width: 1024px
+   :align: center
+
+Dabei werden die Vertexkoordinaten stets in lokalen Koordinaten gespeichert und über geeignete Transformationsmatrizen später 
+ins Weltkoordiatensystem überführt. Im konkreten Falle des Würfels sieht der Vertex-Buffer so aus
+
+.. code-block:: python 
+
+        vertices = [[-1.  1. -1.  1. -1.  1. -1.  1.]
+                    [-1. -1.  1.  1. -1. -1.  1.  1.]
+                    [-1. -1. -1. -1.  1.  1.  1.  1.]
+                    [ 1.  1.  1.  1.  1.  1.  1.  1.]]
+
+während der Index-Buffer so aussieht
+
+.. code-block:: python
+        
+        indices = [0 1 1 3 3 2 2 0 4 5 5 7 7 6 6 4 0 4 1 5 2 6 3 7]
+
+Der Vertexbuffer ist also eine :math:`4\times n`-Matrix, wobei :math:`n` die Anzahl der Vertices angibt. Die Vertices sind 
+dabei spaltenweise in homogenen Koordinaten gespeichert. Um alle Vertices über eine Transformationsmatrix in ein anderes Koordinatensystem zu überführen 
+genügt es demnach den Vertexbuffer **von links** mit der entsprechenden Matrix zu multiplizieren.
+
+.. code-block:: python 
+
+        vertices = [[-1.  1. -1.  1. -1.  1. -1.  1.]
+                    [-1. -1.  1.  1. -1. -1.  1.  1.]
+                    [-1. -1. -1. -1.  1.  1.  1.  1.]
+                    [ 1.  1.  1.  1.  1.  1.  1.  1.]]
+
+        print(local_to_image @ vertices)
+
+        [[989.64 745.36 933.   688.72 912.78 668.5  856.14 611.86]
+         [881.22 825.4  625.49 569.67 897.81 841.99 642.08 586.27]
+         [  1.72   1.49   1.58   1.34   1.89   1.65   1.74   1.51]
+         [  1.72   1.49   1.58   1.34   1.89   1.65   1.74   1.51]]
+
+In diesem Beispiel sein
+
+.. code-block:: python 
+
+        local_to_image = ndc_to_image @ camera_to_ndc @ world_to_camera @ local_to_world
+
+die Projektionmatrix welche von lokalen Koordinaten in Bildkoordinaten abbildet. Da die Koordinaten immer noch homogen sind 
+muß noch durch die :math:`w`-Komponente dividiert werden um euklische Bildkoordinaten zu erhalten. 
+
+.. code-block:: python 
+
+        vertices = [[-1.  1. -1.  1. -1.  1. -1.  1.]
+                    [-1. -1.  1.  1. -1. -1.  1.  1.]
+                    [-1. -1. -1. -1.  1.  1.  1.  1.]
+                    [ 1.  1.  1.  1.  1.  1.  1.  1.]]
+
+        image_coordinates = local_to_image @ vertices
+        image_coordinates /= image_coordinates[3, :]
+        print(image_coordinates)
+
+        [[575.09 501.12 591.44 512.42 483.91 404.46 491.21 405.35]
+         [512.08 554.93 396.5  423.84 475.97 509.43 368.39 388.39]
+         [  1.     1.     1.     1.     1.     1.     1.     1.  ]
+         [  1.     1.     1.     1.     1.     1.     1.     1.  ]]
+
+
+**Aufgabe**: Implementieren Sie die Funktionen *project_vertexbuffer*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Implementieren Sie nun die Funktion *project_vertexbuffer* 
+
+.. autofunction:: homogen.project_vertexbuffer
+
+.. admonition:: Lösung anzeigen
+   :class: toggle
+
+   .. code-block:: python
+
+        def project_vertexbuffer(local_to_image, vertices):
+            # First, project all vertices using the given transformation
+            vertices = local_to_image @ vertices
+
+            # Now divide by w to convert to euclidean coordinates
+            vertices /= vertices[3, :]
+
+            return vertices
+
+Die Vertices zeichnen
+---------------------
+
+Um die Vertices nun zeichnen zu können müssen wir im Grunde nur noch den Indexbuffer abarbeiten. 
+Immer zwei aufeinanderfolgende Indices entsprechen dabei einer zu zeichnenden Linie. Wir können diese Logik nun implementieren. 
+
+**Aufgabe**: Implementieren Sie die Funktionen *draw*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Als erstes entpacken Sie das Tupel `mesh` und extrahieren Sie so den Vertex- und den Indexbuffer.
+- Projezieren Sie die Vertices dann mit der :py:func:`project_vertexbuffer` Methode in Bildkoordinaten.
+- Iterieren Sie dann über den Index-Buffer und laden Sie die indices der zu zeichnenden Vertices, etwa so
+
+    .. code-block:: python 
+        
+        for lineIndex in range(0, indices.shape[0], 2):
+            indexA = indices[lineIndex]
+            indexB = indices[lineIndex + 1]
+
+- Laden Sie anschließend die jeweiligen Vertices aus dem projezierten Vertexbuffer, runden Sie die X- und Y-Koordinaten
+  und verwenden Sie `cv2.line <https://www.geeksforgeeks.org/python-opencv-cv2-line-method/>`_ um eine Linie in der 
+  angegebenen Farbe zu zeichnen.
+
+.. autofunction:: homogen.draw
+
+.. admonition:: Lösung anzeigen
+   :class: toggle
+
+   .. code-block:: python
+
+        def draw(mesh, local_to_image, canvas, col):
+            # Unpack mesh
+            vertices, indices = mesh
+
+            # Project vertices
+            vertices = project_vertexbuffer(local_to_image, vertices)
+
+            # Go through list of indices
+            for lineIndex in range(0, indices.shape[0], 2):
+                # Indirect access
+                indexA = indices[lineIndex]
+                indexB = indices[lineIndex + 1]
+                A = vertices[:, indexA]
+                B = vertices[:, indexB]
+
+                cv2.line(canvas, (int(A[0]), int(A[1])), (int(B[0]), int(B[1])), col)
 
 Musterlösung
 ------------

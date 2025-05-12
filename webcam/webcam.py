@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def drawHistogram(gray):
     hist, _ = np.histogram(gray, bins=range(256))
     hist = np.float32(hist)
@@ -15,51 +16,53 @@ def drawHistogram(gray):
 
     return histImage
 
+
 def adjustBrightness(gray, brightness, contrast):
     mean, std = np.mean(gray), np.std(gray)
 
     norm = brightness + contrast * (gray - mean) / std
     return np.uint8(np.clip(norm, 0.0, 1.0) * 255.0)
 
+
 if __name__ == "__main__":
-  cap = cv2.VideoCapture(0)  
-  if not cap.isOpened():
-      print("Cannot open camera")
-      exit()
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Cannot open camera")
+        exit()
 
-  brightness = 0.5
-  contrast = 0.1
+    brightness = 0.5
+    contrast = 0.1
 
-  while True:
-      # Capture frame-by-frame
-      ret, frame = cap.read()
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
 
-      # if frame is read correctly ret is True
-      if not ret:
-          exit()
+        # if frame is read correctly ret is True
+        if not ret:
+            exit()
 
-      cv2.imshow("Kamerabild", frame)
+        cv2.imshow("Kamerabild", frame)
 
-      gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-      cv2.imshow("Graubild", gray)
-      cv2.imshow("Graubild - Histogramm", drawHistogram(gray))
+        gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+        cv2.imshow("Graubild", gray)
+        cv2.imshow("Graubild - Histogramm", drawHistogram(gray))
 
-      norm = adjustBrightness(gray, brightness, contrast)
-      cv2.imshow("Normalisiert", norm)
-      cv2.imshow("Normalisiert - Histogramm", drawHistogram(norm))
+        norm = adjustBrightness(gray, brightness, contrast)
+        cv2.imshow("Normalisiert", norm)
+        cv2.imshow("Normalisiert - Histogramm", drawHistogram(norm))
 
-      key = cv2.waitKey(1)
-      if key == ord("+"):
-          contrast = np.clip(contrast + 0.01, 0.0, 1.0)
-      
-      if key == ord("-"):
-          contrast = np.clip(contrast - 0.01, 0.0, 1.0)
+        key = cv2.waitKey(1)
+        if key == ord("+"):
+            contrast = np.clip(contrast + 0.01, 0.0, 1.0)
 
-      if key == ord("1"):
-          brightness = np.clip(brightness - 0.05, 0.0, 1.0)
-      
-      if key == ord("2"):
-          brightness = np.clip(brightness + 0.05, 0.0, 1.0)
+        if key == ord("-"):
+            contrast = np.clip(contrast - 0.01, 0.0, 1.0)
 
-      if key == ord("q"):
-          break
+        if key == ord("1"):
+            brightness = np.clip(brightness - 0.05, 0.0, 1.0)
+
+        if key == ord("2"):
+            brightness = np.clip(brightness + 0.05, 0.0, 1.0)
+
+        if key == ord("q"):
+            break

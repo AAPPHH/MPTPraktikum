@@ -10,7 +10,14 @@ def translate_3d(x, y, z):
     :return: Translation matrix moving coordinates by (x, y, z)
     :return type: 4x4 np.array
     """
-    pass
+    return np.array(
+        [
+            [1.0, 0.0, 0.0, x],
+            [0.0, 1.0, 0.0, y],
+            [0.0, 0.0, 1.0, z],
+            [0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
 
 def scale(x, y, z):
@@ -20,7 +27,14 @@ def scale(x, y, z):
     :return: Scaling matrix by (x, y, z)
     :return type: 4x4 np.array
     """
-    pass
+    return np.array(
+        [
+            [x, 0.0, 0.0, 0.0],
+            [0.0, y, 0.0, 0.0],
+            [0.0, 0.0, z, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
 
 def rotateX(radians):
@@ -32,7 +46,16 @@ def rotateX(radians):
     :return: Rotation matrix around X-axis by given amount
     :return type: 4x4 np.array
     """
-    pass
+    s, c = np.sin(radians), np.cos(radians)
+
+    return np.array(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, c, -s, 0.0],
+            [0.0, s, c, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
 
 def rotateY(radians):
@@ -44,7 +67,16 @@ def rotateY(radians):
     :return: Rotation matrix around X-axis by given amount
     :return type: 4x4 np.array
     """
-    pass
+    s, c = np.sin(radians), np.cos(radians)
+
+    return np.array(
+        [
+            [c, 0.0, s, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [-s, 0.0, c, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
 
 def rotateZ(radians):
@@ -56,7 +88,16 @@ def rotateZ(radians):
     :return: Rotation matrix around X-axis by given amount
     :return type: 4x4 np.array
     """
-    pass
+    s, c = np.sin(radians), np.cos(radians)
+
+    return np.array(
+        [
+            [c, -s, 0.0, 0.0],
+            [s, c, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]
+    )
 
 
 def rotateXYZ(x, y, z):
@@ -70,7 +111,7 @@ def rotateXYZ(x, y, z):
     :return: Homogeneous matrix applying rotations around X, Y and Z
     :return type: 4x4 np.array
     """
-    pass
+    return rotateZ(z) @ rotateY(y) @ rotateX(x)
 
 
 def projection(c):
@@ -81,7 +122,14 @@ def projection(c):
     :return: Projection matrix
     :return type: 4x4 np.array
     """
-    pass
+    return np.array(
+        [
+            [-c, 0.0, 0.0, 0.0],
+            [0.0, -c, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+        ]
+    )
 
 
 def ndc_to_image(W, H):
@@ -96,7 +144,7 @@ def ndc_to_image(W, H):
     - Scale by (W/2, H/2, 1.0)
     - Translate by (W/2, H/2, 0.0)
     """
-    pass
+    return translate_3d(W / 2.0, H / 2.0, 0.0) @ scale(W / 2.0, H / 2.0, 1.0)
 
 
 def world_to_camera():
@@ -116,7 +164,11 @@ def world_to_camera():
     :return: Homogeneous matrix defining the transformation from world to camera coordinate space
     :return type: 4x4 np.array
     """
-    pass
+    return (
+        translate_3d(0, 16.0, 164.0)
+        @ rotateX(np.deg2rad(-30.0))
+        @ rotateY(np.deg2rad(35.0))
+    )
 
 
 def world_to_image(W, H, c):
@@ -132,7 +184,7 @@ def world_to_image(W, H, c):
     :return: Homogeneous matrix defining the transformation from world to image coordinates
     :return type: 4x4 np.array
     """
-    pass
+    return ndc_to_image(W, H) @ projection(c) @ world_to_camera()
 
 
 def local_to_world(objectScale, objectRotate, objectTranslate, objectOrbit):
@@ -153,7 +205,12 @@ def local_to_world(objectScale, objectRotate, objectTranslate, objectOrbit):
     :param objectTranslate: 3 element array with translation parameters
     :param objectOrbit: 3 element array with orbiting parameters (in radians)
     """
-    pass
+    return (
+        rotateXYZ(objectOrbit[0], objectOrbit[1], objectOrbit[2])
+        @ translate_3d(objectTranslate[0], objectTranslate[1], objectTranslate[2])
+        @ rotateXYZ(objectRotate[0], objectRotate[1], objectRotate[2])
+        @ scale(objectScale[0], objectScale[1], objectScale[2])
+    )
 
 
 def project_vertexbuffer(local_to_image, vertices):
@@ -165,7 +222,13 @@ def project_vertexbuffer(local_to_image, vertices):
     :param local_to_image: Transformation matrix to apply (4x4 Matrix)
     :return: Transformed vertices in euclidean space (w == 1)
     """
-    pass
+    # First, project all vertices using the given transformation
+    vertices = local_to_image @ vertices
+
+    # Now divide by w to convert to euclidean coordinates
+    vertices /= vertices[3, :]
+
+    return vertices
 
 
 def draw(mesh, local_to_image, canvas, col):
@@ -177,7 +240,21 @@ def draw(mesh, local_to_image, canvas, col):
     :param canvas: OpenCV image to draw into (3 channel RGB, np.float32)
     :param col: Color to draw (3-Tuple with (B, G, R) color intensities ranging from 0.0 to 1.0 each)
     """
-    pass
+    # Unpack mesh
+    vertices, indices = mesh
+
+    # Project vertices
+    vertices = project_vertexbuffer(local_to_image, vertices)
+
+    # Go through list of indices
+    for lineIndex in range(0, indices.shape[0], 2):
+        # Indirect access
+        indexA = indices[lineIndex]
+        indexB = indices[lineIndex + 1]
+        A = vertices[:, indexA]
+        B = vertices[:, indexB]
+
+        cv2.line(canvas, (int(A[0]), int(A[1])), (int(B[0]), int(B[1])), col)
 
 
 # Geschafft, ab hier brauchen Sie nichts mehr zu implementieren!

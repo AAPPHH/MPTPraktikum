@@ -90,333 +90,367 @@ window.addEventListener("load", () => mermaid.run());
            <div itemprop="articleBody">
              
   <h1>Quellcode für homogen</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span> 
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_axis</span><span class="p">,</span> <span class="n">build_cube</span><span class="p">,</span> <span class="n">build_grid</span><span class="p">,</span> <span class="n">draw</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_axis</span><span class="p">,</span> <span class="n">build_cube</span><span class="p">,</span> <span class="n">build_grid</span><span class="p">,</span> <span class="n">Mode</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">identity_transform</span><span class="p">():</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return the identity transformation</span>
-
-<span class="sd">  :return: Identity matrix</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
 
 <div class="viewcode-block" id="translate_3d">
 <a class="viewcode-back" href="../homogen/index.html#homogen.translate_3d">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">translate_3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return a homogeneous translation matrix which moves coordinates by (x, y, z) as presented during lecture.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return a homogeneous translation matrix which moves coordinates by (x, y, z) as presented during lecture.</span>
 
-<span class="sd">  :return: Translation matrix moving coordinates by (x, y, z)</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-  <span class="p">])</span></div>
+<span class="sd">    :return: Translation matrix moving coordinates by (x, y, z)</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="scale">
 <a class="viewcode-back" href="../homogen/index.html#homogen.scale">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return a homogeneous scaling matrix which scales axes by (x, y, z) as presented during lecture.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return a homogeneous scaling matrix which scales axes by (x, y, z) as presented during lecture.</span>
 
-<span class="sd">  :return: Scaling matrix by (x, y, z)</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-  <span class="p">])</span></div>
+<span class="sd">    :return: Scaling matrix by (x, y, z)</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="rotateX">
 <a class="viewcode-back" href="../homogen/index.html#homogen.rotateX">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotateX</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return a homogeneous rotation matrix which rotates around the </span>
-<span class="sd">  X-axis by a given amount as presented during the lecture. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return a homogeneous rotation matrix which rotates around the</span>
+<span class="sd">    X-axis by a given amount as presented during the lecture.</span>
 
-<span class="sd">  :param radians: Angle by how far to rotate (in radians)</span>
-<span class="sd">  :return: Rotation matrix around X-axis by given amount</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+<span class="sd">    :param radians: Angle by how far to rotate (in radians)</span>
+<span class="sd">    :return: Rotation matrix around X-axis by given amount</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>   <span class="n">c</span><span class="p">,</span>  <span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>   <span class="n">s</span><span class="p">,</span>   <span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-  <span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="rotateY">
 <a class="viewcode-back" href="../homogen/index.html#homogen.rotateY">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotateY</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return a homogeneous rotation matrix which rotates around the </span>
-<span class="sd">  Y-axis by a given amount as presented during the lecture. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return a homogeneous rotation matrix which rotates around the</span>
+<span class="sd">    Y-axis by a given amount as presented during the lecture.</span>
 
-<span class="sd">  :param radians: Angle by how far to rotate (in radians)</span>
-<span class="sd">  :return: Rotation matrix around X-axis by given amount</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+<span class="sd">    :param radians: Angle by how far to rotate (in radians)</span>
+<span class="sd">    :return: Rotation matrix around X-axis by given amount</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span>  <span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>   <span class="n">s</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span> <span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>   <span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-  <span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="rotateZ">
 <a class="viewcode-back" href="../homogen/index.html#homogen.rotateZ">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotateZ</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return a homogeneous rotation matrix which rotates around the </span>
-<span class="sd">  Z-axis by a given amount as presented during the lecture. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return a homogeneous rotation matrix which rotates around the</span>
+<span class="sd">    Z-axis by a given amount as presented during the lecture.</span>
 
-<span class="sd">  :param radians: Angle by how far to rotate (in radians)</span>
-<span class="sd">  :return: Rotation matrix around X-axis by given amount</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+<span class="sd">    :param radians: Angle by how far to rotate (in radians)</span>
+<span class="sd">    :return: Rotation matrix around X-axis by given amount</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span>   <span class="n">c</span><span class="p">,</span>  <span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span>   <span class="n">s</span><span class="p">,</span>   <span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-  <span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="rotateXYZ">
 <a class="viewcode-back" href="../homogen/index.html#homogen.rotateXYZ">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotateXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO** Return a combined rotation matrix which first rotates around X, then Y then Z </span>
-<span class="sd">  by the given amounts of radians.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO** Return a combined rotation matrix which first rotates around X, then Y then Z</span>
+<span class="sd">    by the given amounts of radians.</span>
 
-<span class="sd">  :param x: Angle to rotate around X (in radians)</span>
-<span class="sd">  :param y: Angle to rotate around Y (in radians)</span>
-<span class="sd">  :param z: Angle to rotate around Z (in radians)</span>
-<span class="sd">  :return: Homogeneous matrix applying rotations around X, Y and Z </span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">rotateZ</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateY</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateX</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+<span class="sd">    :param x: Angle to rotate around X (in radians)</span>
+<span class="sd">    :param y: Angle to rotate around Y (in radians)</span>
+<span class="sd">    :param z: Angle to rotate around Z (in radians)</span>
+<span class="sd">    :return: Homogeneous matrix applying rotations around X, Y and Z</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="projection">
 <a class="viewcode-back" href="../homogen/index.html#homogen.projection">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">projection</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return a projection matrix which projects along the Z-axis as presented during the lecture. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return a projection matrix which projects along the Z-axis as presented during the lecture.</span>
 
-<span class="sd">  :param c: Focal length of pin hole camera</span>
-<span class="sd">  :return: Projection matrix </span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">1.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">1.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">]</span>
-  <span class="p">])</span></div>
+<span class="sd">    :param c: Focal length of pin hole camera</span>
+<span class="sd">    :return: Projection matrix</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="ndc_to_image">
 <a class="viewcode-back" href="../homogen/index.html#homogen.ndc_to_image">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    **TODO**: Return the matrix which transforms NDC-coordinates to pixel coordinates in the final image</span>
 
 <span class="sd">    Do the following transformation in this particular order</span>
-<span class="sd">    </span>
+
 <span class="sd">    For this tutorial, you can use a combination of :py:func:`translate_3d` and :py:func:`scale`</span>
 <span class="sd">    or write the transformation matrix directly according to the script</span>
 
 <span class="sd">    - Scale by (W/2, H/2, 1.0)</span>
 <span class="sd">    - Translate by (W/2, H/2, 0.0)</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">translate_3d</span><span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">H</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">@</span> <span class="n">scale</span><span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">H</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  </div>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="world_to_camera">
 <a class="viewcode-back" href="../homogen/index.html#homogen.world_to_camera">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">world_to_camera</span><span class="p">():</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return the matrix which transforms world to camera (view) coordinates. </span>
-<span class="sd">  For this tutorial, use a combination of :py:func:`translate_3d`,</span>
-<span class="sd">  :py:func:`rotateX` and :py:func:`rotateY`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return the matrix which transforms world to camera (view) coordinates.</span>
+<span class="sd">    For this tutorial, use a combination of :py:func:`translate_3d`,</span>
+<span class="sd">    :py:func:`rotateX` and :py:func:`rotateY`.</span>
 
-<span class="sd">  Do the following transformation in this particular order</span>
+<span class="sd">    Do the following transformation in this particular order</span>
 
-<span class="sd">  - Rotate around Y by 35 degrees.</span>
-<span class="sd">  - Rotate around X by -30 degrees</span>
-<span class="sd">  - Translate by (0, 16, 164)</span>
+<span class="sd">    - Rotate around Y by 35 degrees.</span>
+<span class="sd">    - Rotate around X by -30 degrees</span>
+<span class="sd">    - Translate by (0, 16, 164)</span>
 
-<span class="sd">  **Hint**: You can use `np.deg2rad &lt;https://numpy.org/doc/2.1/reference/generated/numpy.deg2rad.html&gt;`_ to convert degrees to radians. </span>
+<span class="sd">    **Hint**: You can use `np.deg2rad &lt;https://numpy.org/doc/2.1/reference/generated/numpy.deg2rad.html&gt;`_ to convert degrees to radians.</span>
 
-<span class="sd">  :return: Homogeneous matrix defining the transformation from world to camera coordinate space</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">translate_3d</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">,</span> <span class="mf">164.0</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateX</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="o">-</span><span class="mf">30.0</span><span class="p">))</span> <span class="o">@</span> <span class="n">rotateY</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">35.0</span><span class="p">))</span></div>
+<span class="sd">    :return: Homogeneous matrix defining the transformation from world to camera coordinate space</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
 
+
+<div class="viewcode-block" id="world_to_image">
+<a class="viewcode-back" href="../homogen/index.html#homogen.world_to_image">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Return the complete projection matrix mapping from world coordinates to image coordinates.</span>
-<span class="sd">  This is a concatenation of the `world_to_camera` matrix, the projection matrix and the mapping from </span>
-<span class="sd">  NDC to image coordinates. Do the following transformations in the particular order</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return the complete projection matrix mapping from world coordinates to image coordinates.</span>
+<span class="sd">    This is a concatenation of the `world_to_camera` matrix, the projection matrix and the mapping from</span>
+<span class="sd">    NDC to image coordinates. Do the following transformations in the particular order</span>
 
-<span class="sd">  - Map :py:func:`world_to_camera` by calling the respective function</span>
-<span class="sd">  - Project along the z axis by calling :py:func:`projection`</span>
-<span class="sd">  - Map :py:func:`ndc_to_image` by calling the respective function</span>
+<span class="sd">    - Map :py:func:`world_to_camera` by calling the respective function</span>
+<span class="sd">    - Project along the z axis by calling :py:func:`projection`</span>
+<span class="sd">    - Map :py:func:`ndc_to_image` by calling the respective function</span>
 
-<span class="sd">  :return: Homogeneous matrix defining the transformation from world to image coordinates</span>
-<span class="sd">  :return type: 4x4 np.array</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">@</span> <span class="n">projection</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">@</span> <span class="n">world_to_camera</span><span class="p">()</span>
-
-
-<span class="n">gridMesh</span> <span class="o">=</span> <span class="n">build_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>  
-<span class="n">cubeMesh</span> <span class="o">=</span> <span class="n">build_cube</span><span class="p">()</span>
-<span class="n">axisX</span> <span class="o">=</span> <span class="n">build_axis</span><span class="p">(</span><span class="mf">32.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-<span class="n">axisY</span> <span class="o">=</span> <span class="n">build_axis</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-<span class="n">axisZ</span> <span class="o">=</span> <span class="n">build_axis</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">)</span>
-
-<span class="n">image_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
-
-<span class="n">w2i</span> <span class="o">=</span> <span class="n">world_to_image</span><span class="p">(</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">1.25</span><span class="p">)</span>
+<span class="sd">    :return: Homogeneous matrix defining the transformation from world to image coordinates</span>
+<span class="sd">    :return type: 4x4 np.array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
 
-<span class="n">axis_to_world</span> <span class="o">=</span> <span class="n">translate_3d</span><span class="p">(</span><span class="o">-</span><span class="mf">64.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">64.0</span><span class="p">)</span>
-<span class="n">grid_to_world</span> <span class="o">=</span> <span class="n">translate_3d</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-  <span class="n">SCALE</span> <span class="o">=</span> <span class="mi">1</span>
-  <span class="n">TRANSLATE</span> <span class="o">=</span> <span class="mi">2</span>
-  <span class="n">ROTATE</span> <span class="o">=</span> <span class="mi">3</span>
-  <span class="n">ORBIT</span> <span class="o">=</span> <span class="mi">4</span>
+<div class="viewcode-block" id="local_to_world">
+<a class="viewcode-back" href="../homogen/index.html#homogen.local_to_world">[Doku]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">local_to_world</span><span class="p">(</span><span class="n">objectScale</span><span class="p">,</span> <span class="n">objectRotate</span><span class="p">,</span> <span class="n">objectTranslate</span><span class="p">,</span> <span class="n">objectOrbit</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Return the transformation from local coordinates to world coordinates.</span>
+<span class="sd">    Apply the following transformations in this particular order</span>
 
+<span class="sd">    - Scale by the parameters provided in objectScale</span>
+<span class="sd">    - Rotate by the parameters provided in objectRotate</span>
+<span class="sd">    - Translate by the parameters provided in objectTranslate</span>
+<span class="sd">    - Rotate again by the parameters provided in objectOrbit.</span>
+
+<span class="sd">    *Note*: Because the second rotation happens after the translation it will &quot;orbit&quot; around the</span>
+<span class="sd">    center.</span>
+
+<span class="sd">    :param objectScale: 3 element array with scaling parameters</span>
+<span class="sd">    :param objectRotate: 3 element array with rotation parameters (in radians)</span>
+<span class="sd">    :param objectTranslate: 3 element array with translation parameters</span>
+<span class="sd">    :param objectOrbit: 3 element array with orbiting parameters (in radians)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="project_vertexbuffer">
+<a class="viewcode-back" href="../homogen/index.html#homogen.project_vertexbuffer">[Doku]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Project all vertices in the provided vertex buffer using the given transformation</span>
+<span class="sd">    and convert to euclidean coordinates by dividing by the w-component of each vertex.</span>
+
+<span class="sd">    :param vertices: Vertex buffer (4xN Matrix)</span>
+<span class="sd">    :param local_to_image: Transformation matrix to apply (4x4 Matrix)</span>
+<span class="sd">    :return: Transformed vertices in euclidean space (w == 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="draw">
+<a class="viewcode-back" href="../homogen/index.html#homogen.draw">[Doku]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a given mesh using the provided projection matrix into the given canvas using provided color.</span>
+
+<span class="sd">    :param mesh: 2-Tuple (vertices, indices) containing both the vertex buffer as well as the index buffer</span>
+<span class="sd">    :param local_to_image: Transformation matrix to transform vertices from local space to image space</span>
+<span class="sd">    :param canvas: OpenCV image to draw into (3 channel RGB, np.float32)</span>
+<span class="sd">    :param col: Color to draw (3-Tuple with (B, G, R) color intensities ranging from 0.0 to 1.0 each)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<span class="c1"># Geschafft, ab hier brauchen Sie nichts mehr zu implementieren!</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-  <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">SCALE</span>
+    <span class="c1"># Wir starten im Modus &quot;Verschiebung&quot;</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span>
 
-  <span class="n">modeTexts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(1) Scale&quot;</span><span class="p">,</span> <span class="s2">&quot;(2) Translate&quot;</span><span class="p">,</span> <span class="s2">&quot;(3) Rotate&quot;</span><span class="p">,</span> <span class="s2">&quot;(4) Orbit&quot;</span><span class="p">]</span>
-  <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
-  <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">tz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
-  <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
-  <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span><span class="p">,</span> <span class="n">oz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="c1"># Erzeuge die Meshes für das Koordinatensystem, den Würfel und die Achsen</span>
+    <span class="n">gridMesh</span> <span class="o">=</span> <span class="n">build_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+    <span class="n">cubeMesh</span> <span class="o">=</span> <span class="n">build_cube</span><span class="p">()</span>
+    <span class="n">axisX</span> <span class="o">=</span> <span class="n">build_axis</span><span class="p">(</span><span class="mf">32.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">axisY</span> <span class="o">=</span> <span class="n">build_axis</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">axisZ</span> <span class="o">=</span> <span class="n">build_axis</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">)</span>
 
-  <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">rotate</span> <span class="o">=</span> <span class="n">rotateXYZ</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">rx</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ry</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">rz</span><span class="p">))</span>
-    <span class="n">orbit</span> <span class="o">=</span> <span class="n">rotateXYZ</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ox</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">oy</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">oz</span><span class="p">))</span>
+    <span class="c1"># Unser Bild soll 1024x1024 Pixel haben</span>
+    <span class="n">image_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
 
-    <span class="n">local_to_world</span> <span class="o">=</span> <span class="n">orbit</span> <span class="o">@</span> <span class="n">translate_3d</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotate</span> <span class="o">@</span> <span class="n">scale</span><span class="p">(</span><span class="n">sx</span> <span class="o">*</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">sy</span> <span class="o">*</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">sz</span> <span class="o">*</span> <span class="mf">16.0</span><span class="p">)</span>
+    <span class="c1"># Wir brauchen die zentrale Transformation von Weltkoordinaten nach Bildkoordinaten</span>
+    <span class="n">w2i</span> <span class="o">=</span> <span class="n">world_to_image</span><span class="p">(</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">1.25</span><span class="p">)</span>
 
-    <span class="n">canvas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="c1"># Die Welt-Transformation der Achsen (passend verschoben)</span>
+    <span class="n">axis_to_world</span> <span class="o">=</span> <span class="n">translate_3d</span><span class="p">(</span><span class="o">-</span><span class="mf">64.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">64.0</span><span class="p">)</span>
 
-    <span class="n">draw</span><span class="p">(</span><span class="n">gridMesh</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">grid_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
-    <span class="n">draw</span><span class="p">(</span><span class="n">axisX</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">axis_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
-    <span class="n">draw</span><span class="p">(</span><span class="n">axisY</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">axis_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
-    <span class="n">draw</span><span class="p">(</span><span class="n">axisZ</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">axis_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
-    <span class="n">draw</span><span class="p">(</span><span class="n">cubeMesh</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">local_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
-    
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">modeText</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">modeTexts</span><span class="p">):</span>
-      <span class="n">x</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">+</span> <span class="mi">120</span> <span class="o">*</span> <span class="n">index</span>
-      <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-      <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="c1"># Die Welt-Transformation des Koordinatensystems (nach unten verschoben)</span>
+    <span class="n">grid_to_world</span> <span class="o">=</span> <span class="n">translate_3d</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span><span class="p">:</span>
-          <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">tz</span>
+    <span class="c1"># Die Texte im UI</span>
+    <span class="n">modeTexts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(1) Scale&quot;</span><span class="p">,</span> <span class="s2">&quot;(2) Translate&quot;</span><span class="p">,</span> <span class="s2">&quot;(3) Rotate&quot;</span><span class="p">,</span> <span class="s2">&quot;(4) Orbit&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Anfangsparameter für die Objekttransformation des Würfels</span>
+    <span class="n">objectScale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">])</span>
+    <span class="n">objectTranslate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+    <span class="n">objectRotate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+    <span class="n">objectOrbit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+    <span class="c1"># Endloßßschleife (mit ESC unterbrechen)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Baue die aktuelle Welt-Transformation für den Würfel</span>
+        <span class="n">cube_to_world</span> <span class="o">=</span> <span class="n">local_to_world</span><span class="p">(</span>
+            <span class="n">objectScale</span><span class="p">,</span> <span class="n">objectRotate</span><span class="p">,</span> <span class="n">objectTranslate</span><span class="p">,</span> <span class="n">objectOrbit</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Starte mit einem leeren (schwarzen) Bild</span>
+        <span class="n">canvas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+
+        <span class="c1"># Zeichne die verschiedenen Komponenten in ihren jeweiligen Farben.</span>
+        <span class="c1"># Verwende dabei die passenden Transformationen</span>
+        <span class="n">draw</span><span class="p">(</span><span class="n">gridMesh</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">grid_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+        <span class="n">draw</span><span class="p">(</span><span class="n">axisX</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">axis_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">draw</span><span class="p">(</span><span class="n">axisY</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">axis_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+        <span class="n">draw</span><span class="p">(</span><span class="n">axisZ</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">axis_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+        <span class="n">draw</span><span class="p">(</span><span class="n">cubeMesh</span><span class="p">,</span> <span class="n">w2i</span> <span class="o">@</span> <span class="n">cube_to_world</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="c1"># Zeichne das User-Interface</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">modeText</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">modeTexts</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">+</span> <span class="mi">120</span> <span class="o">*</span> <span class="n">index</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span><span class="p">:</span>
+                    <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">SCALE</span><span class="p">:</span>
+                    <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">objectScale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectScale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectScale</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ROTATE</span><span class="p">:</span>
+                    <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">objectRotate</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">objectRotate</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">objectRotate</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ORBIT</span><span class="p">:</span>
+                    <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">objectOrbit</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">objectOrbit</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">objectOrbit</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                    <span class="p">)</span>
+
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span>
+                    <span class="n">canvas</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vx</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">vy</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">vz</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>
+                    <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span>
+                    <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span>
+                    <span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span>
+                <span class="n">canvas</span><span class="p">,</span> <span class="n">modeText</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="mi">2</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Übergebe das Bild ans Betriebssystem und warte auf einen Tastendruck</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Canvas&quot;</span><span class="p">,</span> <span class="n">canvas</span><span class="p">)</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">SCALE</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">):</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ROTATE</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;4&quot;</span><span class="p">):</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ORBIT</span>
+
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">):</span>
+            <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">):</span>
+            <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
+            <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">):</span>
+            <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
+            <span class="n">delta</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+            <span class="n">delta</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">SCALE</span><span class="p">:</span>
-          <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span>
+            <span class="n">objectScale</span> <span class="o">+=</span> <span class="n">delta</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span><span class="p">:</span>
+            <span class="n">objectTranslate</span> <span class="o">+=</span> <span class="n">delta</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ROTATE</span><span class="p">:</span>
-          <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span>
+            <span class="n">objectRotate</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ORBIT</span><span class="p">:</span>
-          <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span><span class="p">,</span> <span class="n">oz</span>
+            <span class="n">objectOrbit</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
 
-        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vx</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">vy</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">vz</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-      
-      <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">modeText</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-
-
-
-    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Canvas&quot;</span><span class="p">,</span> <span class="n">canvas</span><span class="p">)</span>
-
-    <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">):</span>
-      <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">SCALE</span>
-
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
-      <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span>
-
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">):</span>
-      <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ROTATE</span>
-
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;4&#39;</span><span class="p">):</span>
-      <span class="n">mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ORBIT</span>
-
-    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">):</span>
-      <span class="n">dx</span> <span class="o">=</span> <span class="mf">1.0</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">):</span>
-      <span class="n">dx</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">):</span>
-      <span class="n">dy</span> <span class="o">=</span> <span class="mf">1.0</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">):</span>
-      <span class="n">dy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">):</span>
-      <span class="n">dz</span> <span class="o">=</span> <span class="mf">1.0</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
-      <span class="n">dz</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
-
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">SCALE</span><span class="p">:</span>
-      <span class="n">sx</span> <span class="o">+=</span> <span class="n">dx</span> <span class="o">*</span> <span class="mf">0.1</span>
-      <span class="n">sy</span> <span class="o">+=</span> <span class="n">dy</span> <span class="o">*</span> <span class="mf">0.1</span>
-      <span class="n">sz</span> <span class="o">+=</span> <span class="n">dz</span> <span class="o">*</span> <span class="mf">0.1</span>
-
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">TRANSLATE</span><span class="p">:</span>
-      <span class="n">tx</span> <span class="o">+=</span> <span class="n">dx</span>
-      <span class="n">ty</span> <span class="o">+=</span> <span class="n">dy</span>
-      <span class="n">tz</span> <span class="o">+=</span> <span class="n">dz</span>
-
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ROTATE</span><span class="p">:</span>
-      <span class="n">rx</span> <span class="o">+=</span> <span class="n">dx</span>
-      <span class="n">ry</span> <span class="o">+=</span> <span class="n">dy</span>
-      <span class="n">rz</span> <span class="o">+=</span> <span class="n">dz</span>
-
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">ORBIT</span><span class="p">:</span>
-      <span class="n">ox</span> <span class="o">+=</span> <span class="n">dx</span>
-      <span class="n">oy</span> <span class="o">+=</span> <span class="n">dy</span>
-      <span class="n">oz</span> <span class="o">+=</span> <span class="n">dz</span>
-
-
-
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
-      <span class="k">break</span>
-
-    <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+            <span class="k">break</span>
 </pre></div>
 
            </div>
