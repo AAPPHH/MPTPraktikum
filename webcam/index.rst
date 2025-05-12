@@ -1,3 +1,5 @@
+.. _webcam:
+
 Die Webcam - Einfache Bildnormalisierungen
 ==========================================
 
