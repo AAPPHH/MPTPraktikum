@@ -3,31 +3,8 @@ import numpy as np
 from scipy import signal
 
 def processImage(frame):
-    # Turn image into float32 
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    frame = np.float32(frame / 255.0)
-
-    # Calculate Gradient in X and Y, scale appropiately
-    gx = cv2.Sobel(frame, cv2.CV_32F, 1, 0, ksize=3) / 4.0
-    gy = cv2.Sobel(frame, cv2.CV_32F, 0, 1, ksize=3) / 4.0
-
-    # Calculate Ix^2, IxIy and Iy^2 images
-    Ix2, IxIy, Iy2 = gx ** 2, gx * gy, gy ** 2
-
-    Ix2 = cv2.blur(Ix2, ksize=(5,5))
-    Iy2 = cv2.blur(Iy2, ksize=(5,5))
-    IxIy = cv2.blur(IxIy, ksize=(5,5))
-
-    # Harris Corner Strength
-    kappa = 0.04
-    det = Ix2 * Iy2 - IxIy ** 2
-    trace = Ix2 + Iy2
-    strength = det - kappa *  trace**2
-    
-    strength = np.clip(strength, 0.0, 1.0)
-    strength /= np.max(strength) 
-
-    cv2.imshow("Harris Corner Strength", strength)
+    # TODO: Implement according to instructions
+    pass
 
 
 def mainLoop():

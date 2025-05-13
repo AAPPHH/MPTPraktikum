@@ -58,9 +58,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Der Harris Eckendetektor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#der-code">Der Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schritt-1-das-bild-in-graustufen-umwandeln"><strong>Schritt 1</strong>: Das Bild in Graustufen umwandeln</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schritt-2-die-bildgradienten-berechnen"><strong>Schritt 2</strong>: Die Bildgradienten berechnen</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schritt-3-den-strukturtensor-m-vorbereiten"><strong>Schritt 3</strong>: Den Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> vorbereiten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-4-den-strukturtensor-berechnen"><strong>Schritt 4</strong>: Den Strukturtensor berechnen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-5-die-eckenstarke-berechnen"><strong>Schritt 5</strong>: Die Eckenstärke berechnen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-6-die-eckenstarke-anzeigen"><strong>Schritt 6</strong>: Die Eckenstärke anzeigen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
@@ -105,7 +110,9 @@ Erweiterung des Eckendetektors von <a class="reference external" href="https://e
 \sum_{(x_k, y_k)\in W} \left(
     I(x_k, y_k) - I(x_k + \Delta x, y_k + \Delta y)
 \right)^2\]</div>
-<p>über einem Fenster <span class="math notranslate nohighlight">\(W\)</span> für vier grundlegende Richtungen (<span class="math notranslate nohighlight">\((\Delta x, \Delta y) \in \{ (1,0), (0, 1), (1,1), (1,-1) \}\)</span>)</p>
+<p>über einem Fenster <span class="math notranslate nohighlight">\(W\)</span> für vier grundlegende Richtungen</p>
+<div class="math notranslate nohighlight">
+\[(\Delta x, \Delta y) \in \{ (1,0), (0, 1), (1,1), (1,-1) \}\]</div>
 <p>betrachtet, erweiteren Harris und Stephens diese Idee. Sie approximieren
 <span class="math notranslate nohighlight">\(I(x_k + \Delta x, y_k + \Delta y)\)</span> über die s.g. <a class="reference external" href="https://en.wikipedia.org/wiki/Taylor_series">Taylorapproximation</a>
 ersten Grades, also</p>
@@ -141,8 +148,17 @@ I_x I_y &amp; I_y^2
 <p>Dabei nennt man <span class="math notranslate nohighlight">\(M\)</span> <strong>Strukturtensor</strong>.
 Harris und Stephens berechnen dann die s.g. Eckenstärke als</p>
 <div class="math notranslate nohighlight">
-\[R = det(M) - tr(M)^2\]</div>
-<p>In diesem Praktikum implementieren wir den Eckendetektor „from scatch“.</p>
+\[R = det(M) - \kappa tr(M)^2\]</div>
+<p>mit <span class="math notranslate nohighlight">\(\kappa \approx 0.04\)</span>.
+In diesem Praktikum implementieren wir den Eckendetektor „from scatch“.</p>
+<section id="der-code">
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kanten</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>und implementieren die Funktion <em>processImage</em></p>
+</section>
 <section id="schritt-1-das-bild-in-graustufen-umwandeln">
 <h2><strong>Schritt 1</strong>: Das Bild in Graustufen umwandeln<a class="headerlink" href="#schritt-1-das-bild-in-graustufen-umwandeln" title="Link to this heading"></a></h2>
 <p>Wir müssen zunächst das Bild in Graustufen umwandeln. Konvertieren Sie
@@ -186,6 +202,84 @@ I_x\cdot I_y &amp;=&amp; \left(\frac{\partial I}{\partial x}\right)\cdot\left(\f
 </pre></div>
 </div>
 </div>
+</section>
+<section id="schritt-4-den-strukturtensor-berechnen">
+<h2><strong>Schritt 4</strong>: Den Strukturtensor berechnen<a class="headerlink" href="#schritt-4-den-strukturtensor-berechnen" title="Link to this heading"></a></h2>
+<p>Der Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> für jeden einzelnen Pixel ergibt sich durch
+Summation der Bilder <span class="math notranslate nohighlight">\(I_x^2\)</span>, <span class="math notranslate nohighlight">\(I_y^2\)</span> sowie <span class="math notranslate nohighlight">\(I_x I_y\)</span>. Um dies zu erreichen falten wir diese Bilder
+mit einem s.g. Block-Kernel</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+1&amp;\dots&amp;1\\
+\vdots&amp;\ddots&amp;\vdots\\
+1&amp;\dots&amp;1
+\end{pmatrix}\end{split}\]</div>
+<p>bestehend nur aus einsen. Importieren Sie das <a class="reference external" href="https://scipy.org/">scipy</a> Paket
+und verwenden Sie die <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html">convolve2d</a> Methode
+um diese Faltung durchzuführen. Sie können einen geeigneten Kernel mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.ones.html#">np.ones</a> erzeugen.
+<strong>Tip</strong>: Dividieren Sie durch die Anzahl einsen in ihrem Kernel um effektiv der Mittelwert anstatt der Summe zu bilden.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">Ix2</span>  <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">Ix2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Iy2</span>  <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">Iy2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">IxIy</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">IxIy</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-5-die-eckenstarke-berechnen">
+<h2><strong>Schritt 5</strong>: Die Eckenstärke berechnen<a class="headerlink" href="#schritt-5-die-eckenstarke-berechnen" title="Link to this heading"></a></h2>
+<p>Um die Eckenstärke zu berechnen betrachten wir zunächst die nochmal Gleichung</p>
+<div class="math notranslate nohighlight">
+\[R = det(M) - tr(M)^2\]</div>
+<p>mit</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}M = \sum_{(x_k,y_k)} \begin{pmatrix}
+    I_x^2 &amp; I_x I_y \\
+    I_x I_y &amp; I_y^2
+\end{pmatrix}\end{split}\]</div>
+<p>Für die <a class="reference external" href="https://de.wikipedia.org/wiki/Determinante">Determinante</a> finden wir</p>
+<div class="math notranslate nohighlight">
+\[det(M) =  \left(\sum_{(x_k,y_k)} I_x^2\right) \left( \sum_{(x_k,y_k)} I_y^2 \right)
+       -  \left( \sum_{(x_k,y_k)} I_x I_y \right)^2\]</div>
+<p>und für die <a class="reference external" href="https://de.wikipedia.org/wiki/Spur_(Mathematik)">Spur</a> finden wir entsprechend</p>
+<div class="math notranslate nohighlight">
+\[tr(M) = \sum_{(x_k,y_k)} I_x^2 + \sum_{(x_k,y_k)} I_y^2\]</div>
+<p>Berechnen Sie nun die Determinante sowie die Spur im Python-Code und berechnen Sie dann die Eckenstärke <span class="math notranslate nohighlight">\(R\)</span> für <span class="math notranslate nohighlight">\(kappa = 0.04\)</span>.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="mf">0.04</span>
+<span class="n">det</span> <span class="o">=</span> <span class="n">Ix2</span> <span class="o">*</span> <span class="n">Iy2</span> <span class="o">-</span> <span class="n">IxIy</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">trace</span> <span class="o">=</span> <span class="n">Ix2</span> <span class="o">+</span> <span class="n">Iy2</span>
+<span class="n">strength</span> <span class="o">=</span> <span class="n">det</span> <span class="o">-</span> <span class="n">kappa</span> <span class="o">*</span>  <span class="n">trace</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-6-die-eckenstarke-anzeigen">
+<h2><strong>Schritt 6</strong>: Die Eckenstärke anzeigen<a class="headerlink" href="#schritt-6-die-eckenstarke-anzeigen" title="Link to this heading"></a></h2>
+<p>Die Eckenstärke kann sowohl negativ als auch positiv sein. Wir sind jedoch nur an großen positiven Werten interessiert.
+Normieren Sie die Eckenstärke, indem Sie durch das globale Maximum dividieren (verwenden Sie <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.max.html">np.max</a>).</p>
+<p>Nun binarisieren wir das Bild indem wir zunächst ein gleichgroßes Bild erzeugen (z.B. mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.zeros_like.html">np.zeros_like</a>)
+und überall dort, wo die Eckenstärke größer ist als ein Schwellwert <span class="math notranslate nohighlight">\(T\)</span> eine 1 setzen.
+Zeigen Sie dann beide Bilder mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.zeros_like.html">cv2.imshow</a> an.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">strength</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">strength</span><span class="p">)</span>
+
+<span class="n">corners</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">strength</span><span class="p">)</span>
+<span class="n">corners</span><span class="p">[</span><span class="n">strength</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Harris Corner Strength&quot;</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Harris Corners&quot;</span><span class="p">,</span> <span class="n">corners</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="doc">Harris Eckendetektor - Musterlösung</span></a></p>
 </section>
 </section>
 
