@@ -19,4 +19,5 @@ In diesem Dokument finden Sie die verschiedenen Aufgaben und Beispiele zum MPT-P
    AdaBoost <../AdaBoost/index>
    Histogram of Oriented Gradients <../HOG/index>
    Rechnen mit homogene Koordinaten <../homogen/index>
+   Der Vorwärts-Algorithmus <../forwardalgorithm/index>
 

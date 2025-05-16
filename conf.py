@@ -13,6 +13,7 @@ import sys
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath("./homogen"))
 sys.path.insert(0, os.path.abspath("./kanten"))
+sys.path.insert(0, os.path.abspath("./forwardalgorithm"))
 
 project = "Machine Perception and Tracking - Praktikum"
 copyright = "2025, Prof. Dr. Dennis Müller"

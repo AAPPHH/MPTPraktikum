@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 from scipy import signal
 
+
 def processImage(frame):
-    # Turn image into float32 
+    # Turn image into float32
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     frame = np.float32(frame / 255.0)
 
@@ -12,24 +13,24 @@ def processImage(frame):
     gy = cv2.Sobel(frame, cv2.CV_32F, 0, 1, ksize=3) / 4.0
 
     # Calculate Ix^2, IxIy and Iy^2 images
-    Ix2, IxIy, Iy2 = gx ** 2, gx * gy, gy ** 2
+    Ix2, IxIy, Iy2 = gx**2, gx * gy, gy**2
 
     # Apply Block filter for summation, divide by size of kernel for normalization
     N = 7
-    Ix2  = signal.convolve2d(Ix2, np.ones((N,N))) / (N**2)
-    Iy2  = signal.convolve2d(Iy2, np.ones((N,N))) / (N**2)
-    IxIy = signal.convolve2d(IxIy, np.ones((N,N))) / (N**2)
+    Ix2 = signal.convolve2d(Ix2, np.ones((N, N))) / (N**2)
+    Iy2 = signal.convolve2d(Iy2, np.ones((N, N))) / (N**2)
+    IxIy = signal.convolve2d(IxIy, np.ones((N, N))) / (N**2)
 
     # Harris Corner Strength
     kappa = 0.04
-    det = Ix2 * Iy2 - IxIy ** 2
+    det = Ix2 * Iy2 - IxIy**2
     trace = Ix2 + Iy2
-    strength = det - kappa *  trace**2
-    
-    strength /= np.max(strength) 
-    
+    strength = det - kappa * trace**2
+
+    strength /= np.max(strength)
+
     corners = np.zeros_like(strength)
-    corners[strength > 0.1] = 1.0   
+    corners[strength > 0.1] = 1.0
 
     cv2.imshow("Harris Corner Strength", strength)
     cv2.imshow("Harris Corners", corners)

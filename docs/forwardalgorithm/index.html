@@ -1,0 +1,597 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Der Vorwärts-Algorithmus &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/forwardalgorithm/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="prev" title="Homogene Koordinaten" href="../homogen/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Der Vorwärts-Algorithmus</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#archaologie-das-setting">Archäologie - Das Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hidden-markov-modelle-hmms">Hidden Markov Modelle (HMMs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#der-code">Der Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-1-den-text-saubern"><strong>Schritt 1</strong>: Den Text säubern</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forward.clean_text"><code class="docutils literal notranslate"><span class="pre">clean_text()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-2-beobachtungswahrscheinlichkeiten-pro-text"><strong>Schritt 2</strong>: Beobachtungswahrscheinlichkeiten pro Text</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forward.character_propabilities"><code class="docutils literal notranslate"><span class="pre">character_propabilities()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-3-alle-beobachtungswahrscheinlichkeiten-berechnen"><strong>Schritt 3</strong>: Alle Beobachtungswahrscheinlichkeiten berechnen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forward.get_emmision_propabilities"><code class="docutils literal notranslate"><span class="pre">get_emmision_propabilities()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-4-der-initiale-alpha-vektor"><strong>Schritt 4</strong>: Der initiale Alpha-Vektor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forward.get_initial_alpha"><code class="docutils literal notranslate"><span class="pre">get_initial_alpha()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-5-die-zustandsubergangsmatrix"><strong>Schritt 5</strong>: Die Zustandsübergangsmatrix</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forward.get_state_transition_matrix"><code class="docutils literal notranslate"><span class="pre">get_state_transition_matrix()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-6-ein-schritt-im-vorwarts-algorithmus"><strong>Schritt 6</strong>: Ein Schritt im Vorwärts-Algorithmus</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forward.forward"><code class="docutils literal notranslate"><span class="pre">forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ergebnisse">Ergebnisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Der Vorwärts-Algorithmus</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/forwardalgorithm/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="der-vorwarts-algorithmus">
+<h1>Der Vorwärts-Algorithmus<a class="headerlink" href="#der-vorwarts-algorithmus" title="Link to this heading"></a></h1>
+<p>In diesem Praktikum implementieren Sie den Vorwärts-Algorithmus am Beispiel
+von überlieferten Texten einer fiktiven uralten Zivilisation.</p>
+<section id="archaologie-das-setting">
+<h2>Archäologie - Das Setting<a class="headerlink" href="#archaologie-das-setting" title="Link to this heading"></a></h2>
+<p>Bei einer Ausgrabung finden Sie fünf Texte einer uralten Zivilisation.
+Diese Texte lauten wir folgt</p>
+<p><strong>Erster Text</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🧁🧯<span class="w">  </span>🤇🥌🦟<span class="w">  </span>🤇🤫🥌😼🤫<span class="w">  </span>🤇🤟<span class="w">  </span>🦘🦊🥾
+🤯🤯🧛😎😼<span class="w">  </span>🥌🥦🤇🤇🦟😒<span class="w">  </span>🧁🧛🧁🦊🧯<span class="w">  </span>🦘😎🦘🦟🤯🦺<span class="w">  </span>🥾🥾🥑🥑🥌
+🤟🧁🥦<span class="w">  </span>🥦😼🦊🥾🦺🤇<span class="w">  </span>🧯🦟🦘🤶🦺🦟🥷🧯<span class="w">  </span>😎🦟🦊🤟
+🧁😎🦺🦊🤫🥌🧯<span class="w">  </span>🦺😎<span class="w">  </span>🦘😼🥦😎🥑<span class="w">  </span>🤯🦘🦘🦺🦺<span class="w">  </span>😼🤟🥾🤯🥾🤶🥦🦘
+🦟😎🤟🦺😼🤶🤟<span class="w">  </span>🧁🦟😎🤯🧛🤇🤟<span class="w">  </span>🧯🤟<span class="w">  </span>😎🦘🥌🧁🦘🤶🦺🦊<span class="w">  </span>🤶🤶🤫🤟🦺
+🤇🥌😎🥌🤟🤇<span class="w">  </span>🥦🦺🦘🤇🥾🥷<span class="w">  </span>🤯🦘🦺😒<span class="w">  </span>🧯🦟🦊<span class="w">  </span>🤇🧯🥌<span class="w">  </span>🦟🤇🧛🧛🤟🤯🧛
+🤫🦟<span class="w">  </span>🥦🤶🥑🤇🥑<span class="w">  </span>🥦🦊🥦<span class="w">  </span>😼🤇🦟😎🥑<span class="w">  </span>🧁🦊🤯🤫🦘🥾🦊
+😎😼<span class="w">  </span>🧛😎🧛🦊🤇🦊🦺🥷<span class="w">  </span>🤯🦘🤶🧁🧁🧁🥌<span class="w">  </span>🥷🤶🦊🦊😒🧛<span class="w">  </span>😼😎🤫🧁
+</pre></div>
+</div>
+<p><strong>Zweiter Text</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🦺🤶🦺🦟<span class="w">  </span>🦘🧯<span class="w">  </span>🧛🥑🤯<span class="w">  </span>🤶🥌🤇🥷😒
+🧁🦘🥾<span class="w">  </span>😎🤯<span class="w">  </span>🤫🧁🤟🦺🤟🧯<span class="w">  </span>🦺🤟🦟🤫😼
+🤶😒🦺🥾<span class="w">  </span>🧁🤶🥷🧛🧛🤫🧛<span class="w">  </span>🤇🥾🤫🤇😒🦟🦟<span class="w">  </span>🤇🥦🥷🧁🥑
+😎🧯🦘🦟<span class="w">  </span>🧛🦟🤇🧛🤫<span class="w">  </span>😼🤟🦘<span class="w">  </span>😎🦟🤯
+🥷🤯🤟🧯🧁<span class="w">  </span>🧁🤶🧁🧛🦘<span class="w">  </span>🧁🤶🧯🥑🤯😒<span class="w">  </span>🥦🥾🤶🤫😎<span class="w">  </span>😎😎🤯😼🤶🧁🥷🦟
+🧛😼🤟<span class="w">  </span>🥑🤇🥾<span class="w">  </span>🥾😒🤫<span class="w">  </span>🧁😎🧛🤟🦺🥑🤯🤇<span class="w">  </span>🦟🧯🥷<span class="w">  </span>🥾🤇🥾
+🥦🧁🦊😎🧁😒<span class="w">  </span>😎🤇😼🤯🦊🥾🥷<span class="w">  </span>😎🥌🤯🦟🧛🧁🧛<span class="w">  </span>🦘🧁<span class="w">  </span>😎😒🦊🧛<span class="w">  </span>🥾🥾🤶🤯
+😎😒🧛🤯🧁<span class="w">  </span>🤟🦺🤯🧛<span class="w">  </span>🦊🤶🥾🥑🥷🦘🦺<span class="w">  </span>🦟😼🦘<span class="w">  </span>🦘🤶😼🤫<span class="w">  </span>🦟🦘😼🤯🤯
+</pre></div>
+</div>
+<p><strong>Dritter Text</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🧯🧛🦟🤫🥦🤇🦟<span class="w">  </span>😎🥑🤟🥷🧯🤫🤫<span class="w">  </span>🥷🧯🦺🦺<span class="w">  </span>🧛🥑🥾🦺🧁
+🤇🦟🧁🥌🤇🥾🤶🥑<span class="w">  </span>🥾🤫<span class="w">  </span>😼🥑🦺<span class="w">  </span>🤶🦺🦟<span class="w">  </span>🤫🦺<span class="w">  </span>🥦😼🧯🤫🦺🤶
+🤟🥾🦺🤇<span class="w">  </span>🤯🥦🤫🦟🤯🤟🤟🤶<span class="w">  </span>🧛🥦🧁<span class="w">  </span>🦘🧯🥾🧛🧯<span class="w">  </span>🥑🤶😼
+😎😎🥾🧛🧛<span class="w">  </span>🦘🥑🧁😼🥌🤫🤟<span class="w">  </span>🤟🤇🤶🦊🥾<span class="w">  </span>🤫😼🤫🥾🦟🧁<span class="w">  </span>🤇🦘🦺🧛😼<span class="w">  </span>🥾🤇🥌🧁🤫🥷🦟🤫
+🥑🧁🧁🤫🥑🦟🤟🥑<span class="w">  </span>🧛🥌🥾<span class="w">  </span>😼😼🤶🤟🦘<span class="w">  </span>🤟🦺🤇🦘🧛🤯🥌<span class="w">  </span>🧁🦟🤯🥾
+🦘🥑<span class="w">  </span>😼🥦🦟🧛🥑🧯🥌<span class="w">  </span>🤇😼<span class="w">  </span>😼🤫
+🥾🦊🥷<span class="w">  </span>🦘🤟<span class="w">  </span>🦊🥑🤯🤫🥌🧛<span class="w">  </span>🤇🤫😎🦺🥌<span class="w">  </span>🥾🥦🥑🦊🧁<span class="w">  </span>🥌😼😎🤫🤯
+🥦🤶🧛🤟😒🦟🧁🧯<span class="w">  </span>🤇🤫🧛🥦🦺🤟<span class="w">  </span>🥦🤶🥑🦟<span class="w">  </span>🦺🧛🦘🥦🧯🦺
+</pre></div>
+</div>
+<p><strong>Vierter Text</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>😎🧁🥦🦊🦟🥦<span class="w">  </span>🤶🧯🥌🧯🤟<span class="w">  </span>🧯🦺🧯😒🧁🧛<span class="w">  </span>🦊🧁🥑🤫🤶<span class="w">  </span>🤶🧁🦺🦊😎🤫🧛🥷<span class="w">  </span>😒🤇🥌🤯🤇🤶🤶🥾
+🦊😼🦟🦘😎🧛🤟<span class="w">  </span>😎🤇🤯🧛🤇🦘🦘😼<span class="w">  </span>🥑🥷🥑🤇🤟🤇<span class="w">  </span>🦊🥑🥌😼🦘🤇<span class="w">  </span>😼🤟<span class="w">  </span>🦺🦟🥷😒🥦🤯
+🤇🦟<span class="w">  </span>🧛🤟🥾🤯🥦<span class="w">  </span>🥦😒😎🥑🥷🤟🥾<span class="w">  </span>🥑🤶<span class="w">  </span>🦺🤫🥷😒🦺🤟<span class="w">  </span>🥦😒🧛🧯🤇🥑🤶🥾
+😎🤟🦺😒🥾🤇🤯🤶<span class="w">  </span>🥦🦟🥦🤟🤫🤯🥑🤇<span class="w">  </span>🤟🦊🥾🤟🤶🧯<span class="w">  </span>😼🤯😒<span class="w">  </span>🥦🤇🧁
+😒🤟🥌🥌🤫🧛😼<span class="w">  </span>🤯🦟🥑🤇🥑<span class="w">  </span>🥑🦟😎😼😎<span class="w">  </span>🦘🦟🥦🤇🦘
+🤯😎🥦🦊😼😎🤶🤇<span class="w">  </span>😼🤯🤯😎🥾😼🥷<span class="w">  </span>🤯🥑🦟😼<span class="w">  </span>🥷😎🤇🥌<span class="w">  </span>🦺🦺🦺🥌🦘🧛🤫🤇
+🥷🧁🥦😎<span class="w">  </span>🧁🤇😒🦊🤯🤯😎😼<span class="w">  </span>🧯🧁🥦<span class="w">  </span>😎🤯<span class="w">  </span>🦟🤫🥑🤟🤫🦟<span class="w">  </span>😼🧁🦺😒😒🦺🤫🥦
+🧛🥦🦟😼😒😒🦘<span class="w">  </span>🤇🥾<span class="w">  </span>🥌🥦🧛🤯🤶<span class="w">  </span>🦟🥷🤇🥌😒🤶<span class="w">  </span>🦟🤯😼😼
+</pre></div>
+</div>
+<p><strong>Fünfter Text</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🥌🦊🥾🦊🧁🧯🧛🤯<span class="w">  </span>🧛😎🦟🥌🦘🥾🤯<span class="w">  </span>😎🤶🧁🥌🦘🤇<span class="w">  </span>🧛🦟🤯<span class="w">  </span>🦊🦘🤶🦘🦊🥌<span class="w">  </span>🥷🦊🧛
+🧯😒🤫<span class="w">  </span>😼🥌🧛🥾😼😎🤶<span class="w">  </span>🧁🤫🧛🥾🤫<span class="w">  </span>🦊🦟🦘🤶🥌😼
+🧛🦊🤯🥾<span class="w">  </span>🥑🦟🥑🤇😼<span class="w">  </span>😒🦟<span class="w">  </span>🦘🧛😎<span class="w">  </span>🤟😼
+😒🥾🤶😒🥾<span class="w">  </span>🤇🦘<span class="w">  </span>🥾😼<span class="w">  </span>🥦🦊🥌🦘🦟
+🤶🦘🦟<span class="w">  </span>🧁🧯<span class="w">  </span>🤫🤟😒😒🥦<span class="w">  </span>🥦🧁🥌🦘😼🤟🤶
+🤫🥑🦘🤇🥷🧁<span class="w">  </span>🥑🧁<span class="w">  </span>🤶🧛😒<span class="w">  </span>🥷🥦
+🧯🦊🧛<span class="w">  </span>😼🤯🥑🤟<span class="w">  </span>🧯😼🧯🦊😒🥦<span class="w">  </span>🥾😒🦘🤫🦺🤟🧯<span class="w">  </span>🧛😎🧛🧛😼🤯<span class="w">  </span>🧁😒🦺🦺😒🦺
+🧯😼🤯🧁🥌🤇🧛🦘<span class="w">  </span>🧯🤯<span class="w">  </span>😒🤟😼🥾🤟🤫<span class="w">  </span>😎🤫
+</pre></div>
+</div>
+<p>Zusammen mit ihrem Kollegen überlegen Sie sich ein interessantes Ratespiel.
+Das Spiele funktioniert so:</p>
+<ul class="simple">
+<li><p>Zu Beginn wählt ihr Kollege einen der fünf Texte zufällig.</p></li>
+<li><p>Er wählt ein zufälliges Zeichen aus dem Text und nennt Ihnen dieses dann.</p></li>
+<li><p>Am Anfang wechselt er den Text mit einer Wahrscheinlichkeit von 100% und wählt einen der vier anderen zufällig aus.</p></li>
+<li><p>Nach jedem Zeichen reduziert sich diese Wechsel-Wahrscheinlichkeit jedoch um einen Prozentpunkt (99%, 98%, 97%, etc…)</p></li>
+<li><p>Er wiederholt Schritt 2 und 3 nun 100 mal bis die Wechsel-Wahrscheinlichkeit bei 0% angekommen ist.</p></li>
+<li><p>Sie sollen nun erraten welchen Text der Kollege am Ende in der Hand halten.</p></li>
+</ul>
+<p>Ihr Kollege nennt Ihnen die folgende Zeichenkette</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>😎😎🥦🦊🦺🥑🤇🧛🥦🦟🦘😼🥾
+🥦🤇🥌🦺🤶🦊😎🦟🥷🥷🥌😒🥑
+🦟🦺🤶🤶🥾🥾😼🥑😎🤫😎🦘
+🥷🦘🤯🤯🦟🤟🤯😎🥷🦊🥾🦟
+</pre></div>
+</div>
+<p><strong>Aufgabe</strong>
+Schreiben Sie ein Python-Skript welches die Texte sowie die Zeichenkette einließt und
+mit Hilfe des Vorwärts-Algorithmus aus der Vorlesung die gesuchte Wahrscheinlichkeit für
+jeden der fünf Texte berechnet.</p>
+</section>
+<section id="hidden-markov-modelle-hmms">
+<h2>Hidden Markov Modelle (HMMs)<a class="headerlink" href="#hidden-markov-modelle-hmms" title="Link to this heading"></a></h2>
+<p>Ein Hidden Markov Modell (HMM) ist ein statistisches Modell, das eine Folge von Beobachtungen beschreibt,
+die durch eine zugrunde liegende, <strong>versteckte Zustandsfolge</strong> erzeugt wird. Es eignet sich besonders
+gut für Aufgaben, bei denen man aus einer beobachtbaren Datenreihe (z.B. Zeichen, Geräusche, etc.)
+auf eine nicht direkt sichtbare Abfolge von Zuständen schließen möchte.</p>
+<p>In dieser Aufgabe wird eine Zeichenfolge vorgelesen, bei der die Zeichen <strong>zufällig</strong> (aber nicht völlig beliebig) aus einem
+bestimmten Ursprungstext stammen.
+Sie sollen mit Hilfe eines HMMs <strong>rekonstruieren</strong>, aus welchem Text diese Zeichen stammen könnten.</p>
+<p>Dabei beonachten wir, dass:</p>
+<ul class="simple">
+<li><p>Die Ursprungstexte eine <strong>Verteilung über Buchstaben</strong> aufweist. Beachten Sie das die Zeichen in den fünf Texten unterschiedlich häufig vorkommen!</p></li>
+</ul>
+<p>Das Hidden Markov Modell bildet nun diese Annahmen ab:</p>
+<ul class="simple">
+<li><p>Die <strong>Zustände</strong> im Modell entsprechen hypothetisch dem „echten“ Text aus dem gerade vorgelesen wird (diese sind <strong>nicht beobachtbar</strong>).</p></li>
+<li><p>Die <strong>Beobachtungen</strong> sind die tatsächlich gehörten Zeichen.</p></li>
+<li><p>Die <strong>Übergangswahrscheinlichkeiten</strong> modellieren, wie wahrscheinlich ein Wechsel von einem Text zum nächsten ist.</p></li>
+<li><p>Die <strong>Emissionswahrscheinlichkeiten</strong> beschreiben, wie wahrscheinlich ein bestimmter Buchstabe vorgelesen wird, gegeben den jeweiligen Text (<strong>bedingte Wahrscheinlichkeit</strong>).</p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>Der Vorwärts-Algorithmus<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>Der Vorwärts-Algorithmus ist nun ein Algorithmus zur rekursiven Berechnung einer Wahrscheinlichkeit
+dafür sich in einem bestimmten Zustand <span class="math notranslate nohighlight">\(x_t\)</span> zu befinden gegeben eine Zeitreihe von Beobachtungen
+<span class="math notranslate nohighlight">\(y_{1:t}\)</span>. Mit der Notation <span class="math notranslate nohighlight">\(y_{1:t\}\)</span> ist dabei die Menge alle Beobachtungen
+<span class="math notranslate nohighlight">\(y_1, y_2, \dots, y_t\)</span> gemeint.</p>
+<p>Wir wollen nun berechnen</p>
+<div class="math notranslate nohighlight">
+\[P\left(x_t | y_{1:t}\right)\]</div>
+<p>also die bedingte Wahrscheinlichkeit für einen bestimmten Zustand <span class="math notranslate nohighlight">\(x_t\)</span> gegeben die Beobachtungen. Wir
+betrachten dazu zunächst die Verbundwahrscheinlichkeit <span class="math notranslate nohighlight">\(P(x_t, y_{1:t})\)</span> und schreiben mit Hilfe des
+<a class="reference external" href="https://en.wikipedia.org/wiki/Law_of_total_probability">Satzes der totalen Wahrscheinlichkeit</a></p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(x_t) = P(x_t, y_{1:t}) = \sum_{x_{t-1}} p(x_t, x_{t-1}, y_{1:t})\]</div>
+<p>Dabei iteriert die Summe über alle möglichen Vorgängerzustände. Nach der Definition der
+<a class="reference external" href="https://en.wikipedia.org/wiki/Conditional_probability#:~:text=In%20probability%20theory%2C%20conditional%20probability,relationship%20with%20another%20event%20B.">bedingten Wahrscheinlichkeit</a>
+schreiben wir dann weiter</p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(x_t) = \sum_{x_{t-1}}
+p(y_t | x_t, x_{t-1}, y_{1:t-1})
+p(x_t | x_{t-1}, y_{1:t-1})
+p(x_{t-1}, y_{1:t-1})\]</div>
+<p>Nun können wir argumentieren das <span class="math notranslate nohighlight">\(y_t\)</span> nur von <span class="math notranslate nohighlight">\(x_t\)</span> abhängt (die Beobachtung zum Zeitpunkt <span class="math notranslate nohighlight">\(t\)</span> wird
+nur durch den Zustand in diesem Zeitpunkt beeinflusst). Ausserdem hängt
+<span class="math notranslate nohighlight">\(x_t\)</span> nur von <span class="math notranslate nohighlight">\(x_{t-1}\)</span> ab (der Folgezustand hängt nur vom Vorgängerzustand ab). Damit können wir verkürzt schreiben</p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(x_t) = p(y_t | x_t) \sum_{x_{t-1}}
+p(x_t | x_{t-1})
+\alpha_t(x_{t-1})\]</div>
+<p>Dabei beschreibt <span class="math notranslate nohighlight">\(p(y_t | x_t)\)</span> die Wahrscheinlichkeit dafür in einem konkreten Zustand eine bestimmte
+Beobachtung zu machen. Im Kontext der Aufgabe beschreibt dies also die Wahrscheinlichkeit dafür
+ein bestimmtes Symbol aus dem Text zu hören wenn aus einem konkreten (bekannten) Text vorgelesen wird.</p>
+<p>Der Term <span class="math notranslate nohighlight">\(p(x_t | x_{t-1})\)</span> beschreibt die Wahrscheinlichkeit für einen Übergang von einem Zustand in den nächsten.
+Im Kontext der Aufgabe also die Wahrscheinlichkeit dafür das der Text gewechselt wird bzw. beibehalten wird.</p>
+<p>Der Vorwärts-Algorithmus funktioniert nur so das zunächst die Ausgangswahrscheinlichkeiten
+<span class="math notranslate nohighlight">\(\alpha_0(x_0)\)</span> initialisiert werden. Dann wird für jede Beobachtung nacheinander, also für <span class="math notranslate nohighlight">\(t=1,\dots,T\)</span> berechnet</p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(x_t) = p(y_t | x_t) \sum_{x_{t-1}}
+p(x_t | x_{t-1})
+\alpha_t(x_{t-1})\]</div>
+<p>Die gesuchte Wahrscheinlichkeit für einen konkreten Zustand gegeben die Beobachtungsreihe lautet dann</p>
+<div class="math notranslate nohighlight">
+\[P(x_T|1_{1:T}) = \frac{\alpha_T(x_T)}{\sum_{x_t} \alpha_T(x_t)}\]</div>
+<p>Man normiert also die Alpha-Werte indem man durch deren Summe über alle möglichen Zustände dividiert.</p>
+</section>
+<section id="der-code">
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Diese ist insofern schon vorbereitet als das die Texte sowie die beobachtete Sequenz an Zeichen
+als Variablen bereits übernommen wurden. Wir werden nun ein Hidden Markov Modell
+mit fünf Zuständen (der jeweils vorgelesene Text) definieren und die Beobachtungswahrscheinlichkeiten
+für jedes Zeichen in jedem Zustand bestimmen. Anschließend implementieren wir den Vorwärts-Algorithmus
+und bestimmen mit diesem die Wahrscheinlichkeiten für jeden der fünf Zustände gegeben die
+beobachtete Zeichensequenz.</p>
+</section>
+<section id="schritt-1-den-text-saubern">
+<h2><strong>Schritt 1</strong>: Den Text säubern<a class="headerlink" href="#schritt-1-den-text-saubern" title="Link to this heading"></a></h2>
+<p>Bevor wir die Beobachtungswahrscheinlichkeiten bestimmen können müssen wir die
+Texte zunächste von unerwünschten Zeichen säubern. Implementieren Sie die Methode</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="forward.clean_text">
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#clean_text"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.clean_text" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>: 
+Clean the text by removing all white spaces and new line character (\n)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – The text to clean</p>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>The same text witout white spaces and new line characters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Verwenden Sie
+<a class="reference external" href="https://www.w3schools.com/python/ref_string_replace.asp">replace</a> um unerwünschte Zeichen zu entfernen.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-2-beobachtungswahrscheinlichkeiten-pro-text">
+<h2><strong>Schritt 2</strong>: Beobachtungswahrscheinlichkeiten pro Text<a class="headerlink" href="#schritt-2-beobachtungswahrscheinlichkeiten-pro-text" title="Link to this heading"></a></h2>
+<p>Um die Beobachtungswahrscheinlichkeiten der Zeichen für einen einzelnen Text zu berechnen müssen wir im Grunde
+nur zählen wie oft ein bestimmtes Zeichen in diesem Text vorkommt und dies ins Verhältniss zu allen Zeichen in dem Text setzen.</p>
+<p>Implementieren Sie die nun die Methode</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="forward.character_propabilities">
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">character_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_chars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#character_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.character_propabilities" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>:
+Given a text, calculate the empirical observation propability of 
+all characters from the „all_chars“ list.</p>
+<p>The observation propability for character c 
+is given as the number of occurrences of that character divided by the total
+number of characters in the string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – The text for which character observation propabilities are to be calculated</p></li>
+<li><p><strong>all_chars</strong> – A set of unique characters. The propability for each such character is to be calcualted.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary mapping all characters within the all_chars parameter to its respective observation propability.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>indem Sie <a class="reference external" href="https://www.w3schools.com/python/ref_string_count.asp">count</a> verwenden um die Häufigkeit einzelner
+Zeichen in einem String zu zählen. Rufen Sie zunächst <code class="xref py py-func docutils literal notranslate"><span class="pre">clean_text()</span></code> auf um den übergebenen Text zu säubern.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">):</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="n">char</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">all_chars</span>
+  <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-3-alle-beobachtungswahrscheinlichkeiten-berechnen">
+<h2><strong>Schritt 3</strong>: Alle Beobachtungswahrscheinlichkeiten berechnen<a class="headerlink" href="#schritt-3-alle-beobachtungswahrscheinlichkeiten-berechnen" title="Link to this heading"></a></h2>
+<p>Nun müssen wir lediglich noch einmal systematisch alle Beobachtungswahrscheinlichkeiten
+berechnen und als Liste zurückgeben. Implementieren Sie dazu die Methode</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="forward.get_emmision_propabilities">
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_emmision_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_texts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_emmision_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_emmision_propabilities" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>:
+Return the emmision propabilities for each character in all the sets. 
+This is essentially a list of dictionaries provided by <a class="reference internal" href="#forward.character_propabilities" title="forward.character_propabilities"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward.character_propabilities()</span></code></a></p>
+<ul class="simple">
+<li><p>Join all the texts together and clean the result (call <a class="reference internal" href="#forward.clean_text" title="forward.clean_text"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clean_text()</span></code></a>).</p></li>
+<li><p>Convert the joined string into a set to retrieve the unique characters (call <a class="reference external" href="https://www.w3schools.com/python/python_sets.asp">set</a>)</p></li>
+<li><p>Return a list of emmision propabilities dictionaries for all the texts (call <a class="reference internal" href="#forward.character_propabilities" title="forward.character_propabilities"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward.character_propabilities()</span></code></a>)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>all_texts</strong> – A list of texts</p>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of dictionaries with emmision propabilities for each text</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>indem Sie den TODO-Anweisungen innerhalb der Methode folgen. Verwenden Sie
+<a class="reference external" href="https://www.w3schools.com/python/ref_string_join.asp">join</a>.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_emmision_propabilities</span><span class="p">(</span><span class="n">all_texts</span><span class="p">):</span>
+  <span class="c1"># Join all texts and clean them</span>
+  <span class="n">joined_text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_texts</span><span class="p">))</span>
+
+  <span class="c1"># Get a unique list of all characters across all five texts</span>
+  <span class="n">all_chars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">joined_text</span><span class="p">)</span>
+
+  <span class="c1"># Now get the character emmision propabilities for each text</span>
+  <span class="k">return</span> <span class="p">[</span><span class="n">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">all_texts</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-4-der-initiale-alpha-vektor">
+<h2><strong>Schritt 4</strong>: Der initiale Alpha-Vektor<a class="headerlink" href="#schritt-4-der-initiale-alpha-vektor" title="Link to this heading"></a></h2>
+<p>Wir werden den Vorwärts-Algorithmus in vektorisierter Form implementieren, d.h. wir
+berechnen die geschätzten Zustandswahrscheinlichkeiten (die Alpha-Werte <span class="math notranslate nohighlight">\(\alpha_t\)</span>) als
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html">np.array</a>. Da unser
+Hidden Markov Model fünf diskrete Zustände verwaltet (die fünf Texte aus denen vorgelesen werden kann)
+ist dieser Vektor fünf-dimensional. Um den rekursiven Algorithmus zu starten benötigen wir initiale
+Werte für ebendiese Alpha-Werte. In unserem konkreten Kontext wissen wir nicht mit welchem Text
+der Kollege zu lesen beginnt, die Zustände <span class="math notranslate nohighlight">\(x_1, \dots, x_5\)</span> sind also alle gleichwahrscheinlich, d.h.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\alpha}_0 = (1, 1, 1, 1, 1)\]</div>
+<p>Implementieren Sie nun die Methode</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="forward.get_initial_alpha">
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_initial_alpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_initial_alpha"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_initial_alpha" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>:
+Return the initial alpha vector for the forward algorithm.</p>
+<p>Hint: In the beginning, all states are equally likely</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array of shape 5x1 with the initial (equally likely) alpha values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_initial_alpha</span><span class="p">():</span>
+  <span class="c1"># In the begining, we don´t know which text our colleague choose</span>
+  <span class="c1"># to start with, so all texts are equally likely</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-5-die-zustandsubergangsmatrix">
+<h2><strong>Schritt 5</strong>: Die Zustandsübergangsmatrix<a class="headerlink" href="#schritt-5-die-zustandsubergangsmatrix" title="Link to this heading"></a></h2>
+<p>Im Laufe des Vorwärts-Algorthmus müssen wir den Term</p>
+<div class="math notranslate nohighlight">
+\[\sum_{x_{t-1}}  p(x_t | x_{t-1}) \alpha_t(x_{t-1})\]</div>
+<p>berechnen. Dabei summiert die Summe über alle möglichen Zustände <span class="math notranslate nohighlight">\(x_{t-1}\)</span>, in unserem Fall also
+alle fünf Text. Die Übergangswahrscheinlichkeiten sind dabei derart das mit 90% Wahrscheinlichkeit der
+selbe Text wieder gewählt wird während die restlichen 10% gleichmäßig auf die vier verbleibenden Text
+aufgeteilt werden. Für z.B. <span class="math notranslate nohighlight">\(x_t = 1\)</span>, also den ersten Text läßt sich die Summe als Skalarprodukt</p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(1) = (0.9, 0.025, 0.025, 0.025, 0.025)\cdot \boldsymbol{\alpha_{t-1}}\]</div>
+<p>und entsprechend</p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(2) = (0.025, 0.9, 0.025, 0.025, 0.025)\cdot \boldsymbol{\alpha_{t-1}}\]</div>
+<p>etc. Der Zustandsübergang vom alten Alpha-Vektor <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}_{t-1}\)</span> zum neuen Alpha-Vektor <span class="math notranslate nohighlight">\(\boldsymbol{\alpha}_t\)</span>
+läßt sich demnach als Matrixmultiplikation ausdrücken.</p>
+<p>Implementieren Sie nun die Methode</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="forward.get_state_transition_matrix">
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_state_transition_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_state_transition_matrix"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_state_transition_matrix" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>:
+Return the state transition matrix for the forward algorithm.</p>
+<p>Hint: With 90% chance the state stays the same while the remaining 10% shall be equally divided between the four other states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array of shape 5x5 with the correct state transition propabilities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_state_transition_matrix</span><span class="p">():</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">],</span>
+    <span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="schritt-6-ein-schritt-im-vorwarts-algorithmus">
+<h2><strong>Schritt 6</strong>: Ein Schritt im Vorwärts-Algorithmus<a class="headerlink" href="#schritt-6-ein-schritt-im-vorwarts-algorithmus" title="Link to this heading"></a></h2>
+<p>Was nun noch zu tun bleibt ist einen konkreten Schritt im Vorswärtsalgorithmus auszurechnen, also konkret</p>
+<div class="math notranslate nohighlight">
+\[\alpha_t(x_t) = p(y_t | x_t) \sum_{x_{t-1}}
+p(x_t | x_{t-1})
+\alpha_t(x_{t-1})\]</div>
+<p>für alle Zustände <span class="math notranslate nohighlight">\(x_t = 1, 2, 3, 4, 5\)</span> zu berechnen. Für die Summe haben wir bereits argumentiert
+das sich diese als Matrixmultiplikation zwischen dem Alpha-Vektor sowie der Zustandsübergangsmatrix (siehe oben) darstellen läßt.</p>
+<p>Der Term <span class="math notranslate nohighlight">\(p(y_t | x_t)\)</span> entspricht nun der Wahrscheinlichkeit für das Auftreten (observierens, beobachten) des Zeichen
+<span class="math notranslate nohighlight">\(y_t\)</span> wenn wir im Zustand <span class="math notranslate nohighlight">\(x_t\)</span> sind. Hier konkret also die Wahrscheinlichkeit für ein bestimmtes Zeichen
+gegen den konkreten Text aus dem es stammt. Diese Wahrscheinlichkeiten haben wir in den Methoden
+<a class="reference internal" href="#forward.character_propabilities" title="forward.character_propabilities"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward.character_propabilities()</span></code></a> und <a class="reference internal" href="#forward.get_emmision_propabilities" title="forward.get_emmision_propabilities"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward.get_emmision_propabilities()</span></code></a> bereits berechnet.</p>
+<p>Implementieren Sie nun die Methode</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="forward.forward">
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">character</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_transition_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emmision_propabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#forward"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.forward" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>: Implement one step of the forward algorithm.</p>
+<ul class="simple">
+<li><p>Given the past alpha-values and the newly read character, use the state_transition_matrix</p></li>
+</ul>
+<p>to first predict the new state propabilities (new alpha values) according to the script.</p>
+<ul class="simple">
+<li><p>Then multiply the state propabilities with the emmision propabilities of the observed character</p></li>
+</ul>
+<p>for each alphabet to retrieve the new alpha values.</p>
+<ul class="simple">
+<li><p>Normalize the alpha vector after each step by diving by its sum. This helps to achieve numerically more stable results</p></li>
+</ul>
+<p>and allows for better interpretation of the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alpha</strong> – np.array of shape (5,1) holding the past alpha values</p></li>
+<li><p><strong>character</strong> – Observed character in this step</p></li>
+<li><p><strong>state_transition_matrix</strong> – np.array of shape (5,5) holding the state transition propabilities</p></li>
+<li><p><strong>emmision_propabilities</strong> – List of dictionaries holding the character emmision propabilities for each alphabet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>New alpha-vector after state transition and observation update (np.array of shape 5,1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>und folgen Sie den TODO-Anweisungen.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">):</span>
+  <span class="c1"># TODO: Implement state transition and update the alpha vector accordingly</span>
+  <span class="n">alpha</span> <span class="o">=</span> <span class="n">state_transition_matrix</span> <span class="o">@</span> <span class="n">alpha</span>
+
+  <span class="c1"># TODO: Retrieve symbol emmision propabilties for the given character and update the alpha vector</span>
+  <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">alphabet</span><span class="p">[</span><span class="n">character</span><span class="p">]</span> <span class="k">for</span> <span class="n">alphabet</span> <span class="ow">in</span> <span class="n">emmision_propabilities</span><span class="p">])</span>
+  <span class="n">alpha</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">*</span> <span class="n">alpha</span>
+
+  <span class="c1"># TODO: Normalize alpha for better visualization (divide by sum)</span>
+  <span class="n">alpha</span> <span class="o">/=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+  <span class="c1"># TODO: Return alpha</span>
+  <span class="k">return</span> <span class="n">alpha</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="ergebnisse">
+<h2>Ergebnisse<a class="headerlink" href="#ergebnisse" title="Link to this heading"></a></h2>
+<p>Wenn Sie alles richtig implemeniert haben sehen Sie eine Grafik welche die Verteilung der
+geschätzten Zustandswahrscheinlichkeiten (Alpha-Werte) nach jedem einzelnen Zeichen zeigt.
+Dunklere Kästchen entsprechen dabei höheren Wahrscheinlichkeiten für den jeweiligen Zustand (Text).</p>
+<a class="reference internal image-reference" href="../_images/alphaovertime.png"><img alt="Alpha über Zeitpunkt" class="align-center" src="../_images/alphaovertime.png" style="width: 800px;" />
+</a>
+<p>Es ist schön zu sehen das zunächst (für die ersten 25 Schritte) der erste Text am wahrscheinlichsten ist.
+Text 4 ist jedoch ähnlich wahrscheinlich. Etwa zu Schritt 25 schätzt das Modell nun das der <em>hidden state</em>
+(also der Text, aus dem vorgelesen wurde) sich zu Text 4 verändert hat weil die Wahrscheinlichkeit für Text 1
+auf nahezu 0 sinkt. Schaut man in die übermittelte Sequenz so steht an 25ter Stelle das Symbol 😒.
+Dieses kommt im vierten Text tatsächlich recht häufig vor während es im ersten Text nur ein einziges mal auftaucht.
+Diese Beobachtung scheint also ausschlaggebend dafür zu sein das das Modell die Zustandswahrscheinlichkeiten
+drastisch verändert und sich für Text 4 entscheidet.</p>
+<p>Zwischen Schritt 30 und 40 konvergiert das Modell immer stärker zu der Vermutung das nun aus Text 2 gelesen wird.
+Diese Vermutung hält sich auch bis zum Ende der Sequenz so das ihre Schätzung in dem Eingangs erwähnten Spiel mit ihrem Kollegen
+also wäre, das dieser am Ende aus dem zweiten Text liest. Der Vorwärts-Algorithmus erlaubt es die Zustandsübergänge
+und die Beobachtung so miteinander zu kombinieren das wir den wahrscheinlichsten Zustand ermitteln können.</p>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="doc">Vorswärtsalgorithmus - Musterlösung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../homogen/index.html" class="btn btn-neutral float-left" title="Homogene Koordinaten" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

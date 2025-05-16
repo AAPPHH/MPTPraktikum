@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from scipy import signal
 
+
 def processImage(frame):
     # TODO: Implement according to instructions
     pass
