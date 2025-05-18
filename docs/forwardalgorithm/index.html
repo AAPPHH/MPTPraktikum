@@ -188,9 +188,8 @@ Das Spiele funktioniert so:</p>
 <ul class="simple">
 <li><p>Zu Beginn wählt ihr Kollege einen der fünf Texte zufällig.</p></li>
 <li><p>Er wählt ein zufälliges Zeichen aus dem Text und nennt Ihnen dieses dann.</p></li>
-<li><p>Am Anfang wechselt er den Text mit einer Wahrscheinlichkeit von 100% und wählt einen der vier anderen zufällig aus.</p></li>
-<li><p>Nach jedem Zeichen reduziert sich diese Wechsel-Wahrscheinlichkeit jedoch um einen Prozentpunkt (99%, 98%, 97%, etc…)</p></li>
-<li><p>Er wiederholt Schritt 2 und 3 nun 100 mal bis die Wechsel-Wahrscheinlichkeit bei 0% angekommen ist.</p></li>
+<li><p>Nun wechselt er den Text mit einer Wahrscheinlichkeit von 10% und wählt einen der vier anderen zufällig aus.</p></li>
+<li><p>Er wiederholt Schritt 2 und 3 nun 50 mal und nennt ihnen jeweils ein zufälliges Zeichen aus dem Text, den er gerade in der Hand hält.</p></li>
 <li><p>Sie sollen nun erraten welchen Text der Kollege am Ende in der Hand halten.</p></li>
 </ul>
 <p>Ihr Kollege nennt Ihnen die folgende Zeichenkette</p>
@@ -291,7 +290,7 @@ Texte zunächste von unerwünschten Zeichen säubern. Implementieren Sie die Met
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.clean_text">
 <span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#clean_text"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.clean_text" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: 
+<dd><p><strong>TODO</strong>:
 Clean the text by removing all white spaces and new line character (\n)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter<span class="colon">:</span></dt>
@@ -322,9 +321,9 @@ nur zählen wie oft ein bestimmtes Zeichen in diesem Text vorkommt und dies ins 
 <dt class="sig sig-object py" id="forward.character_propabilities">
 <span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">character_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_chars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#character_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.character_propabilities" title="Link to this definition"></a></dt>
 <dd><p><strong>TODO</strong>:
-Given a text, calculate the empirical observation propability of 
+Given a text, calculate the empirical observation propability of
 all characters from the „all_chars“ list.</p>
-<p>The observation propability for character c 
+<p>The observation propability for character c
 is given as the number of occurrences of that character divided by the total
 number of characters in the string.</p>
 <dl class="field-list simple">
@@ -361,7 +360,7 @@ berechnen und als Liste zurückgeben. Implementieren Sie dazu die Methode</p>
 <dt class="sig sig-object py" id="forward.get_emmision_propabilities">
 <span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_emmision_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_texts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_emmision_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_emmision_propabilities" title="Link to this definition"></a></dt>
 <dd><p><strong>TODO</strong>:
-Return the emmision propabilities for each character in all the sets. 
+Return the emmision propabilities for each character in all the sets.
 This is essentially a list of dictionaries provided by <a class="reference internal" href="#forward.character_propabilities" title="forward.character_propabilities"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward.character_propabilities()</span></code></a></p>
 <ul class="simple">
 <li><p>Join all the texts together and clean the result (call <a class="reference internal" href="#forward.clean_text" title="forward.clean_text"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clean_text()</span></code></a>).</p></li>

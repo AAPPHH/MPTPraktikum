@@ -80,9 +80,8 @@ Das Spiele funktioniert so:
 
 * Zu Beginn wählt ihr Kollege einen der fünf Texte zufällig.
 * Er wählt ein zufälliges Zeichen aus dem Text und nennt Ihnen dieses dann.
-* Am Anfang wechselt er den Text mit einer Wahrscheinlichkeit von 100% und wählt einen der vier anderen zufällig aus. 
-* Nach jedem Zeichen reduziert sich diese Wechsel-Wahrscheinlichkeit jedoch um einen Prozentpunkt (99%, 98%, 97%, etc...)
-* Er wiederholt Schritt 2 und 3 nun 100 mal bis die Wechsel-Wahrscheinlichkeit bei 0% angekommen ist.
+* Nun wechselt er den Text mit einer Wahrscheinlichkeit von 10% und wählt einen der vier anderen zufällig aus. 
+* Er wiederholt Schritt 2 und 3 nun 50 mal und nennt ihnen jeweils ein zufälliges Zeichen aus dem Text, den er gerade in der Hand hält.
 * Sie sollen nun erraten welchen Text der Kollege am Ende in der Hand halten.
 
 Ihr Kollege nennt Ihnen die folgende Zeichenkette

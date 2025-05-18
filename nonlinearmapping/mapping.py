@@ -1,122 +1,68 @@
 import numpy as np
-import sys
-from matplotlib import pyplot as plt
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.patches import Ellipse
+from misc import draw_cov_ellipses
 
-N = 4096
-mu = 0.5
-std = 0.03
-
-
-def f(x):
-    x = np.power(x, 0.8)
-    # x = 3*x**2 - 2*x**3
-    # x = 0.5 + 0.5 * np.sin(8.0 * np.pi * x)
-    # x = 3*x**2 - 2*x**3
-
-    # x = 3*x**2 - 2*x**3
-    # x = 3*x**2 - 2*x**3
-    return x
+N_SAMPLES = 1024
 
 
-def grad_f(x):
-    return (f(x + 0.01) - f(x)) / 0.01
+def map_samples(samples):
+    x0, x1 = samples[:, 0], samples[:, 1]
+
+    z0 = 0.5 * np.power(x0, 1.4) + 0.9 * np.power(x1, 1.2)
+    z1 = 1.2 * np.power(x0, 1.2) + 0.4 * np.power(x1, 1.3)
+
+    return np.stack((z0, z1), axis=1)
 
 
-fig, axs = plt.subplots(2, 2)
-
-
-def draw():
-    # Create normal distributed values
-    x = np.clip(np.random.normal(mu, std, (N,)), 0, 1)
-
-    # Map them through the non-linearity
-    y = f(x)
-
-    # Output Histogram
-    axs[0, 0].hist(y, 32, orientation="horizontal", density=True)
-    axs[0, 0].set_box_aspect(4.0)
-    axs[0, 0].set_ylim(-0.1, 1.1)
-
-    # Mapping Function
-    x1 = np.linspace(0.0, 1.0, 256)
-    y1 = f(x1)
-    axs[0, 1].plot(x1, y1)
-
-    # Tangent
-    m = grad_f(mu)
-    b = f(mu) - m * mu
-    y2 = m * x1 + b
-    axs[0, 1].plot(x1, y2)
-
-    # Calculate estimate mu/std of mapped function
-    mu_estimated = m * mu + b
-    std_estimted = std * np.abs(m)
-    y = np.exp(-((x1 - mu_estimated) ** 2) / (2 * std_estimted**2)) / (
-        std_estimted * np.sqrt(2 * np.pi)
+def jacobian(mu):
+    x0, x1 = mu[0], mu[1]
+    return np.array(
+        [
+            [0.5 * 1.4 * np.power(x0, 0.4), 0.9 * 1.2 * np.power(x1, 0.2)],
+            [1.2 * 1.2 * np.power(x0, 0.2), 0.4 * 1.3 * np.power(x1, 0.3)],
+        ]
     )
-    axs[0, 0].plot(y, x1)
-
-    # Boundaries
-    axs[0, 1].plot([mu - 3 * std, mu - 3 * std], [0, 1], "k--")
-    axs[0, 1].plot([mu + 3 * std, mu + 3 * std], [0, 1], "k--")
-
-    axs[0, 1].set_xlim(-0.1, 1.1)
-    axs[0, 1].set_ylim(-0.1, 1.1)
-    axs[1, 0].set_axis_off()
-
-    # Input Histogram
-    axs[1, 1].hist(x, 32, density=True)
-    axs[1, 1].set_box_aspect(0.25)
-    axs[1, 1].set_xlim(-0.1, 1.1)
-
-    y = np.exp(-((x1 - mu) ** 2) / (2 * std**2)) / (std * np.sqrt(2 * np.pi))
-    axs[1, 1].plot(x1, y)
 
 
-def on_press(event):
-    global mu, std
-    print("press", event.key)
-    sys.stdout.flush()
+mu = np.array([4.5, 4.5])
+cov = np.array([[0.7, -0.4], [-0.4, 1.4]])
+samples = np.random.multivariate_normal(mu, cov, size=N_SAMPLES)
+mapped_samples = map_samples(samples)
 
-    if event.key == "+":
-        mu = np.clip(mu + 0.02, 0.0, 1.0)
+estimated_mu = np.mean(mapped_samples, axis=0)
+estimated_cov = np.cov(mapped_samples.T)
 
-    if event.key == "-":
-        mu = np.clip(mu - 0.02, 0.0, 1.0)
-
-    if event.key == "*":
-        std = np.clip(std * 1.08, 0.0, 1.0)
-
-    if event.key == "/":
-        std = np.clip(std / 1.08, 0.0, 1.0)
-
-    axs[0, 0].clear()
-    axs[0, 1].clear()
-    axs[1, 0].clear()
-    axs[1, 1].clear()
-    draw()
-    fig.canvas.draw()
+calculated_mu = map_samples(mu.reshape(1, -1))[0]
+J = jacobian(mu)
+calculated_cov = J @ cov @ J.T
+# print(estimated_mu, calculated_mu)
+# print("\n")
+#  print(estimated_cov, "\n", calculated_cov)
 
 
-draw()
-fig.canvas.mpl_connect("key_press_event", on_press)
+sns.set_style("whitegrid")
+fig, ax = plt.subplots(figsize=(8, 6))
+
+df = pd.DataFrame(samples, columns=["x", "y"])
+sns.scatterplot(x="x", y="y", data=df, ax=ax)
+
+df = pd.DataFrame(mapped_samples, columns=["x", "y"])
+sns.scatterplot(x="x", y="y", data=df, ax=ax)
+
+draw_cov_ellipses(mu, cov, ax, edgecolor="lightblue", facecolor="none", linewidth=2)
+draw_cov_ellipses(
+    estimated_mu, estimated_cov, ax, edgecolor="orange", facecolor="none", linewidth=2
+)
+draw_cov_ellipses(
+    calculated_mu, calculated_cov, ax, edgecolor="red", facecolor="none", linewidth=2
+)
+
+plt.title("Scatter plot of Multivariate Normal Samples")
+plt.xlabel("X-axis")
+plt.ylabel("Y-axis")
+plt.xlim(0.0, 15.0)
+plt.ylim(0.0, 15.0)
 plt.show()
-
-# def plot_function(image, col):
-#     W, H = image.shape[1], image.shape[0]
-
-#     x0, y0 = None, None
-#     for x1 in np.linspace(0.0, 1.0, W // 10):
-#         y1 = 1.0 - f(x1)
-
-#         if x0 is not None:
-#             cv2.line(image, (int(x0 * W), int(y0 * H)), (int(x1 * W), int(y1 * H)), col, 1)
-
-#         x0, y0 = x1, y1
-
-# image = np.zeros((512, 512, 3))
-
-# C = 48
-# plot_function(image[C:-C, C:-C], (0.8, 0.5, 0.1))
-# cv2.imshow("Mapping", image)
-# cv2.waitKey(0)

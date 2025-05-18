@@ -99,7 +99,7 @@ window.addEventListener("load", () => mermaid.run());
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.family&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Segoe UI Emoji&#39;</span> 
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.family&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Segoe UI Emoji&quot;</span>
 
 <span class="n">text1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">  🧁🧯  🤇🥌🦟  🤇🤫🥌😼🤫  🤇🤟  🦘🦊🥾</span>
@@ -157,179 +157,170 @@ window.addEventListener("load", () => mermaid.run());
 
 <span class="n">sequence</span> <span class="o">=</span> <span class="s2">&quot;😎😎🥦🦊🦺🥑🤇🧛🥦🦟🦘😼🥾🥦🤇🥌🦺🤶🦊😎🦟🥷🥷🥌😒🥑🦟🦺🤶🤶🥾🥾😼🥑😎🤫😎🦘🥷🦘🤯🤯🦟🤟🤯😎🥷🦊🥾🦟&quot;</span>
 
+
 <div class="viewcode-block" id="clean_text">
 <a class="viewcode-back" href="../forwardalgorithm/index.html#forward.clean_text">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">  **TODO**: </span>
-<span class="sd">  Clean the text by removing all white spaces and new line character (\\\\n)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**:</span>
+<span class="sd">    Clean the text by removing all white spaces and new line character (\\\\n)</span>
 
-<span class="sd">  :param text: The text to clean</span>
-<span class="sd">  :return: The same text witout white spaces and new line characters</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+<span class="sd">    :param text: The text to clean</span>
+<span class="sd">    :return: The same text witout white spaces and new line characters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="character_propabilities">
 <a class="viewcode-back" href="../forwardalgorithm/index.html#forward.character_propabilities">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">  **TODO**:</span>
-<span class="sd">  Given a text, calculate the empirical observation propability of </span>
-<span class="sd">  all characters from the &quot;all_chars&quot; list.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**:</span>
+<span class="sd">    Given a text, calculate the empirical observation propability of</span>
+<span class="sd">    all characters from the &quot;all_chars&quot; list.</span>
 
-<span class="sd">  The observation propability for character c </span>
-<span class="sd">  is given as the number of occurrences of that character divided by the total</span>
-<span class="sd">  number of characters in the string. </span>
+<span class="sd">    The observation propability for character c</span>
+<span class="sd">    is given as the number of occurrences of that character divided by the total</span>
+<span class="sd">    number of characters in the string.</span>
 
-<span class="sd">  :param text: The text for which character observation propabilities are to be calculated</span>
-<span class="sd">  :param all_chars: A set of unique characters. The propability for each such character is to be calcualted. </span>
-<span class="sd">  :return: A dictionary mapping all characters within the all_chars parameter to its respective observation propability.</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-  <span class="k">return</span> <span class="p">{</span>
-    <span class="n">char</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">all_chars</span>
-  <span class="p">}</span></div>
+<span class="sd">    :param text: The text for which character observation propabilities are to be calculated</span>
+<span class="sd">    :param all_chars: A set of unique characters. The propability for each such character is to be calcualted.</span>
+<span class="sd">    :return: A dictionary mapping all characters within the all_chars parameter to its respective observation propability.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="get_emmision_propabilities">
 <a class="viewcode-back" href="../forwardalgorithm/index.html#forward.get_emmision_propabilities">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_emmision_propabilities</span><span class="p">(</span><span class="n">all_texts</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**:</span>
-<span class="sd">  Return the emmision propabilities for each character in all the sets. </span>
-<span class="sd">  This is essentially a list of dictionaries provided by :py:meth:`forward.character_propabilities`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**:</span>
+<span class="sd">    Return the emmision propabilities for each character in all the sets.</span>
+<span class="sd">    This is essentially a list of dictionaries provided by :py:meth:`forward.character_propabilities`</span>
 
-<span class="sd">  * Join all the texts together and clean the result (call :py:meth:`clean_text`).</span>
-<span class="sd">  * Convert the joined string into a set to retrieve the unique characters (call `set &lt;https://www.w3schools.com/python/python_sets.asp&gt;`_)</span>
-<span class="sd">  * Return a list of emmision propabilities dictionaries for all the texts (call :py:meth:`forward.character_propabilities`)</span>
-<span class="sd">  </span>
-<span class="sd">  :param all_texts: A list of texts</span>
-<span class="sd">  :return: A list of dictionaries with emmision propabilities for each text</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="c1"># Join all texts and clean them</span>
-  <span class="n">joined_text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_texts</span><span class="p">))</span>
-  
-  <span class="c1"># Get a unique list of all characters across all five texts</span>
-  <span class="n">all_chars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">joined_text</span><span class="p">)</span>
+<span class="sd">    * Join all the texts together and clean the result (call :py:meth:`clean_text`).</span>
+<span class="sd">    * Convert the joined string into a set to retrieve the unique characters (call `set &lt;https://www.w3schools.com/python/python_sets.asp&gt;`_)</span>
+<span class="sd">    * Return a list of emmision propabilities dictionaries for all the texts (call :py:meth:`forward.character_propabilities`)</span>
 
-  <span class="c1"># Now get the character emmision propabilities for each text</span>
-  <span class="k">return</span> <span class="p">[</span><span class="n">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">all_texts</span><span class="p">]</span></div>
+<span class="sd">    :param all_texts: A list of texts</span>
+<span class="sd">    :return: A list of dictionaries with emmision propabilities for each text</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Join all texts and clean them</span>
 
-  
+    <span class="c1"># TODO: Get a unique list of all characters across all five texts</span>
+
+    <span class="c1"># TODO: Now get the character emmision propabilities for each text</span>
+    <span class="k">pass</span></div>
+
+
+
 <div class="viewcode-block" id="get_initial_alpha">
 <a class="viewcode-back" href="../forwardalgorithm/index.html#forward.get_initial_alpha">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_initial_alpha</span><span class="p">():</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**:</span>
-<span class="sd">  Return the initial alpha vector for the forward algorithm.</span>
-<span class="sd">  </span>
-<span class="sd">  Hint: In the beginning, all states are equally likely</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**:</span>
+<span class="sd">    Return the initial alpha vector for the forward algorithm.</span>
 
-<span class="sd">  :return: np.array of shape 5x1 with the initial (equally likely) alpha values.</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="c1"># In the begining, we don´t know which text our colleague choose</span>
-  <span class="c1"># to start with, so all texts are equally likely</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span></div>
+<span class="sd">    Hint: In the beginning, all states are equally likely</span>
+
+<span class="sd">    :return: np.array of shape 5x1 with the initial (equally likely) alpha values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># In the begining, we don´t know which text our colleague choose</span>
+    <span class="c1"># to start with, so all texts are equally likely</span>
+    <span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="get_state_transition_matrix">
 <a class="viewcode-back" href="../forwardalgorithm/index.html#forward.get_state_transition_matrix">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_state_transition_matrix</span><span class="p">():</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**:</span>
-<span class="sd">  Return the state transition matrix for the forward algorithm. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**:</span>
+<span class="sd">    Return the state transition matrix for the forward algorithm.</span>
 
-<span class="sd">  Hint: With 90% chance the state stays the same while the remaining 10% shall be equally divided between the four other states.</span>
+<span class="sd">    Hint: With 90% chance the state stays the same while the remaining 10% shall be equally divided between the four other states.</span>
 
-<span class="sd">  :return: np.array of shape 5x5 with the correct state transition propabilities</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="p">[</span><span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
-    <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">],</span>
-    <span class="p">])</span></div>
+<span class="sd">    :return: np.array of shape 5x5 with the correct state transition propabilities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="forward">
 <a class="viewcode-back" href="../forwardalgorithm/index.html#forward.forward">[Doku]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  **TODO**: Implement one step of the forward algorithm. </span>
-<span class="sd">  </span>
-<span class="sd">  * Given the past alpha-values and the newly read character, use the state_transition_matrix</span>
-<span class="sd">  to first predict the new state propabilities (new alpha values) according to the script. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **TODO**: Implement one step of the forward algorithm.</span>
 
-<span class="sd">  * Then multiply the state propabilities with the emmision propabilities of the observed character</span>
-<span class="sd">  for each alphabet to retrieve the new alpha values.</span>
+<span class="sd">    * Given the past alpha-values and the newly read character, use the state_transition_matrix</span>
+<span class="sd">    to first predict the new state propabilities (new alpha values) according to the script.</span>
 
-<span class="sd">  * Normalize the alpha vector after each step by diving by its sum. This helps to achieve numerically more stable results</span>
-<span class="sd">  and allows for better interpretation of the results. </span>
+<span class="sd">    * Then multiply the state propabilities with the emmision propabilities of the observed character</span>
+<span class="sd">    for each alphabet to retrieve the new alpha values.</span>
 
-<span class="sd">  :param alpha: np.array of shape (5,1) holding the past alpha values</span>
-<span class="sd">  :param character: Observed character in this step</span>
-<span class="sd">  :param state_transition_matrix: np.array of shape (5,5) holding the state transition propabilities</span>
-<span class="sd">  :param emmision_propabilities: List of dictionaries holding the character emmision propabilities for each alphabet.</span>
-<span class="sd">  :return: New alpha-vector after state transition and observation update (np.array of shape 5,1)</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="c1"># TODO: Implement state transition and update the alpha vector accordingly</span>
-  <span class="n">alpha</span> <span class="o">=</span> <span class="n">state_transition_matrix</span> <span class="o">@</span> <span class="n">alpha</span>
+<span class="sd">    * Normalize the alpha vector after each step by diving by its sum. This helps to achieve numerically more stable results</span>
+<span class="sd">    and allows for better interpretation of the results.</span>
 
-  <span class="c1"># TODO: Retrieve symbol emmision propabilties for the given character and update the alpha vector</span>
-  <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">alphabet</span><span class="p">[</span><span class="n">character</span><span class="p">]</span> <span class="k">for</span> <span class="n">alphabet</span> <span class="ow">in</span> <span class="n">emmision_propabilities</span><span class="p">])</span>
-  <span class="n">alpha</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">*</span> <span class="n">alpha</span>
+<span class="sd">    :param alpha: np.array of shape (5,1) holding the past alpha values</span>
+<span class="sd">    :param character: Observed character in this step</span>
+<span class="sd">    :param state_transition_matrix: np.array of shape (5,5) holding the state transition propabilities</span>
+<span class="sd">    :param emmision_propabilities: List of dictionaries holding the character emmision propabilities for each alphabet.</span>
+<span class="sd">    :return: New alpha-vector after state transition and observation update (np.array of shape 5,1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Implement state transition and update the alpha vector accordingly</span>
 
-  <span class="c1"># TODO: Normalize alpha for better visualization (divide by sum)</span>
-  <span class="n">alpha</span> <span class="o">/=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="c1"># TODO: Retrieve symbol emmision propabilties for the given character and update the alpha vector</span>
 
-  <span class="c1"># TODO: Return alpha</span>
-  <span class="k">return</span> <span class="n">alpha</span></div>
+    <span class="c1"># TODO: Normalize alpha for better visualization (divide by sum)</span>
+
+    <span class="c1"># TODO: Return alpha</span>
+    <span class="k">pass</span></div>
 
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-  <span class="c1"># Get initial alpha values </span>
-  <span class="n">alpha</span> <span class="o">=</span> <span class="n">get_initial_alpha</span><span class="p">()</span>
-  
-  <span class="c1"># Estimate the emmision propabilities for the five texts</span>
-  <span class="n">emmision_propabilities</span> <span class="o">=</span> <span class="n">get_emmision_propabilities</span><span class="p">([</span><span class="n">text1</span><span class="p">,</span> <span class="n">text2</span><span class="p">,</span> <span class="n">text3</span><span class="p">,</span> <span class="n">text4</span><span class="p">,</span> <span class="n">text5</span><span class="p">])</span>
+    <span class="c1"># Get initial alpha values</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">get_initial_alpha</span><span class="p">()</span>
 
-  <span class="c1"># Build the state transition matrix</span>
-  <span class="n">state_transition_matrix</span> <span class="o">=</span> <span class="n">get_state_transition_matrix</span><span class="p">()</span>
+    <span class="c1"># Estimate the emmision propabilities for the five texts</span>
+    <span class="n">emmision_propabilities</span> <span class="o">=</span> <span class="n">get_emmision_propabilities</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">text1</span><span class="p">,</span> <span class="n">text2</span><span class="p">,</span> <span class="n">text3</span><span class="p">,</span> <span class="n">text4</span><span class="p">,</span> <span class="n">text5</span><span class="p">]</span>
+    <span class="p">)</span>
 
+    <span class="c1"># Build the state transition matrix</span>
+    <span class="n">state_transition_matrix</span> <span class="o">=</span> <span class="n">get_state_transition_matrix</span><span class="p">()</span>
 
-  <span class="n">alpha_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># shape: (T, num_states)</span>
+    <span class="n">alpha_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># shape: (T, num_states)</span>
 
-  <span class="c1"># Clean the sequence</span>
-  <span class="n">sequence</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+    <span class="c1"># Clean the sequence</span>
+    <span class="n">sequence</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
 
-  <span class="c1"># Iterate over whole sequence</span>
-  <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">character</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
-    <span class="c1"># Run forward algorithm</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="n">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">)</span>
+    <span class="c1"># Iterate over whole sequence</span>
+    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">character</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+        <span class="c1"># Run forward algorithm</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">forward</span><span class="p">(</span>
+            <span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Store current alpha for later</span>
-    <span class="n">alpha_matrix</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="c1"># Store current alpha for later</span>
+        <span class="n">alpha_matrix</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">alpha</span>
 
-  <span class="c1"># Visualize alpha vectors as heat map</span>
-  <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Text 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Text 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Text 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Text 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Text 5&#39;</span><span class="p">]</span>
-  <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">alpha_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">states</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;t</span><span class="si">{</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">))])</span>
+    <span class="c1"># Visualize alpha vectors as heat map</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Text 1&quot;</span><span class="p">,</span> <span class="s2">&quot;Text 2&quot;</span><span class="p">,</span> <span class="s2">&quot;Text 3&quot;</span><span class="p">,</span> <span class="s2">&quot;Text 4&quot;</span><span class="p">,</span> <span class="s2">&quot;Text 5&quot;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">alpha_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">states</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;t</span><span class="si">{</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">))]</span>
+    <span class="p">)</span>
 
-  <span class="n">plt</span><span class="o">.</span><span class="n">ioff</span><span class="p">()</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-  <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Alpha-Werte pro Zustand über die Zeit&quot;</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Zeit (Position in Sequenz)&quot;</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Zustand&quot;</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-
-
+    <span class="n">plt</span><span class="o">.</span><span class="n">ioff</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Alpha-Werte pro Zustand über die Zeit&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Zeit (Position in Sequenz)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Zustand&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
            </div>

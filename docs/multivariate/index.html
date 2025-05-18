@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimum Variance Fusion &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/multivariate/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Der Vorwärts-Algorithmus" href="../forwardalgorithm/index.html" />
+    <link rel="prev" title="Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen" href="../nonlinearmapping/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Minimum Varianz Fusion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#einleitung">Einleitung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#motivation">Motivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mathematischer-hintergrund">Mathematischer Hintergrund</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mehrdimensionale-groszen-und-kovarianzmatrix">Mehrdimensionale Größen und Kovarianzmatrix</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#eigenschaften-und-voraussetzungen">Eigenschaften und Voraussetzungen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anwendungen">Anwendungen</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#einfaches-beispiel">Einfaches Beispiel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unterschiedliche-unsicherheiten-beispiel">Unterschiedliche Unsicherheiten - Beispiel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#der-code">Der Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schritt-1-minimum-variance-fusion-implementieren"><strong>Schritt 1</strong>: Minimum Variance Fusion implementieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#steuerung-des-programms">Steuerung des Programms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Minimum Variance Fusion</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/multivariate/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="minimum-variance-fusion">
+<h1>Minimum Variance Fusion<a class="headerlink" href="#minimum-variance-fusion" title="Link to this heading"></a></h1>
+<section id="einleitung">
+<h2>Einleitung<a class="headerlink" href="#einleitung" title="Link to this heading"></a></h2>
+<p>Das Konzept der <em>Minimum Variance Fusion</em> (MVF) ist ein fundamentales Verfahren in der Sensorfusion und statistischen Schätzung, das darauf abzielt, mehrere unabhängige Schätzungen einer Größe so zu kombinieren, dass die resultierende Gesamtschätzung die geringstmögliche Varianz aufweist. Dieses Verfahren wird besonders häufig in Anwendungen wie Robotik, Navigation, Signalverarbeitung und maschinellem Lernen verwendet, wo Daten aus verschiedenen Quellen (z. B. mehreren Sensoren) integriert werden müssen, um eine möglichst genaue Gesamtaussage zu erhalten.</p>
+</section>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading"></a></h2>
+<p>In der Praxis liefern verschiedene Sensoren oft leicht unterschiedliche Werte für dieselbe physikalische Größe – sei es aufgrund von Rauschen, Kalibrierungsfehlern oder unterschiedlichen Blickwinkeln. Anstatt eine dieser Messungen willkürlich auszuwählen oder zu mitteln, erlaubt die Minimum Variance Fusion eine gewichtete Kombination, bei der Informationen aus allen Quellen berücksichtigt werden. Die Gewichtung erfolgt dabei so, dass Messungen mit geringerer Unsicherheit (d. h. kleinerer Varianz) stärker gewichtet werden als solche mit höherer Unsicherheit.</p>
+</section>
+<section id="mathematischer-hintergrund">
+<h2>Mathematischer Hintergrund<a class="headerlink" href="#mathematischer-hintergrund" title="Link to this heading"></a></h2>
+<p>Die Grundidee lässt sich mit Hilfe der linearen Schätzung beschreiben. Angenommen, zwei unabhängige Schätzwerte <span class="math notranslate nohighlight">\(x_1\)</span> und <span class="math notranslate nohighlight">\(x_2\)</span> mit den zugehörigen Varianzen <span class="math notranslate nohighlight">\(\sigma_1^2\)</span> und <span class="math notranslate nohighlight">\(\sigma_2^2\)</span> liegen vor. Die gewichtete Fusion <span class="math notranslate nohighlight">\(\hat{x}\)</span> ergibt sich dann durch:</p>
+<div class="math notranslate nohighlight">
+\[\hat{x} = w_1 x_1 + w_2 x_2\]</div>
+<p>wobei die Gewichte <span class="math notranslate nohighlight">\(w_1\)</span> und <span class="math notranslate nohighlight">\(w_2\)</span> so gewählt werden, dass <span class="math notranslate nohighlight">\(\hat{x}\)</span> eine minimale Varianz besitzt und die Summe der Gewichte 1 ergibt:</p>
+<div class="math notranslate nohighlight">
+\[w_1 = \frac{\sigma_2^2}{\sigma_1^2 + \sigma_2^2}, \quad w_2 = \frac{\sigma_1^2}{\sigma_1^2 + \sigma_2^2}\]</div>
+<p>Die resultierende Varianz der Fusion beträgt:</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{\hat{x}}^2 = \frac{1}{\frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}}\]</div>
+</section>
+<section id="mehrdimensionale-groszen-und-kovarianzmatrix">
+<h2>Mehrdimensionale Größen und Kovarianzmatrix<a class="headerlink" href="#mehrdimensionale-groszen-und-kovarianzmatrix" title="Link to this heading"></a></h2>
+<p>In vielen realen Anwendungen sind die zu fusionierenden Größen nicht skalar, sondern mehrdimensional – beispielsweise Positionen im Raum, Zustandsvektoren in der Robotik oder Merkmalsvektoren in der Signalverarbeitung. In solchen Fällen muss die Varianz durch eine <em>Kovarianzmatrix</em> <span class="math notranslate nohighlight">\(\mathbf{P}\)</span> beschrieben werden, welche die Unsicherheiten sowie die Korrelationen zwischen den Dimensionen erfasst.</p>
+<p>Angenommen, zwei unabhängige Schätzungen <span class="math notranslate nohighlight">\(\mathbf{x}_1\)</span> und <span class="math notranslate nohighlight">\(\mathbf{x}_2\)</span> des selben Zustandsvektors <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> liegen vor, mit den zugehörigen Kovarianzmatrizen <span class="math notranslate nohighlight">\(\mathbf{P}_1\)</span> und <span class="math notranslate nohighlight">\(\mathbf{P}_2\)</span>. Die Zielsetzung ist es nun, eine Schätzung <span class="math notranslate nohighlight">\(\hat{\mathbf{x}}\)</span> zu finden, welche die beiden Informationen so kombiniert, dass die Kovarianz der resultierenden Schätzung minimiert wird.</p>
+<p>Die gewichtete Fusion erfolgt durch:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathbf{x}} = \mathbf{P}_{\text{fused}} \left( \mathbf{P}_1^{-1} \mathbf{x}_1 + \mathbf{P}_2^{-1} \mathbf{x}_2 \right)\]</div>
+<p>wobei die Kovarianz der fusionierten Schätzung gegeben ist durch:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{P}_{\text{fused}} = \left( \mathbf{P}_1^{-1} + \mathbf{P}_2^{-1} \right)^{-1}\]</div>
+<p>Diese Gleichung ist die mehrdimensionale Verallgemeinerung der skalareren Formeln aus dem vorherigen Abschnitt. Sie zeigt, dass die Unsicherheiten über die Inversen der Kovarianzmatrizen gewichtet werden – d. h. Messungen mit geringer Unsicherheit (kleiner Kovarianz) haben einen stärkeren Einfluss auf die Gesamtschätzung.</p>
+<section id="eigenschaften-und-voraussetzungen">
+<h3>Eigenschaften und Voraussetzungen<a class="headerlink" href="#eigenschaften-und-voraussetzungen" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Die Kovarianzmatrizen müssen symmetrisch und positiv definit sein, damit die Inversion möglich ist.</p></li>
+<li><p>Die Fusion setzt Unabhängigkeit der Messungen voraus. Bei korrelierten Daten müssen Kreuzkovarianzen berücksichtigt werden.</p></li>
+<li><p>Die Methode ist optimal im Sinne der <em>linearen Minimum-Varianz-Schätzung</em>, vorausgesetzt, die Unsicherheiten sind korrekt modelliert.</p></li>
+</ul>
+</section>
+<section id="anwendungen">
+<h3>Anwendungen<a class="headerlink" href="#anwendungen" title="Link to this heading"></a></h3>
+<p>Diese Matrixform der Minimum Variance Fusion ist zentraler Bestandteil vieler moderner Sensordatenfusionsalgorithmen, z. B.:</p>
+<ul class="simple">
+<li><p>Kalman-Filter (lineare Zustandsrekonstruktion)</p></li>
+<li><p>Informationsfilter (repräsentiert Zustände direkt im Informationsraum)</p></li>
+<li><p>Graph-basierte SLAM-Methoden (Simultaneous Localization and Mapping)</p></li>
+</ul>
+</section>
+</section>
+<section id="einfaches-beispiel">
+<h2>Einfaches Beispiel<a class="headerlink" href="#einfaches-beispiel" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/fusion1.png"><img alt="Fusion" class="align-center" src="../_images/fusion1.png" style="width: 1024px;" />
+</a>
+<p>In diesem Beispiel liegen zwei Sensormessungen mit jeweils gleicher Unsicherheitssschätzung vor, d.h.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\Sigma_1 = \Sigma_2 = \begin{pmatrix}0.1 &amp; 0.0\\0.0 &amp; 0.1\end{pmatrix}\end{split}\]</div>
+<p>aber wiedersprüchlicher Messung</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mu_1 = \begin{pmatrix}-2.0\\0.0\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mu_2 = \begin{pmatrix}2.0\\0.0\end{pmatrix}\end{split}\]</div>
+<p>Die Fusion beider Messungen ist über die grüne Ellipse dargestellt.
+Da beide Sensoren die gleiche Unsicherheit angeben liegt die Schätzung exakt in der Mitte
+zwischen den beiden. Die resultierende Gesamtunsichert (Radius der grünen Ellipse) ist kleiner
+als bei den einzelnen Messungen da insgesamt mehr Information vorliegt.</p>
+</section>
+<section id="unterschiedliche-unsicherheiten-beispiel">
+<h2>Unterschiedliche Unsicherheiten - Beispiel<a class="headerlink" href="#unterschiedliche-unsicherheiten-beispiel" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/fusion2.png"><img alt="Fusion" class="align-center" src="../_images/fusion2.png" style="width: 1024px;" />
+</a>
+<p>In diesem Beispiel liegen zwei Sensormessungen mit unterschiedlichen
+Unsicherheiten für beide Sensoren vor. Der durch die rote Ellipse repräsentierte
+Sensor kann horizontal genauer messen (die Ellipse ist entsprechend schmaler) während
+der blaue Sensor in vertikaler Richtung genauer messen kann. Die sich ergebende Fusion
+beider Sensormessungen liegt dementsprechend in horizontaler Richtung nahe an der roten Messung während siehe
+in vertikaler Richtung deutlich näher an der blauen Messung liegt.</p>
+</section>
+<section id="der-code">
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">multivariate</span><span class="o">/</span><span class="n">nromal</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</section>
+<section id="schritt-1-minimum-variance-fusion-implementieren">
+<h2><strong>Schritt 1</strong>: Minimum Variance Fusion implementieren<a class="headerlink" href="#schritt-1-minimum-variance-fusion-implementieren" title="Link to this heading"></a></h2>
+<p>Implementieren Sie die Methode</p>
+<p>indem Sie, wie oben beschrieben, die Minimum Variance Fusion berechnen.</p>
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">minimum_variance_fusion</span><span class="p">(</span><span class="n">mu1</span><span class="p">,</span> <span class="n">cov1</span><span class="p">,</span> <span class="n">mu2</span><span class="p">,</span> <span class="n">cov2</span><span class="p">):</span>
+   <span class="n">inv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">cov1</span><span class="p">)</span>
+   <span class="n">inv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">cov2</span><span class="p">)</span>
+   <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">inv1</span> <span class="o">+</span> <span class="n">inv2</span><span class="p">)</span>
+   <span class="n">mu</span> <span class="o">=</span> <span class="n">cov</span> <span class="o">@</span> <span class="p">(</span><span class="n">inv1</span> <span class="o">@</span> <span class="n">mu1</span> <span class="o">+</span> <span class="n">inv2</span> <span class="o">@</span> <span class="n">mu2</span><span class="p">)</span>
+
+   <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">cov</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="steuerung-des-programms">
+<h2>Steuerung des Programms<a class="headerlink" href="#steuerung-des-programms" title="Link to this heading"></a></h2>
+<p>Starten Sie dann das Program und experimentieren Sie mit verschiedenen Konfiguration.
+Sie können die rote Ellipse durch drücken von „1“ steuern während Sie die blaue Ellipse
+durch drücken von „2“ kontrollieren können. Mit den Tasten „wasd“ (Kleinbuchstaben) verschieben Sie die Ellipsen
+während Sie mit „WASD“ (Großbuchstaben) die Horizontale bzw. Vertikale Varianz vergrößern bzw. verkleinern können.
+Mit „Q“ und „E“ (Großbuchstaben) erhöhen bzw. verringern Sie die Korrelation zwischen horizontaler und vertikaler Messung, die Ellipse „dreht“ sich entsprechend ein.</p>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="doc">Minimum Varianz Fusion - Musterlösung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../nonlinearmapping/index.html" class="btn btn-neutral float-left" title="Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../forwardalgorithm/index.html" class="btn btn-neutral float-right" title="Der Vorwärts-Algorithmus" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

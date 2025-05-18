@@ -1,0 +1,648 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/nonlinearmapping/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Minimum Variance Fusion" href="../multivariate/index.html" />
+    <link rel="prev" title="Homogene Koordinaten" href="../homogen/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#lineare-abbildungen-von-zufallsvariablen">Lineare Abbildungen von Zufallsvariablen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lineare-abbildung-ein-beispiel">Lineare Abbildung - Ein Beispiel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nicht-lineare-abbildungen-von-zufallsvariablen">Nicht-Lineare Abbildungen von Zufallsvariablen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#die-jacobi-matrix">Die Jacobi-Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#die-jacobi-matrix-ein-beispiel">Die Jacobi-Matrix - Ein Beispiel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#was-passiert-nun-wenn-die-winkelunsicherheit-zu-grosz-wird">Was passiert nun wenn die Winkelunsicherheit zu groß wird?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1-lineare-abbildung"><strong>Aufgabe 1</strong>: Lineare Abbildung</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#linear.map_samples"><code class="docutils literal notranslate"><span class="pre">map_samples()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-2-polarkoordinaten-nach-kartesisch"><strong>Aufgabe 2</strong>: Polarkoordinaten nach Kartesisch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#polar.map_samples"><code class="docutils literal notranslate"><span class="pre">map_samples()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-3-polarkoordinaten-nach-kartesisch-teil-2"><strong>Aufgabe 3</strong>: Polarkoordinaten nach Kartesisch - Teil 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#praxisbeispiel-fur-nichtlineare-transformation-sauerstoffsattigung-im-blut">Praxisbeispiel für nichtlineare Transformation: Sauerstoffsättigung im Blut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#medizinischer-hintergrund">Medizinischer Hintergrund</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#die-hill-gleichung">Die Hill-Gleichung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#das-experiment">Das Experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-4-sauerstoffsattigung-bestimmen"><strong>Aufgabe 4</strong>: Sauerstoffsättigung bestimmen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oxygen.map_samples"><code class="docutils literal notranslate"><span class="pre">map_samples()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-5-experimentieren-mit-den-werten"><strong>Aufgabe 5</strong>: Experimentieren mit den Werten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/nonlinearmapping/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="normalverteilte-zufallsvariablen-nichtlineare-abbildungen">
+<h1>Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen<a class="headerlink" href="#normalverteilte-zufallsvariablen-nichtlineare-abbildungen" title="Link to this heading"></a></h1>
+<p>Viele Meßgrößen von Sensoren sowie Zustände von Systeme lassen sich in
+der Praxis durch normalverteile Zufallsvariablen sehr gut beschreiben.
+Dies ist eine Konsequenz auf dem <a class="reference external" href="https://de.wikipedia.org/wiki/Zentraler_Grenzwertsatz">zentralen Grenzwertsatz (central limit theorem)</a>,
+nachdem der Stichprobenmittelwert als Zufallsvariable näherungsweise normalverteilt ist.</p>
+<p>Die Argumentation dabei ist, dass die Meßgröße eines Sensors als Überlagerung des eigentlichen
+wahren Zustandes <span class="math notranslate nohighlight">\(\textbf{x}\)</span> mit normalverteiltem Rauschen <span class="math notranslate nohighlight">\(\epsilon\sim\mathcal{N}\)</span> gesehen werden kann.
+Das Rauschen wird als Überlagerung (Mittelwert) unendlich vieler kleiner Störeinflüße modelliert
+und ist daher aufgrund des zentralen Grenzwertsatzes normalverteilt.</p>
+<p>Wird der Systemzustand nun aufgrund dieser normalverteilten Meßgrößen geschätzt und zusätzlich noch von
+ebenfalls normalverteilten Störeinflüßen überlagert, so ist es plausibel anzunehmen das ebendieser Systemzustand
+auch normalverteilt ist.</p>
+<p>Eine normalverteilte Zufallsvariable wird dabei vollständig durch Angabe ihres (ggf. mehr-dimensionalen) Mittelwertes
+sowie der dazugehörigen Kovarianzmatrix beschrieben. Man sagt der Vektor von Zufallsvariablen</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{x} = \begin{pmatrix}x_1\\\vdots\\x_n\end{pmatrix}\end{split}\]</div>
+<p>ist multivariat Normalverteilt mit Mittelwert</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{\mu} = \begin{pmatrix}\mu_1\\\vdots\\\mu_n\end{pmatrix}\end{split}\]</div>
+<p>und Kovarianz</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\Sigma = \begin{pmatrix}
+            \sigma_{1}^2 &amp; \sigma_{12}   &amp; \dots &amp; \sigma_{1n} \\
+            \sigma_{21}   &amp; \sigma_{22}^2 &amp; \dots &amp; \sigma_{2n} \\
+            \vdots        &amp; \vdots        &amp; \ddots &amp; \vdots \\
+            \sigma_{n1}   &amp; \sigma_{n2}   &amp; \dots &amp; \sigma_n^2
+         \end{pmatrix}\end{split}\]</div>
+<p>Dabei beschreibt die Kovarianzmatrix auf ihrer Hauptdiagonale die
+Varianzen <span class="math notranslate nohighlight">\((\sigma_{1}^2,\dots,\sigma_{n}^2)\)</span> der Zufallsvariablen. Der Term
+<span class="math notranslate nohighlight">\(\sigma_{ij}\)</span> entspricht dann der Kovarianz zwischen <span class="math notranslate nohighlight">\(x_i\)</span> und <span class="math notranslate nohighlight">\(x_j\)</span>.</p>
+<section id="lineare-abbildungen-von-zufallsvariablen">
+<h2>Lineare Abbildungen von Zufallsvariablen<a class="headerlink" href="#lineare-abbildungen-von-zufallsvariablen" title="Link to this heading"></a></h2>
+<p>Im folgenden betrachten wir eine multivariat normalverteilte Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{x}\in\mathbb{R}^n\)</span>, also</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{x} \sim \mathcal{N}\left(\boldsymbol{\mu}, \Sigma\right)\]</div>
+<p>sowie eine lineare Abbildung ebendieser</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{y} = A\cdot \boldsymbol{x}\]</div>
+<p>mit einer Matrix <span class="math notranslate nohighlight">\(A\in\mathbb{R}^{n\times n}\)</span>
+Da die Summe normalverteilter Zufallsvariablen ebenfalls wieder normalverteilt ist gilt für lineare Abbildungen einfach</p>
+<div class="math notranslate nohighlight">
+\[E[A\cdot \boldsymbol{x}] = A\cdot E[\boldsymbol{x}] = A \cdot \boldsymbol{\mu}\]</div>
+<p>Für die Kovarianz von <span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span> finden wir entsprechend</p>
+<div class="math notranslate nohighlight">
+\[Cov[A\cdot \boldsymbol{x}] = A\cdot Cov[\boldsymbol{x}]\cdot A^T = A \cdot \Sigma \cdot A^T\]</div>
+<section id="lineare-abbildung-ein-beispiel">
+<h3>Lineare Abbildung - Ein Beispiel<a class="headerlink" href="#lineare-abbildung-ein-beispiel" title="Link to this heading"></a></h3>
+<p>In dem folgenden Beispiel wurde eine multivariate Zufallsvariable mit Mittelwert
+<span class="math notranslate nohighlight">\(\boldsymbol{\mu} = (1.5, 0.5)\)</span> und Kovarianz</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\Sigma =
+\begin{pmatrix}
+ 0.7 &amp; -0.4 \\
+-0.4 &amp; 1.4
+\end{pmatrix}\end{split}\]</div>
+<p>über eine lineare Abbildung <span class="math notranslate nohighlight">\(\boldsymbol{y} = A\cdot\boldsymbol{x}\)</span> mit</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{pmatrix}
+ 0.76 &amp; 0.64\\
+-0.64 &amp; 0.76
+\end{pmatrix}\end{split}\]</div>
+<p>abgebildet. Für die neue Zufallsvariable ergibt sich</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}E[A\cdot\boldsymbol{x}] = A\cdot\boldsymbol{\mu} =
+\begin{pmatrix}
+1.47\\
+-0.58
+\end{pmatrix}\end{split}\]</div>
+<p>Für die Kovarianz der neuen Zufallsvariable finden wir entsprechend</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Cov[A\cdot\boldsymbol{x}] = A\cdot\Sigma\cdot A^T =
+\begin{pmatrix}
+0.6 &amp; 0.28\\
+0.28 &amp; 1.5
+\end{pmatrix}\end{split}\]</div>
+<a class="reference internal image-reference" href="../_images/linearmapping.png"><img alt="Linear Mapping of Random Variablen" class="align-center" src="../_images/linearmapping.png" style="width: 1024px;" />
+</a>
+<p>Gezeigt sind die Kovarianzellipsen (Regionen konstanter Mahalanobis-Distanz)
+sowie eine Stichprobe von 512 zufälligen Samples (Ausprägungen) der Zufallsvariable.
+Im linken Teil der Grafik ist die Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> abgebildet.</p>
+<p>Die Samples wurden individuell mit der linearen Abbildungsmatrix in das neue Koordinatensystem
+überführt und anschließend wieder der sich ergebende Mittelwert sowie die Kovarianz der Punktwolke
+bestimmt. Die so entstehende Punkte sowie Ellipsen wurden hellblau in das rechte Koordinatensystem eingezeichnet.</p>
+<p>Gleichzeitig wurde die tatsächliche Kovarianz und der tatsächliche Mittelwert als dunkelblaue Ellipsen eingezeichnet.
+Beide sind nahezu deckungsgleich. Die beobachtete Abweichung ergibt sich daraus, dass für die Stichprobe lediglich
+512 zufällige Samples gezogen wurden, die Stichprobe also zu klein ist.</p>
+</section>
+</section>
+<section id="nicht-lineare-abbildungen-von-zufallsvariablen">
+<h2>Nicht-Lineare Abbildungen von Zufallsvariablen<a class="headerlink" href="#nicht-lineare-abbildungen-von-zufallsvariablen" title="Link to this heading"></a></h2>
+<p>Wird eine multivariat normalverteilte Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> durch eine nicht-lineare Funktion
+<span class="math notranslate nohighlight">\(f: \mathbb{R}^n\mapsto\mathbb{R}^m\)</span> abgebildet, so ist <span class="math notranslate nohighlight">\(\boldsymbol{Y} = f(\boldsymbol{X})\)</span> ebenfalls
+eine Zufallsvariable. In der Regel ist <span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span> jedoch nicht mehr normalverteilt.</p>
+<a class="reference internal image-reference" href="../_images/nonlinear.png"><img alt="Non-linear mapping of random variables" class="align-center" src="../_images/nonlinear.png" style="width: 1024px;" />
+</a>
+<p>Die Abbildung zeigt ein einfaches Beispiel. Links ist das Histogram von 400.000 Samples einer normalverteilten Zufallsvariable mit
+Mittelwert <span class="math notranslate nohighlight">\(\mu=3\)</span> und Varianz <span class="math notranslate nohighlight">\(\sigma^2 = 1\)</span> gezeigt. Wird die Zufallsvariable durch
+<span class="math notranslate nohighlight">\(f(x) = x^2\)</span> auf eine neue Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{Y} = f(\boldsymbol{X})\)</span> abgebildet,
+so ist diese offensichtlich nicht mehr normalverteilt (siehe dazu das rechte Histogram der sich ergebenden Verteilung).</p>
+<p>Um dennoch eine Näherung für die Verteilung von <span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span> zu erhalten, kann die nicht-lineare Abbildung
+<span class="math notranslate nohighlight">\(f(\boldsymbol{X})\)</span> im Punkt des Erwartungswerts <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_X = \mathbb{E}[\boldsymbol{X}]\)</span>
+durch eine lineare Funktion approximiert werden. Dies geschieht durch eine Taylor-Entwicklung erster Ordnung:</p>
+<div class="math notranslate nohighlight">
+\[f(\boldsymbol{X}) \approx f(\boldsymbol{\mu}_X) + J_f(\boldsymbol{\mu}_X) (\boldsymbol{X} - \boldsymbol{\mu}_X),\]</div>
+<p>wobei <span class="math notranslate nohighlight">\(J_f(\boldsymbol{\mu}_X)\)</span> die Jacobi-Matrix von <span class="math notranslate nohighlight">\(f\)</span> an der Stelle <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_X\)</span> ist.</p>
+<p>Da die Linearkombination einer normalverteilten Zufallsvariablen wieder normalverteilt ist, lässt sich auf Basis dieser Approximation
+eine multivariate Normalverteilung für <span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span> angeben:</p>
+<ul>
+<li><p>Der approximierte Erwartungswert ergibt sich zu</p>
+<div class="math notranslate nohighlight">
+\[\mathbb{E}[\boldsymbol{Y}] \approx f(\boldsymbol{\mu}_X),\]</div>
+</li>
+<li><p>und die approximierte Kovarianzmatrix zu</p>
+<div class="math notranslate nohighlight">
+\[\Sigma_Y \approx J_f(\boldsymbol{\mu}_X) \, \Sigma_X \, J_f(\boldsymbol{\mu}_X)^\top,\]</div>
+</li>
+</ul>
+<p>wobei <span class="math notranslate nohighlight">\(\Sigma_X\)</span> die Kovarianzmatrix von <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> ist.</p>
+<p>Diese Methode entspricht einer Taylor-Entwicklung erster Ordnung und wird
+typischerweise im Extended Kalman Filter (EKF) verwendet.
+Für genauere Approximationen existieren alternative Methoden wie die
+<a class="reference external" href="https://en.wikipedia.org/wiki/Unscented_transform">Unscented Transform</a>,
+bei der deterministisch gewählte Sigma-Punkte durch die nichtlineare Abbildung propagiert werden.</p>
+<section id="die-jacobi-matrix">
+<h3>Die Jacobi-Matrix<a class="headerlink" href="#die-jacobi-matrix" title="Link to this heading"></a></h3>
+<p>Die Jacobi-Matrix ist eine Matrix, die alle ersten partiellen Ableitungen einer vektorwertigen Funktion enthält.
+Betrachtet man eine Funktion <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \rightarrow \mathbb{R}^m\)</span>, so ergibt sich die Jacobi-Matrix
+<span class="math notranslate nohighlight">\(J_f(\boldsymbol{x})\)</span> als eine <span class="math notranslate nohighlight">\(m \times n\)</span>-Matrix:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}J_f(\boldsymbol{x}) =
+\begin{bmatrix}
+\frac{\partial f_1}{\partial x_1} &amp; \cdots &amp; \frac{\partial f_1}{\partial x_n} \\
+\vdots &amp; \ddots &amp; \vdots \\
+\frac{\partial f_m}{\partial x_1} &amp; \cdots &amp; \frac{\partial f_m}{\partial x_n}
+\end{bmatrix}\end{split}\]</div>
+<p>Jede Zeile enthält dabei die partiellen Ableitungen einer Komponente von <span class="math notranslate nohighlight">\(f\)</span>. Mit anderen Worten:
+Die Jacobi-Matrix beschreibt, wie sich kleine Änderungen in <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> auf jede Komponente von <span class="math notranslate nohighlight">\(f(\boldsymbol{X})\)</span> auswirken.
+Sie ist die natürliche Verallgemeinerung der Ableitung aus der eindimensionalen Analysis auf mehrdimensionale Vektorfunktionen.</p>
+<p>In unserem Kontext wird die Jacobi-Matrix verwendet, um eine nichtlineare Funktion im Punkt <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_X\)</span>
+durch eine lineare Abbildung zu approximieren.</p>
+</section>
+<section id="die-jacobi-matrix-ein-beispiel">
+<h3>Die Jacobi-Matrix - Ein Beispiel<a class="headerlink" href="#die-jacobi-matrix-ein-beispiel" title="Link to this heading"></a></h3>
+<p>Es sei <span class="math notranslate nohighlight">\((r, \alpha)\)</span> ein zwei-dimensionaler Punkt in
+<a class="reference external" href="https://de.wikipedia.org/wiki/Polarkoordinaten">Polarkoordinaten</a>, also dargestellt über
+seinen Abstand zum Ursprung <span class="math notranslate nohighlight">\(r\)</span> sowie den Winkel zum x-Achse <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
+<p>Die Abbildung in gewohnte <a class="reference external" href="https://de.wikipedia.org/wiki/Kartesisches_Koordinatensystem">kartesische Koordinaten</a>
+läßt sich über die nicht-lineare Funktion</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f(r, \alpha) =
+\begin{pmatrix}
+  r\cdot \cos(\alpha)\\
+  r\cdot \sin(\alpha)
+\end{pmatrix}\end{split}\]</div>
+<p>darstellen. Für die Jacobi-Matrix finden wir dann</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}J_f(r, \alpha) =
+\begin{bmatrix}
+  \frac{\partial}{\partial r}(r \cos(\alpha)) &amp; \frac{\partial}{\partial \alpha}(r \cos(\alpha)) \\
+  \frac{\partial}{\partial r}(r \sin(\alpha)) &amp; \frac{\partial}{\partial \alpha}(r \sin(\alpha))
+\end{bmatrix}
+=
+\begin{bmatrix}
+  \cos(\alpha) &amp; -r \sin(\alpha) \\
+  \sin(\alpha) &amp; r \cos(\alpha)
+\end{bmatrix}\end{split}\]</div>
+<p>Diese Matrix beschreibt die lokale lineare Approximation der Koordinatentransformation am Punkt <span class="math notranslate nohighlight">\((r, \alpha)\)</span>.
+Sie zeigt insbesondere, wie Änderungen in Radius und Winkel sich auf die kartesischen Koordinaten auswirken.</p>
+<p>Kennt man den Erwartungswert <span class="math notranslate nohighlight">\(\boldsymbol{\mu}_{(r,\alpha)}\)</span> sowie die Kovarianzmatrix <span class="math notranslate nohighlight">\(\Sigma_{(r,\alpha)}\)</span>
+der ursprünglichen (in Polarkoordinaten beschriebenen) Zufallsvariablen, so lässt sich durch Einsetzen der Jacobi-Matrix
+in die Approximation</p>
+<div class="math notranslate nohighlight">
+\[\Sigma_{(x,y)} \approx J_f(\boldsymbol{\mu}_{(r,\alpha)}) \, \Sigma_{(r,\alpha)} \, J_f(\boldsymbol{\mu}_{(r,\alpha)})^\top\]</div>
+<p>eine Näherung der Kovarianzmatrix im kartesischen Raum berechnen.</p>
+<a class="reference internal image-reference" href="../_images/polar.png"><img alt="Non-Linear Mapping of Random Variable" class="align-center" src="../_images/polar.png" style="width: 1024px;" />
+</a>
+<p>Der obige Plot zeigt ein Beispiel für eine solche Transformation. Links ist die normalverteilte Zufallsvariable
+<span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> zu sehen. Die Zufallsvariable weißt in <span class="math notranslate nohighlight">\(r\)</span>-Richtung (horizontal) nur eine geringe Unsicherheit
+auf. Das entspricht einer hohen Genauigkeit was Entfernungsschätzungen angeht. In <span class="math notranslate nohighlight">\(\alpha\)</span>-Richtung (vertikal) ist die Unsicherheit
+deutlich größer, die Winkelgenauigkeit ist also deutlich schlechter. Das entspricht dem typischen Unsicherheitsprofil eines Radars.</p>
+<p>Rechts ist die nicht-lineare Transformation dieser Zufallsvariable in den kartesischen Raum zu sehen. Solange
+die Winkelunsicherheit nicht zu groß ist kann die entstehende Verteilung hinreichend gut durch eine Normalverteilung beschrieben werden.</p>
+</section>
+<section id="was-passiert-nun-wenn-die-winkelunsicherheit-zu-grosz-wird">
+<h3>Was passiert nun wenn die Winkelunsicherheit zu groß wird?<a class="headerlink" href="#was-passiert-nun-wenn-die-winkelunsicherheit-zu-grosz-wird" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="../_images/polar2.png"><img alt="Non-Linear Mapping of Random Variable" class="align-center" src="../_images/polar2.png" style="width: 1024px;" />
+</a>
+<p>Im  obigen Plot wurde die Winkelunsicherheit deutlich erhöht. Die möglichen Meßwerte (die einzelnen Punkte der Punktwolke)
+decken nun einen so großen Bereich ab, dass die Transformation in kartesische Koordinate nicht mehr sinnvoll
+durch eine Normalverteilung beschrieben werden kann. Dies zeigt sich auch daran das die durch
+Linearisierung geschätzten Parameter (Mittelwert und Kovarianz, gezeichnet in Dunkelblau) deutlich von dem tatsächlichen
+Mittelwert und der tatsächlchen Kovarianz der transformierten Punkte (gezeichnet in Hellblau) abweichen.</p>
+</section>
+</section>
+<section id="aufgabe-1-lineare-abbildung">
+<h2><strong>Aufgabe 1</strong>: Lineare Abbildung<a class="headerlink" href="#aufgabe-1-lineare-abbildung" title="Link to this heading"></a></h2>
+<p>In dieser Aufgabe arbeiten Sie in der Datei</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nonlinearmapping/linear.py
+</pre></div>
+</div>
+<p>Implementieren Sie die Methode <a class="reference internal" href="#linear.map_samples" title="linear.map_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">linear.map_samples()</span></code></a>. Folgen Sie den Anweisungen im Code.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="linear.map_samples">
+<span class="sig-prename descclassname"><span class="pre">linear.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/linear.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#linear.map_samples" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>
+Assume you have a normal distributed random variable <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>
+with mean</p>
+<div class="math notranslate nohighlight">
+\[\mu = (1.5 ,0.5)\]</div>
+<p>and covariance</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\Sigma = \begin{pmatrix}0.7&amp;-0.4\\-0.4&amp;1.4\end{pmatrix}\end{split}\]</div>
+<p>Assume further that <span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span> is another random variable with</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{Y} = A\cdot \boldsymbol{X}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{pmatrix}\cos(\alpha)&amp;-\sin(\alpha)\\\sin(\alpha)&amp;\cos(\alpha)\end{pmatrix}\end{split}\]</div>
+<p>The samples parameter holds 512 samples of this random variable.</p>
+<p>Apply the linear mapping to the samples and calculate the <strong>exact</strong> new mean and covariance of
+<span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span>, namely</p>
+<div class="math notranslate nohighlight">
+\[E[\boldsymbol{Y}] = E[A\cdot\boldsymbol{X}] = A\cdot\boldsymbol{\mu}\]</div>
+<div class="math notranslate nohighlight">
+\[Cov[\boldsymbol{Y}] = Cov[A\cdot\boldsymbol{X}] = A\cdot Cov[\boldsymbol{X}] \cdot A^T\]</div>
+<p>Return the mapped samples as well as the
+<em>exact</em> mean and covariance of the mapped random variable.
+<strong>Do not</strong> estimate the mean and covariance from the mapped samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samples</strong> – (np.array 2x512) 512 Samples from <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span></p></li>
+<li><p><strong>alpha</strong> – Parameter <span class="math notranslate nohighlight">\(\alpha\)</span> of the Matrix <span class="math notranslate nohighlight">\(A\)</span> (see above)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>3-tuple (mapped_samples, mapped_mu, mapped_cov)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+   <span class="c1"># TODO: Calculate Matrix A</span>
+   <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+
+   <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="n">c</span><span class="p">,</span> <span class="n">s</span><span class="p">],</span>
+                 <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">]])</span>
+
+   <span class="c1"># TODO: Map the samples and calculate the exact mean and covariance of the Y</span>
+   <span class="n">mu</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+   <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">],[</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">]])</span>
+
+   <span class="n">mapped_samples</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">samples</span>
+   <span class="n">mapped_mu</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">mu</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+   <span class="n">mapped_cov</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">cov</span> <span class="o">@</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>
+
+   <span class="c1"># TODO: Return your mapped samples, the mapped mean and the mapped covariance</span>
+   <span class="k">return</span> <span class="n">mapped_samples</span><span class="p">,</span> <span class="n">mapped_mu</span><span class="p">,</span> <span class="n">mapped_cov</span>
+</pre></div>
+</div>
+</div>
+<p>Starten Sie dann das Program. Wenn Sie alles richig gemacht haben sehen Sie einen animierten Plot
+ähnlich zu dem oben gezeigten Bild. Sie sollten sehen das die aus der Punktwolke geschätzten
+Kovarianzellipsen (hellblau) stets nahezu identisch sind mit denen von ihnen berechneten sind.</p>
+</section>
+<section id="aufgabe-2-polarkoordinaten-nach-kartesisch">
+<h2><strong>Aufgabe 2</strong>: Polarkoordinaten nach Kartesisch<a class="headerlink" href="#aufgabe-2-polarkoordinaten-nach-kartesisch" title="Link to this heading"></a></h2>
+<p>In dieser Aufgabe arbeiten Sie in der Datei</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nonlinearmapping/polar.py
+</pre></div>
+</div>
+<p>Implementieren Sie die Methode <a class="reference internal" href="#polar.map_samples" title="polar.map_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">polar.map_samples()</span></code></a>. Folgen Sie den Anweisungen im Code.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="polar.map_samples">
+<span class="sig-prename descclassname"><span class="pre">polar.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/polar.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#polar.map_samples" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong> 
+Assume you have a normal distributed random variable <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>
+with mean</p>
+<div class="math notranslate nohighlight">
+\[\mu = (r, \alpha) \]</div>
+<p>and given covariance (<cite>cov</cite>-Parameter). <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> represents
+a random point in polar coordinates. We want to transform that point into cartesian coordinates by 
+applying the following transformation</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{Y} = \begin{pmatrix}
+  r\cdot\cos(\alpha)\\
+  r\cdot\sin(\alpha)
+\end{pmatrix}\end{split}\]</div>
+<p>The samples parameter holds 512 samples of this random variable.</p>
+<p>Apply the non-linear mapping to the samples and calculate the <strong>exact</strong> new mean and covariance of
+<span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span> after linearization using the Jacobian Matrix :<span class="math notranslate nohighlight">\(J\)</span>, namely</p>
+<div class="math notranslate nohighlight">
+\[E[\boldsymbol{Y}] = f(\boldsymbol{\mu})\]</div>
+<div class="math notranslate nohighlight">
+\[Cov[\boldsymbol{Y}] = J\cdot Cov[\boldsymbol{X}] \cdot J^T\]</div>
+<p>Return the mapped samples as well as the 
+derived mean and covariance of the mapped random variable. 
+<strong>Do not</strong> estimate the mean and covariance from the mapped samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samples</strong> – (np.array 2x512) 512 Samples from <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span></p></li>
+<li><p><strong>radius</strong> – The mean radius in polar coordinates</p></li>
+<li><p><strong>alpha</strong> – The mean angle in polar coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
+<dd class="field-even"><p>3-tuple (mapped_samples, mapped_mu, mapped_cov)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+   <span class="c1"># TODO: Map all samples from polar to cartesian coordinates</span>
+   <span class="n">r</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">samples</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+   <span class="n">mapped_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+   <span class="n">mapped_samples</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+   <span class="n">mapped_samples</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+   <span class="c1"># TODO: Calculate Jacobian</span>
+   <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="o">-</span><span class="n">radius</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">)],</span>
+                 <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span>  <span class="n">radius</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">)]])</span>
+
+   <span class="c1"># TODO: Calculate mean and covariance of Y after linearization</span>
+   <span class="n">mapped_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">)])</span>
+   <span class="n">mapped_cov</span> <span class="o">=</span> <span class="n">J</span> <span class="o">@</span> <span class="n">cov</span> <span class="o">@</span> <span class="n">J</span><span class="o">.</span><span class="n">T</span>
+
+   <span class="c1"># TODO: Return your mapped samples, the mapped mean and the mapped covariance</span>
+   <span class="k">return</span> <span class="n">mapped_samples</span><span class="p">,</span> <span class="n">mapped_mu</span><span class="p">,</span> <span class="n">mapped_cov</span>
+</pre></div>
+</div>
+</div>
+<p>Starten Sie dann das Program. Wenn Sie alles richig gemacht haben sehen Sie einen animierten Plot
+ähnlich zu dem oben gezeigten Bild. Sie sollten sehen das die aus der Punktwolke geschätzten
+Kovarianzellipsen (hellblau) stets nahezu identisch sind mit denen von ihnen berechneten sind.</p>
+</section>
+<section id="aufgabe-3-polarkoordinaten-nach-kartesisch-teil-2">
+<h2><strong>Aufgabe 3</strong>: Polarkoordinaten nach Kartesisch - Teil 2<a class="headerlink" href="#aufgabe-3-polarkoordinaten-nach-kartesisch-teil-2" title="Link to this heading"></a></h2>
+<p>Erhöhen Sie im Skript den Wert der Variable</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">STD_ALPHA</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># Standard deviation of angular values (degrees)</span>
+</pre></div>
+</div>
+<p>auf z.B. 25° und schauen Sie was passiert.</p>
+</section>
+<section id="praxisbeispiel-fur-nichtlineare-transformation-sauerstoffsattigung-im-blut">
+<h2>Praxisbeispiel für nichtlineare Transformation: Sauerstoffsättigung im Blut<a class="headerlink" href="#praxisbeispiel-fur-nichtlineare-transformation-sauerstoffsattigung-im-blut" title="Link to this heading"></a></h2>
+</section>
+<section id="medizinischer-hintergrund">
+<h2>Medizinischer Hintergrund<a class="headerlink" href="#medizinischer-hintergrund" title="Link to this heading"></a></h2>
+<p>Die Sauerstoffsättigung des Hämoglobins im menschlichen Blut ist eine wichtige medizinische Messgröße.
+Sie beschreibt, wie viel Prozent des verfügbaren Hämoglobins mit Sauerstoff beladen ist – ein zentraler Indikator
+für die Versorgung des Körpers mit Sauerstoff.</p>
+<p>Direkt gemessen wird in der Regel jedoch nicht die Sättigung selbst, sondern der <strong>Sauerstoffpartialdruck</strong>
+(<span class="math notranslate nohighlight">\(p\)</span>) im arteriellen Blut, beispielsweise mit einem Pulsoxymeter oder einer Blutgasanalyse.
+Zwischen dem Partialdruck und der Sättigung besteht ein <strong>nichtlinearer</strong> Zusammenhang,
+der durch die sogenannte <strong>Hill-Gleichung</strong> beschrieben werden kann.</p>
+</section>
+<section id="die-hill-gleichung">
+<h2>Die Hill-Gleichung<a class="headerlink" href="#die-hill-gleichung" title="Link to this heading"></a></h2>
+<p>Die Sauerstoffsättigung <span class="math notranslate nohighlight">\(S\)</span> in Abhängigkeit vom Sauerstoffpartialdruck <span class="math notranslate nohighlight">\(p\)</span> lässt sich durch die folgende Funktion annähern:</p>
+<div class="math notranslate nohighlight">
+\[S(p) = \frac{p^n}{p^n + K^n}\]</div>
+<p>Dabei sind:
+- <span class="math notranslate nohighlight">\(p\)</span> der Sauerstoffpartialdruck in mmHg,
+- <span class="math notranslate nohighlight">\(n\)</span> der sogenannte Hill-Koeffizient (beschreibt die Kooperativität der Sauerstoffbindung),
+- <span class="math notranslate nohighlight">\(K\)</span> der Partialdruck, bei dem 50 % des Hämoglobins gesättigt sind.</p>
+<p>Typische Werte für menschliches Hämoglobin sind <span class="math notranslate nohighlight">\(n = 2{,}7\)</span> und <span class="math notranslate nohighlight">\(K = 26\)</span> mmHg.</p>
+<p>Ziel dieser Aufgabe ist es, zu untersuchen, wie sich Unsicherheiten bei der Messung des Sauerstoffpartialdrucks
+auf die Verteilung der Sauerstoffsättigung auswirken – insbesondere bei Verwendung einer linearen Approximation
+mittels Taylor-Entwicklung erster Ordnung.</p>
+</section>
+<section id="das-experiment">
+<h2>Das Experiment<a class="headerlink" href="#das-experiment" title="Link to this heading"></a></h2>
+<p>Ein typisches Experiment in diesem Bereich sieht so aus:</p>
+<ol class="arabic">
+<li><p>Gegeben ist eine normalverteilte Zufallsvariable für den Sauerstoffpartialdruck:</p>
+<div class="math notranslate nohighlight">
+\[p \sim \mathcal{N}(\mu_p = 40\,\text{mmHg}, \sigma_p^2 = 25\,\text{mmHg}^2)\]</div>
+<p>Bestimmen Sie den Erwartungswert <span class="math notranslate nohighlight">\(\mu_S\)</span> und die Varianz <span class="math notranslate nohighlight">\(\sigma_S^2\)</span> der Sauerstoffsättigung <span class="math notranslate nohighlight">\(S(p)\)</span>
+unter Verwendung einer linearen Approximation im Punkt <span class="math notranslate nohighlight">\(\mu_p\)</span>.</p>
+</li>
+<li><p>Leiten Sie dazu die erste Ableitung der Funktion <span class="math notranslate nohighlight">\(S(p)\)</span> nach <span class="math notranslate nohighlight">\(p\)</span> her und verwenden Sie diese zur Approximation
+mittels Taylor-Entwicklung erster Ordnung.</p></li>
+<li><p>Führen Sie eine Monte-Carlo-Simulation mit mindestens 10.000 Zufallswerten <span class="math notranslate nohighlight">\(p_i \sim \mathcal{N}(\mu_p, \sigma_p^2)\)</span> durch.
+Transformieren Sie jeden Wert mit <span class="math notranslate nohighlight">\(S(p_i)\)</span> und schätzen Sie den empirischen Mittelwert und die Varianz der resultierenden Verteilung.</p></li>
+<li><p>Vergleichen Sie die Ergebnisse der Simulation mit den Werten aus der linearen Approximation.</p></li>
+<li><p>Wiederholen Sie die Schritte 1–4 für folgende alternative Mittelwerte:
+- <span class="math notranslate nohighlight">\(\mu_p = 20\)</span> mmHg
+- <span class="math notranslate nohighlight">\(\mu_p = 80\)</span> mmHg</p></li>
+<li><p>Diskutieren Sie Ihre Beobachtungen:
+- Wann funktioniert die lineare Approximation gut?
+- In welchen Fällen weicht sie stark vom Simulationsergebnis ab?
+- Was ist der Einfluss der Lage von <span class="math notranslate nohighlight">\(\mu_p\)</span> relativ zur Sättigungskurve?</p></li>
+</ol>
+<p>Wir wollen dieses Experiment im folgenden in Python mit NumPy durchführen.</p>
+</section>
+<section id="aufgabe-4-sauerstoffsattigung-bestimmen">
+<h2><strong>Aufgabe 4</strong>: Sauerstoffsättigung bestimmen<a class="headerlink" href="#aufgabe-4-sauerstoffsattigung-bestimmen" title="Link to this heading"></a></h2>
+<p>In dieser Aufgabe arbeiten Sie in der Datei</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nonlinearmapping/oxygen.py
+</pre></div>
+</div>
+<p>Implementieren Sie die Methode <a class="reference internal" href="#oxygen.map_samples" title="oxygen.map_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">oxygen.map_samples()</span></code></a>. Folgen Sie den Anweisungen im Code.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="oxygen.map_samples">
+<span class="sig-prename descclassname"><span class="pre">oxygen.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oxygen.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#oxygen.map_samples" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>: Transform samples of a normally distributed oxygen partial pressure (p)
+using the Hill equation to approximate blood oxygen saturation.</p>
+<div class="math notranslate nohighlight">
+\[S(p) = \frac{p^n}{p^n + K^n}\]</div>
+<p>Note: You need to estimate the mean and variance of the samples by using 
+<a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.mean.html">np.mean</a> and 
+<a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.var.html">np.var</a>.</p>
+<p>Additionally compute an analytical approximation of the mean and variance
+of the transformed values via first-order Taylor expansion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>samples</strong> – A 1D array of sampled oxygen partial pressures (in mmHg), assumed to be
+normally distributed with unknown mean and variance.</p>
+</dd>
+</dl>
+<section id="returns">
+<h3>Returns:<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>3-Tuple of mapped_samples, the estimated mean and the estimated variance of the saturation (via Taylor expansion)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+   <span class="n">N</span><span class="p">,</span> <span class="n">K</span> <span class="o">=</span> <span class="mf">2.7</span><span class="p">,</span> <span class="mi">26</span>
+
+   <span class="c1"># TODO: Apply the Hill function to each sample to get saturation values</span>
+   <span class="n">mapped_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+   <span class="c1"># TODO: Use np.mean and np.var to compute mean and variance of the original input samples</span>
+   <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+   <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+
+   <span class="c1"># TODO: Compute the derivative (Jacobian) of the Hill function at the mean</span>
+   <span class="n">J</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+   <span class="c1"># TODO: Compute the transformed mean using the Hill function</span>
+   <span class="n">mapped_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+   <span class="c1"># TODO: Approximate the transformed variance via linear error propagation</span>
+   <span class="n">mapped_var</span> <span class="o">=</span> <span class="n">J</span> <span class="o">*</span> <span class="n">V</span> <span class="o">*</span> <span class="n">J</span>
+
+   <span class="c1"># TODO: Return the mapped samples, the mapped mean and the mapped variance</span>
+   <span class="k">return</span> <span class="n">mapped_samples</span><span class="p">,</span> <span class="n">mapped_mu</span><span class="p">,</span> <span class="n">mapped_var</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="aufgabe-5-experimentieren-mit-den-werten">
+<h2><strong>Aufgabe 5</strong>: Experimentieren mit den Werten<a class="headerlink" href="#aufgabe-5-experimentieren-mit-den-werten" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>Experimentieren Sie im Skript mit verschiedenen Werten für den Mittelwert <span class="math notranslate nohighlight">\(\mu_p\)</span> und die Standardabweichung <span class="math notranslate nohighlight">\(\sigma_p\)</span></dt><dd><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mu_p = 20\)</span> mmHg</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mu_p = 80\)</span> mmHg</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma_p = 2.5\)</span> mmHg</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma_p = 10\)</span> mmHg</p></li>
+</ul>
+</dd>
+<dt>Diskutieren Sie dann Ihre Beobachtungen:</dt><dd><ul class="simple">
+<li><p>Wann funktioniert die lineare Approximation gut?</p></li>
+<li><p>In welchen Fällen weicht sie stark vom Simulationsergebnis ab?</p></li>
+<li><p>Was ist der Einfluss der Lage von <span class="math notranslate nohighlight">\(\mu_p\)</span> relativ zur Sättigungskurve?</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="linearsource.html"><span class="doc">Lineare Abbildung - Musterlösung</span></a></p></li>
+<li><p><a class="reference internal" href="polarsource.html"><span class="doc">Nicht-Lineare Abbildung - Musterlösung</span></a></p></li>
+<li><p><a class="reference internal" href="oxygensource.html"><span class="doc">Sauerstoffsätigung - Musterlösung</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../homogen/index.html" class="btn btn-neutral float-left" title="Homogene Koordinaten" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../multivariate/index.html" class="btn btn-neutral float-right" title="Minimum Variance Fusion" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
