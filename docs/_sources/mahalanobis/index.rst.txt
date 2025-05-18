@@ -38,7 +38,7 @@ Wahrscheinlichkeit für eine 2D-Gaußverteilung – ähnlich wie die ±1σ-, ±2
 Diese Ellipsen werden in den folgenden Abbildungen verwendet, um die Streuung und Form multivariater
 Zufallsvariablen grafisch darzustellen.
 
-.. image:: ./maha1.png
+.. image:: maha1.png
   :width: 1024px
   :alt: Mahalanobisdistanz
   :align: center

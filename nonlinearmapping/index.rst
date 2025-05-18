@@ -102,7 +102,7 @@ Für die Kovarianz der neuen Zufallsvariable finden wir entsprechend
   0.28 & 1.5
   \end{pmatrix}
 
-.. image:: ./linearmapping.png
+.. image:: linearmapping.png
   :width: 1024px
   :alt: Linear Mapping of Random Variablen
   :align: center
@@ -126,7 +126,7 @@ Wird eine multivariat normalverteilte Zufallsvariable :math:`\boldsymbol{X}` dur
 :math:`f: \mathbb{R}^n\mapsto\mathbb{R}^m` abgebildet, so ist :math:`\boldsymbol{Y} = f(\boldsymbol{X})` ebenfalls
 eine Zufallsvariable. In der Regel ist :math:`\boldsymbol{Y}` jedoch nicht mehr normalverteilt. 
 
-.. image:: ./nonlinear.png
+.. image:: nonlinear.png
   :width: 1024px
   :alt: Non-linear mapping of random variables 
   :align: center
@@ -232,7 +232,7 @@ in die Approximation
 
 eine Näherung der Kovarianzmatrix im kartesischen Raum berechnen.
 
-.. image:: ./polar.png
+.. image:: polar.png
   :width: 1024px
   :alt: Non-Linear Mapping of Random Variable
   :align: center
@@ -248,7 +248,7 @@ die Winkelunsicherheit nicht zu groß ist kann die entstehende Verteilung hinrei
 Was passiert nun wenn die Winkelunsicherheit zu groß wird?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ./polar2.png
+.. image:: polar2.png
   :width: 1024px
   :alt: Non-Linear Mapping of Random Variable
   :align: center
