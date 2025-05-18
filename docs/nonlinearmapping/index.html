@@ -31,7 +31,7 @@
     <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
     <link rel="search" title="Suche" href="../search.html" />
     <link rel="next" title="Minimum Variance Fusion" href="../multivariate/index.html" />
-    <link rel="prev" title="Homogene Koordinaten" href="../homogen/index.html" /> 
+    <link rel="prev" title="Mahalanobis-Distanz und Kovarianzellipsen" href="../mahalanobis/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -62,6 +62,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#lineare-abbildungen-von-zufallsvariablen">Lineare Abbildungen von Zufallsvariablen</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#lineare-abbildung-ein-beispiel">Lineare Abbildung - Ein Beispiel</a></li>
@@ -538,8 +543,8 @@ Transformieren Sie jeden Wert mit <span class="math notranslate nohighlight">\(S
 using the Hill equation to approximate blood oxygen saturation.</p>
 <div class="math notranslate nohighlight">
 \[S(p) = \frac{p^n}{p^n + K^n}\]</div>
-<p>Note: You need to estimate the mean and variance of the samples by using 
-<a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.mean.html">np.mean</a> and 
+<p>Note: You need to estimate the mean and variance of the samples by using
+<a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.mean.html">np.mean</a> and
 <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.var.html">np.var</a>.</p>
 <p>Additionally compute an analytical approximation of the mean and variance
 of the transformed values via first-order Taylor expansion.</p>
@@ -618,7 +623,7 @@ normally distributed with unknown mean and variance.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../homogen/index.html" class="btn btn-neutral float-left" title="Homogene Koordinaten" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../mahalanobis/index.html" class="btn btn-neutral float-left" title="Mahalanobis-Distanz und Kovarianzellipsen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
         <a href="../multivariate/index.html" class="btn btn-neutral float-right" title="Minimum Variance Fusion" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

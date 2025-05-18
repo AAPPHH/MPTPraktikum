@@ -32,28 +32,17 @@ def map_samples(samples):
     N, K = 2.7, 26
 
     # TODO: Apply the Hill function to each sample to get saturation values
-    mapped_samples = np.power(samples, N) / (np.power(samples, N) + np.power(K, N))
-
+    
     # TODO: Use np.mean and np.var to compute mean and variance of the original input samples
-    mu = np.mean(samples)
-    V = np.var(samples)
-
+    
     # TODO: Compute the derivative (Jacobian) of the Hill function at the mean
-    J = (
-        N
-        * np.power(K, N)
-        * np.power(mu, N - 1)
-        / ((np.power(mu, N) + np.power(K, N)) ** 2)
-    )
-
+    
     # TODO: Compute the transformed mean using the Hill function
-    mapped_mu = np.power(mu, N) / (np.power(mu, N) + np.power(K, N))
-
+    
     # TODO: Approximate the transformed variance via linear error propagation
-    mapped_var = J * V * J
-
+    
     # TODO: Return the mapped samples, the mapped mean and the mapped variance
-    return mapped_samples, mapped_mu, mapped_var
+    pass
 
 
 # ---------------------------------------------------

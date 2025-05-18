@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mahalanobis-Distanz und Kovarianzellipsen &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/mahalanobis/index.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen" href="../nonlinearmapping/index.html" />
+    <link rel="prev" title="Homogene Koordinaten" href="../homogen/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mahalanobisdistanz</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#kovarianzellipsen">Kovarianzellipsen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#maha.plot_covariance_ellipse"><code class="docutils literal notranslate"><span class="pre">plot_covariance_ellipse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Mahalanobis-Distanz und Kovarianzellipsen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/mahalanobis/index.rst.txt" rel="nofollow"> Quelltext anzeigen</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mahalanobis-distanz-und-kovarianzellipsen">
+<h1>Mahalanobis-Distanz und Kovarianzellipsen<a class="headerlink" href="#mahalanobis-distanz-und-kovarianzellipsen" title="Link to this heading"></a></h1>
+<p>Die Mahalanobis-Distanz ist ein Maß für den Abstand eines Punkts von einem Mittelwert, das im Gegensatz zur
+euklidischen Distanz auch die <strong>Richtung und Streuung der Datenverteilung</strong> berücksichtigt. Sie ist besonders
+wichtig für multivariat normalverteilte Zufallsvariablen, bei denen die Variablen <strong>korreliert</strong> und die Skalen
+verschieden sein können.</p>
+<p>Für eine Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{X} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\)</span> und einen Punkt
+<span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> ist die Mahalanobis-Distanz definiert als:</p>
+<div class="math notranslate nohighlight">
+\[d_M(\boldsymbol{x}) = \sqrt{(\boldsymbol{x} - \boldsymbol{\mu})^\top \Sigma^{-1} (\boldsymbol{x} - \boldsymbol{\mu})}\]</div>
+<p>Diese Distanz ist dimensionslos und normiert die Abweichung entlang jeder Richtung gemäß der
+Varianzstruktur der Verteilung. Punkte mit gleicher Mahalanobis-Distanz liegen auf <strong>Ellipsen (2D)</strong> oder
+<strong>Ellipsoiden (3D)</strong> um den Erwartungswert.</p>
+<section id="kovarianzellipsen">
+<h2>Kovarianzellipsen<a class="headerlink" href="#kovarianzellipsen" title="Link to this heading"></a></h2>
+<p>Die <strong>Kovarianzellipsen</strong> (in 2D) verbinden all jene Punkte, die zur multivariaten Normalverteilung eine
+konstante Mahalanobis-Distanz haben – sie sind also die <strong>Konfidenzbereiche</strong>.</p>
+<p>Für eine gegebene Distanz <span class="math notranslate nohighlight">\(d\)</span> gilt:</p>
+<div class="math notranslate nohighlight">
+\[\{\boldsymbol{x} \in \mathbb{R}^2 \;|\; d_M(\boldsymbol{x}) = d\}\]</div>
+<p>Die Form und Ausrichtung der Ellipsen wird durch die Kovarianzmatrix <span class="math notranslate nohighlight">\(\Sigma\)</span> bestimmt:
+- Die Hauptachsen entsprechen den <strong>Eigenvektoren</strong> von <span class="math notranslate nohighlight">\(\Sigma\)</span>.
+- Die Längen der Achsen skalieren mit den <strong>Quadratwurzeln der Eigenwerte</strong>.
+- Eine größere Varianz entlang einer Richtung → längere Ausdehnung der Ellipse.</p>
+<p>Die Ellipsen mit <span class="math notranslate nohighlight">\(d_M = 1\)</span>, <span class="math notranslate nohighlight">\(2\)</span>, <span class="math notranslate nohighlight">\(3\)</span> umfassen etwa 39 %, 86 % bzw. 99 % der
+Wahrscheinlichkeit für eine 2D-Gaußverteilung – ähnlich wie die ±1σ-, ±2σ-, ±3σ-Regeln im eindimensionalen Fall.</p>
+<p>Diese Ellipsen werden in den folgenden Abbildungen verwendet, um die Streuung und Form multivariater
+Zufallsvariablen grafisch darzustellen.</p>
+<a class="reference internal image-reference" href="../_images/maha1.png"><img alt="Mahalanobisdistanz" class="align-center" src="../_images/maha1.png" style="width: 1024px;" />
+</a>
+</section>
+<section id="darstellung-von-kovarianzellipsen">
+<h2>Darstellung von Kovarianzellipsen<a class="headerlink" href="#darstellung-von-kovarianzellipsen" title="Link to this heading"></a></h2>
+<p>Im eindimensionalen Fall ist der 1-Sigma-Bereich keine Ellipse, sondern besteht aus zwei Punkten:
+Man berechnet die Standardabweichung <span class="math notranslate nohighlight">\(\sigma = \sqrt{\sigma^2}\)</span> aus der Varianz und erhält
+die Grenzen des Intervalls durch Addition und Subtraktion vom Mittelwert:</p>
+<div class="math notranslate nohighlight">
+\[\mu - \sigma \quad \text{und} \quad \mu + \sigma\]</div>
+<p>Dieser Bereich enthält bei einer Normalverteilung etwa 68 % der Wahrscheinlichkeit.</p>
+<p>Verallgemeinert man diese Idee auf den mehrdimensionalen Fall, so möchte man ebenfalls die
+„Wurzel“ der Kovarianzmatrix bestimmen, um aus einem <strong>Einheitskreis</strong> (bzw. einer Einheitskugel)
+eine gestreckte und rotierte Ellipse (bzw. Ellipsoid) zu erzeugen, die die gleiche Streuung wie
+die gegebene Verteilung aufweist.</p>
+<p>Die Matrixwurzel der Kovarianzmatrix <span class="math notranslate nohighlight">\(\Sigma\)</span> kann über die <strong>Cholesky-Zerlegung</strong> gebildet werden:</p>
+<div class="math notranslate nohighlight">
+\[\Sigma = LL^\top\]</div>
+<p>Dabei ist <span class="math notranslate nohighlight">\(L\)</span> eine untere Dreiecksmatrix, die als Transformation dient:
+Wenn <span class="math notranslate nohighlight">\(\boldsymbol{z}\)</span> eine Zufallsvariable mit <span class="math notranslate nohighlight">\(\boldsymbol{z} \sim \mathcal{N}(0, I)\)</span> ist,
+dann hat <span class="math notranslate nohighlight">\(\boldsymbol{x} = \mu + L \boldsymbol{z}\)</span> die Verteilung <span class="math notranslate nohighlight">\(\mathcal{N}(\mu, \Sigma)\)</span>.</p>
+<p>Zur Darstellung einer Kovarianzellipse geht man wie folgt vor:</p>
+<ol class="arabic">
+<li><p>Man erzeugt Punkte <span class="math notranslate nohighlight">\(\boldsymbol{z}\)</span> auf dem Einheitskreis, z. B. über Winkelparameter <span class="math notranslate nohighlight">\(\theta\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{z}(\theta) =
+\begin{pmatrix}
+   \cos(\theta) \\
+   \sin(\theta)
+\end{pmatrix}, \quad \theta \in [0, 2\pi)\end{split}\]</div>
+</li>
+<li><p>Diese Punkte werden mit der Matrix <span class="math notranslate nohighlight">\(L\)</span> skaliert und gedreht:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{x} = \mu + L \cdot \boldsymbol{z}(\theta)\]</div>
+</li>
+<li><p>Das Ergebnis ist eine Ellipse, die die Struktur der Kovarianzmatrix repräsentiert.</p></li>
+</ol>
+<p>Je nach gewähltem Skalierungsfaktor (z. B. Radius = 1, 2 oder 3) entsteht eine 1-, 2- oder 3-Sigma-Ellipse,
+die etwa 39 %, 86 % bzw. 99 % der Wahrscheinlichkeit einer 2D-Normalverteilung umfassen.</p>
+<p>Diese Darstellung erlaubt eine anschauliche Visualisierung von Unsicherheiten und Korrelationen in mehrdimensionalen
+Verteilungen – insbesondere, wenn man die Wirkung nichtlinearer Transformationen beobachtet.</p>
+</section>
+<section id="aufgabe-1-zeichnen-einer-kovarianzellipse">
+<h2><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse<a class="headerlink" href="#aufgabe-1-zeichnen-einer-kovarianzellipse" title="Link to this heading"></a></h2>
+<p>In diesem Praktikum arbeiten Sie in der Datei</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">mahalanobis</span><span class="o">/</span><span class="n">maha</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>In dieser Aufgabe sollen Sie lernen, wie man Unsicherheit und Streuung einer zweidimensionalen,
+normalverteilten Zufallsvariable grafisch als <strong>Kovarianzellipse</strong> darstellen kann.
+Dazu implementieren Sie eine Methode, die eine gegebene 2x2-Kovarianzmatrix analysiert und auf Basis
+der Cholesky-Zerlegung eine entsprechende Ellipse in eine bestehende Grafik einträgt.</p>
+<p>Die Kovarianzellipse verallgemeinert die Idee der Standardabweichung aus dem eindimensionalen Fall auf
+zwei Dimensionen. Sie beschreibt die Punkte gleicher Mahalanobis-Distanz (z. B. 1-Sigma) um den Erwartungswert
+einer 2D-Normalverteilung. Die Form und Orientierung der Ellipse wird durch die Kovarianzmatrix bestimmt.</p>
+<p>Die „Wurzel“ der Kovarianzmatrix wird über die <strong>Cholesky-Zerlegung</strong> gebildet.</p>
+<div class="math notranslate nohighlight">
+\[\Sigma = L L^\top\]</div>
+<p>Sie können diese in NumPy
+mit der Methode <a class="reference external" href="https://numpy.org/doc/2.1/reference/generated/numpy.linalg.cholesky.html">np.linalg.cholesky</a> berechnen.</p>
+<p>Die Matrix <span class="math notranslate nohighlight">\(L\)</span> transformiert den Einheitskreis zu einer Ellipse mit derselben Streuung wie die Normalverteilung.</p>
+<p>Implementieren Sie eine nun die Funktion <a class="reference internal" href="#maha.plot_covariance_ellipse" title="maha.plot_covariance_ellipse"><code class="xref py py-func docutils literal notranslate"><span class="pre">maha.plot_covariance_ellipse()</span></code></a>. Folgen Sie den
+Anweisungen im Code sowie dieser Beschreibung.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="maha.plot_covariance_ellipse">
+<span class="sig-prename descclassname"><span class="pre">maha.</span></span><span class="sig-name descname"><span class="pre">plot_covariance_ellipse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/maha.html#plot_covariance_ellipse"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#maha.plot_covariance_ellipse" title="Link to this definition"></a></dt>
+<dd><p><strong>TODO</strong>:
+Zeichnen Sie eine Kovarianzellipse (z. B. 1-, 2- oder 3-Sigma) um den Mittelwert einer 2D-Normalverteilung.
+Verwenden Sie das übergebene <a class="reference external" href="https://matplotlib.org/stable/api/axes_api.html">axes</a> Objekt zum zeichnen.</p>
+<section id="parameter">
+<h3>Parameter:<a class="headerlink" href="#parameter" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>mu<span class="classifier">np.ndarray</span></dt><dd><p>2D-Vektor mit dem Mittelwert (Schwerpunkt) der Ellipse.</p>
+</dd>
+<dt>Sigma<span class="classifier">np.ndarray</span></dt><dd><p>2x2-Kovarianzmatrix der Verteilung.</p>
+</dd>
+<dt>ax<span class="classifier">matplotlib.axes.Axes</span></dt><dd><p>Achse, in die die Ellipse gezeichnet werden soll.</p>
+</dd>
+<dt>n_std<span class="classifier">float</span></dt><dd><p>Skalierungsfaktor für die Ellipsenweite (z. B. 1 = 1-Sigma, 2 = 2-Sigma, …).</p>
+</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs :</dt><dd><p>Zusätzliche Parameter für <cite>ax.plot</cite>, z. B. Farbe oder Linienstil.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<div class="toggle admonition">
+<p class="admonition-title">Lösung anzeigen</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_covariance_ellipse</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">n_std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+   <span class="c1"># TODO: Generieren Sie 100 Punkte auf dem Einheitskreis</span>
+   <span class="c1"># Verwenden Sie np.linspace um 100 verschiedene Winkel zwischen 0 und 2pi zu bekommen.</span>
+   <span class="c1"># Wenden Sie dann np.cos und np.sin an und verwenden Sie anschließend np.stack</span>
+   <span class="c1"># um daraus ein (2, N) Array zu erzeugen.</span>
+   <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+   <span class="n">circle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)))</span>  <span class="c1"># Shape: (2, N)</span>
+
+   <span class="c1"># TODO: Bestimmen Sie die Cholesky-Zerlegung der Kovarianzmatrix Sigma</span>
+   <span class="c1"># L @ L.T</span>
+   <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)</span>
+
+   <span class="c1"># TODO: Transformieren Sie den Einheitskreises in eine entsprechende Ellipse</span>
+   <span class="c1"># Multiplizieren Sie mit n_std um die Ellipse zu skalieren.</span>
+   <span class="c1"># Stellen Sie sicher das die Ellipse um den Mittelwert mu zentriert ist.</span>
+   <span class="n">ellipse</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">n_std</span> <span class="o">*</span> <span class="n">L</span> <span class="o">@</span> <span class="n">circle</span>
+
+   <span class="c1"># Zeichnen Sie die Ellipse in das übergebene ax Objekt.</span>
+   <span class="c1"># Übergeben Sie die zusätzlichen Parameter in kwargs um das Aussehen der Ellipse</span>
+   <span class="c1"># beim Aufruf der Methode steuern zu können.</span>
+   <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ellipse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ellipse</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Ändern Sie die Kovarianzmatrix, um zu untersuchen, wie sich Form und Ausrichtung der Ellipsen verändern.</p>
+</section>
+<section id="musterlosung">
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="source.html"><span class="doc">Mahalanobisdistanz - Musterlösung</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../homogen/index.html" class="btn btn-neutral float-left" title="Homogene Koordinaten" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../nonlinearmapping/index.html" class="btn btn-neutral float-right" title="Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

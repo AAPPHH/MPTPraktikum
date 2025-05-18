@@ -48,20 +48,11 @@ def map_samples(samples, alpha):
     :return: 3-tuple (mapped_samples, mapped_mu, mapped_cov)
     """
     # TODO: Calculate Matrix A
-    s, c = np.sin(alpha), np.cos(alpha)
-
-    A = np.array([[c, s], [-s, c]])
 
     # TODO: Map the samples and calculate the exact mean and covariance of the Y
-    mu = np.array([1.5, 0.5])
-    cov = np.array([[0.7, -0.4], [-0.4, 1.4]])
-
-    mapped_samples = A @ samples
-    mapped_mu = A @ mu.reshape(-1, 1)
-    mapped_cov = A @ cov @ A.T
 
     # TODO: Return your mapped samples, the mapped mean and the mapped covariance
-    return mapped_samples, mapped_mu, mapped_cov
+    pass
 
 
 # ---------------------------------------------------

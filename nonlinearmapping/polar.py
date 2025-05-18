@@ -46,27 +46,13 @@ def map_samples(samples, radius, alpha, cov):
   :return: 3-tuple (mapped_samples, mapped_mu, mapped_cov)
   """
     # TODO: Map all samples from polar to cartesian coordinates
-    r, a = samples[0, :], samples[1, :]
-
-    mapped_samples = np.zeros_like(samples)
-    mapped_samples[0, :] = r * np.cos(a)
-    mapped_samples[1, :] = r * np.sin(a)
 
     # TODO: Calculate Jacobian
-    J = np.array(
-        [
-            [np.cos(alpha), -radius * np.sin(alpha)],
-            [np.sin(alpha), radius * np.cos(alpha)],
-        ]
-    )
 
     # TODO: Calculate mean and covariance of Y after linearization
-    mapped_mu = np.array([radius * np.cos(alpha), radius * np.sin(alpha)])
-    mapped_cov = J @ cov @ J.T
 
     # TODO: Return your mapped samples, the mapped mean and the mapped covariance
-    return mapped_samples, mapped_mu, mapped_cov
-
+    pass
 
 # ---------------------------------------------------
 # There is no need to change anything below this line

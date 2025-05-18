@@ -117,7 +117,7 @@ In diesem Praktikum arbeiten Sie in der Datei
 
 .. code-block:: Python
     
-    multivariate/nromal.py
+    multivariate/normal.py
 
 **Schritt 1**: Minimum Variance Fusion implementieren
 -----------------------------------------------------

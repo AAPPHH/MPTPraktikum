@@ -65,6 +65,11 @@ window.addEventListener("load", () => mermaid.run());
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
@@ -147,20 +152,11 @@ window.addEventListener("load", () => mermaid.run());
 <span class="sd">    :return: 3-tuple (mapped_samples, mapped_mu, mapped_cov)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: Calculate Matrix A</span>
-    <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
-
-    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">c</span><span class="p">,</span> <span class="n">s</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">]])</span>
 
     <span class="c1"># TODO: Map the samples and calculate the exact mean and covariance of the Y</span>
-    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
-    <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">]])</span>
-
-    <span class="n">mapped_samples</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">samples</span>
-    <span class="n">mapped_mu</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">mu</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">mapped_cov</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">cov</span> <span class="o">@</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>
 
     <span class="c1"># TODO: Return your mapped samples, the mapped mean and the mapped covariance</span>
-    <span class="k">return</span> <span class="n">mapped_samples</span><span class="p">,</span> <span class="n">mapped_mu</span><span class="p">,</span> <span class="n">mapped_cov</span></div>
+    <span class="k">pass</span></div>
 
 
 
@@ -238,7 +234,6 @@ window.addEventListener("load", () => mermaid.run());
 
         <span class="c1"># Wait shortly for animation to roll</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
-        
 </pre></div>
 
            </div>

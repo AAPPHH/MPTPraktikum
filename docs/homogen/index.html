@@ -30,6 +30,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
     <link rel="search" title="Suche" href="../search.html" />
+    <link rel="next" title="Mahalanobis-Distanz und Kovarianzellipsen" href="../mahalanobis/index.html" />
     <link rel="prev" title="Histogram of Oriented Gradients" href="../HOG/index.html" /> 
 </head>
 
@@ -65,84 +66,53 @@
 <li class="toctree-l2"><a class="reference internal" href="#unsere-eigene-kleine-3d-rendering-engine">Unsere eigene kleine 3D Rendering Engine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#einmal-von-euklidisch-nach-homogen-und-zuruck">Einmal von euklidisch nach homogen und zurück</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#translationen-in-homogenen-koordinaten">Translationen in homogenen Koordinaten</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktion-translate-3d"><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>translate_3d</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.translate_3d"><code class="docutils literal notranslate"><span class="pre">translate_3d()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktion-translate-3d"><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>translate_3d</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#skalierung-in-homogenen-koordinaten">Skalierung in homogenen Koordinaten</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktion-scale"><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>scale</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.scale"><code class="docutils literal notranslate"><span class="pre">scale()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktion-scale"><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>scale</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#mehrere-transformationen-zusammenfassen">Mehrere Transformationen zusammenfassen</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rotationen">Rotationen</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateX</em>, <em>rotateY</em> und <em>rotateZ</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.rotateX"><code class="docutils literal notranslate"><span class="pre">rotateX()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.rotateY"><code class="docutils literal notranslate"><span class="pre">rotateY()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.rotateZ"><code class="docutils literal notranslate"><span class="pre">rotateZ()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateX</em>, <em>rotateY</em> und <em>rotateZ</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#auf-die-reihenfolge-kommt-es-an">Auf die Reihenfolge kommt es an</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-rotatexyz"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateXYZ</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.rotateXYZ"><code class="docutils literal notranslate"><span class="pre">rotateXYZ()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-rotatexyz"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateXYZ</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#die-projektion-von-3d-nach-2d">Die Projektion von 3D nach 2D</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-projection"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>projection</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.projection"><code class="docutils literal notranslate"><span class="pre">projection()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-projection"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>projection</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#abbildung-in-bild-koordinaten-pixel">Abbildung in Bild-Koordinaten (Pixel)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-ndc-to-image"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>ndc_to_image</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.ndc_to_image"><code class="docutils literal notranslate"><span class="pre">ndc_to_image()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-ndc-to-image"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>ndc_to_image</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#die-kameramatrix">Die Kameramatrix</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-world-to-camera"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.world_to_camera"><code class="docutils literal notranslate"><span class="pre">world_to_camera()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-world-to-camera"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#von-lokalen-koordinaten-nach-weltkoordinaten">Von lokalen Koordinaten nach Weltkoordinaten</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.local_to_world"><code class="docutils literal notranslate"><span class="pre">local_to_world()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#von-weltkoordiaten-nach-bildkoordinaten">Von Weltkoordiaten nach Bildkoordinaten</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.world_to_image"><code class="docutils literal notranslate"><span class="pre">world_to_image()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#die-datenstruktur-fur-geometriedaten">Die Datenstruktur für Geometriedaten</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.project_vertexbuffer"><code class="docutils literal notranslate"><span class="pre">project_vertexbuffer()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#die-vertices-zeichnen">Die Vertices zeichnen</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-draw"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>draw</em></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#homogen.draw"><code class="docutils literal notranslate"><span class="pre">draw()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#aufgabe-implementieren-sie-die-funktionen-draw"><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>draw</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
 </ul>
 
         </div>
@@ -245,20 +215,6 @@ x_p + x_v\\y_p + y_v\\z_p + z_v\\1
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktion-translate-3d">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>translate_3d</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktion-translate-3d" title="Link to this heading"></a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.translate_3d">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">translate_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#translate_3d"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.translate_3d" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous translation matrix which moves coordinates by (x, y, z) as presented during lecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Translation matrix moving coordinates by (x, y, z)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">translate_3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -293,20 +249,6 @@ x_s \cdot x_p\\y_s \cdot y_p\\z_s \cdot z_p\\1
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktion-scale">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>scale</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktion-scale" title="Link to this heading"></a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.scale">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#scale"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.scale" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous scaling matrix which scales axes by (x, y, z) as presented during lecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Scaling matrix by (x, y, z)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -484,60 +426,6 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateX</em>, <em>rotateY</em> und <em>rotateZ</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez" title="Link to this heading"></a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.rotateX">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radians</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateX"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateX" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the
-X-axis by a given amount as presented during the lecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>radians</strong> – Angle by how far to rotate (in radians)</p>
-</dd>
-<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-even"><p>Rotation matrix around X-axis by given amount</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.rotateY">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radians</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateY"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateY" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the
-Y-axis by a given amount as presented during the lecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>radians</strong> – Angle by how far to rotate (in radians)</p>
-</dd>
-<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-even"><p>Rotation matrix around X-axis by given amount</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.rotateZ">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radians</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateZ"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateZ" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a homogeneous rotation matrix which rotates around the
-Z-axis by a given amount as presented during the lecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>radians</strong> – Angle by how far to rotate (in radians)</p>
-</dd>
-<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-even"><p>Rotation matrix around X-axis by given amount</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">rotateX</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
@@ -586,29 +474,7 @@ Z-axis by a given amount as presented during the lecture.</p>
 <section id="aufgabe-implementieren-sie-die-funktionen-rotatexyz">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateXYZ</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-rotatexyz" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>rotateXYZ</em>, indem Sie die die Funktionen
-<a class="reference internal" href="#homogen.rotateX" title="homogen.rotateX"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateX()</span></code></a>, <a class="reference internal" href="#homogen.rotateY" title="homogen.rotateY"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateY()</span></code></a> und <a class="reference internal" href="#homogen.rotateZ" title="homogen.rotateZ"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateZ()</span></code></a> in der korrekten Reihenfolge anwenden.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.rotateXYZ">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">rotateXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#rotateXYZ"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.rotateXYZ" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong> Return a combined rotation matrix which first rotates around X, then Y then Z
-by the given amounts of radians.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – Angle to rotate around X (in radians)</p></li>
-<li><p><strong>y</strong> – Angle to rotate around Y (in radians)</p></li>
-<li><p><strong>z</strong> – Angle to rotate around Z (in radians)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-even"><p>Homogeneous matrix applying rotations around X, Y and Z</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
+<code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateX()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateY()</span></code> und <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateZ()</span></code> in der korrekten Reihenfolge anwenden.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">rotateXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -653,23 +519,6 @@ der Kamera ein <span class="math notranslate nohighlight">\(z &lt; 0\)</span> ha
 natürlich nur Punkte vor der Kamera zeichnen wollen.</p>
 <section id="aufgabe-implementieren-sie-die-funktionen-projection">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>projection</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-projection" title="Link to this heading"></a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.projection">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#projection"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.projection" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return a projection matrix which projects along the Z-axis as presented during the lecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>c</strong> – Focal length of pin hole camera</p>
-</dd>
-<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-even"><p>Projection matrix</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">projection</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
@@ -699,19 +548,6 @@ Matrix</p>
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktionen-ndc-to-image">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>ndc_to_image</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-ndc-to-image" title="Link to this heading"></a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.ndc_to_image">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">ndc_to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">W</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#ndc_to_image"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.ndc_to_image" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return the matrix which transforms NDC-coordinates to pixel coordinates in the final image</p>
-<p>Do the following transformation in this particular order</p>
-<p>For this tutorial, you can use a combination of <a class="reference internal" href="#homogen.translate_3d" title="homogen.translate_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate_3d()</span></code></a> and <a class="reference internal" href="#homogen.scale" title="homogen.scale"><code class="xref py py-func docutils literal notranslate"><span class="pre">scale()</span></code></a>
-or write the transformation matrix directly according to the script</p>
-<ul class="simple">
-<li><p>Scale by (W/2, H/2, 1.0)</p></li>
-<li><p>Translate by (W/2, H/2, 0.0)</p></li>
-</ul>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
@@ -744,29 +580,6 @@ wir also die folgenden Transformationen durchzuführen</p>
 <section id="aufgabe-implementieren-sie-die-funktionen-world-to-camera">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-world-to-camera" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>world_to_camera</em></p>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.world_to_camera">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">world_to_camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#world_to_camera"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.world_to_camera" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return the matrix which transforms world to camera (view) coordinates.
-For this tutorial, use a combination of <a class="reference internal" href="#homogen.translate_3d" title="homogen.translate_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate_3d()</span></code></a>,
-<a class="reference internal" href="#homogen.rotateX" title="homogen.rotateX"><code class="xref py py-func docutils literal notranslate"><span class="pre">rotateX()</span></code></a> and <a class="reference internal" href="#homogen.rotateY" title="homogen.rotateY"><code class="xref py py-func docutils literal notranslate"><span class="pre">rotateY()</span></code></a>.</p>
-<p>Do the following transformation in this particular order</p>
-<ul class="simple">
-<li><p>Rotate around Y by 35 degrees.</p></li>
-<li><p>Rotate around X by -30 degrees</p></li>
-<li><p>Translate by (0, 16, 164)</p></li>
-</ul>
-<p><strong>Hint</strong>: You can use <a class="reference external" href="https://numpy.org/doc/2.1/reference/generated/numpy.deg2rad.html">np.deg2rad</a> to convert degrees to radians.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Homogeneous matrix defining the transformation from world to camera coordinate space</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_camera</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
@@ -780,9 +593,9 @@ For this tutorial, use a combination of <a class="reference internal" href="#hom
 <p>Um die lokalen Koordinaten unseres Objektes (z.B. eines Würfels) in globale Weltkoordiaten umzurechnen verwenden
 wir eine Kombination von Transformation in ganz bestimmter Reihenfolge.</p>
 <ul class="simple">
-<li><p>Zuerst wird das Objekt ggf. skaliert. Dazu kann <a class="reference internal" href="#homogen.scale" title="homogen.scale"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.scale()</span></code></a> verwendet werden.</p></li>
-<li><p>Anschließend wird das Objekt rotiert. Dabei wird nach Konvention zunächst um die X-Achse, dann um die Y-Achse und zuletzt um die Z-Achse gedreht. Dazu kann die Methode <a class="reference internal" href="#homogen.rotateXYZ" title="homogen.rotateXYZ"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateXYZ()</span></code></a> verwendet werden.</p></li>
-<li><p>Nun wird das Objekt in seinen neuen Ursprung verschoben, dazu kann <a class="reference internal" href="#homogen.translate_3d" title="homogen.translate_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.translate_3d()</span></code></a> verwendet werden.</p></li>
+<li><p>Zuerst wird das Objekt ggf. skaliert. Dazu kann <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.scale()</span></code> verwendet werden.</p></li>
+<li><p>Anschließend wird das Objekt rotiert. Dabei wird nach Konvention zunächst um die X-Achse, dann um die Y-Achse und zuletzt um die Z-Achse gedreht. Dazu kann die Methode <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateXYZ()</span></code> verwendet werden.</p></li>
+<li><p>Nun wird das Objekt in seinen neuen Ursprung verschoben, dazu kann <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.translate_3d()</span></code> verwendet werden.</p></li>
 <li><p>Zu guter letzt wird das Objekt noch einmal rotiert. Da es nun nicht mehr im Ursprung liegt rotiert es um eben diesen. Es umkeist (orbitet) somit den Ursprung des Weltkoordinatensystems.
 Dazu kann wieder :py:func`homogen.rotateXYZ` verwendet werden.</p></li>
 </ul>
@@ -790,31 +603,6 @@ Dazu kann wieder :py:func`homogen.rotateXYZ` verwendet werden.</p></li>
 <section id="aufgabe-implementieren-sie-die-funktionen-local-to-world">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>local_to_world</em></p>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.local_to_world">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">local_to_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectScale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectRotate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectTranslate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectOrbit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#local_to_world"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.local_to_world" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return the transformation from local coordinates to world coordinates.
-Apply the following transformations in this particular order</p>
-<ul class="simple">
-<li><p>Scale by the parameters provided in objectScale</p></li>
-<li><p>Rotate by the parameters provided in objectRotate</p></li>
-<li><p>Translate by the parameters provided in objectTranslate</p></li>
-<li><p>Rotate again by the parameters provided in objectOrbit.</p></li>
-</ul>
-<p><em>Note</em>: Because the second rotation happens after the translation it will „orbit“ around the
-center.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>objectScale</strong> – 3 element array with scaling parameters</p></li>
-<li><p><strong>objectRotate</strong> – 3 element array with rotation parameters (in radians)</p></li>
-<li><p><strong>objectTranslate</strong> – 3 element array with translation parameters</p></li>
-<li><p><strong>objectOrbit</strong> – 3 element array with orbiting parameters (in radians)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">local_to_world</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
@@ -834,27 +622,6 @@ kann die Transformation von Welt- nach Bildkoordinaten einmalig im vorraus berec
 <section id="id1">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>world_to_image</em></p>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.world_to_image">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">world_to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">W</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#world_to_image"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.world_to_image" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Return the complete projection matrix mapping from world coordinates to image coordinates.
-This is a concatenation of the <cite>world_to_camera</cite> matrix, the projection matrix and the mapping from
-NDC to image coordinates. Do the following transformations in the particular order</p>
-<ul class="simple">
-<li><p>Map <a class="reference internal" href="#homogen.world_to_camera" title="homogen.world_to_camera"><code class="xref py py-func docutils literal notranslate"><span class="pre">world_to_camera()</span></code></a> by calling the respective function</p></li>
-<li><p>Project along the z axis by calling <a class="reference internal" href="#homogen.projection" title="homogen.projection"><code class="xref py py-func docutils literal notranslate"><span class="pre">projection()</span></code></a></p></li>
-<li><p>Map <a class="reference internal" href="#homogen.ndc_to_image" title="homogen.ndc_to_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">ndc_to_image()</span></code></a> by calling the respective function</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Homogeneous matrix defining the transformation from world to image coordinates</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>4x4 np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -923,24 +690,6 @@ muß noch durch die <span class="math notranslate nohighlight">\(w\)</span>-Komp
 <section id="aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer">
 <h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>project_vertexbuffer</em></p>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.project_vertexbuffer">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">project_vertexbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_to_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#project_vertexbuffer"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.project_vertexbuffer" title="Link to this definition"></a></dt>
-<dd><p><strong>TODO</strong>: Project all vertices in the provided vertex buffer using the given transformation
-and convert to euclidean coordinates by dividing by the w-component of each vertex.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>vertices</strong> – Vertex buffer (4xN Matrix)</p></li>
-<li><p><strong>local_to_image</strong> – Transformation matrix to apply (4x4 Matrix)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Rückgabe<span class="colon">:</span></dt>
-<dd class="field-even"><p>Transformed vertices in euclidean space (w == 1)</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
@@ -978,22 +727,6 @@ Immer zwei aufeinanderfolgende Indices entsprechen dabei einer zu zeichnenden Li
 und verwenden Sie <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-line-method/">cv2.line</a> um eine Linie in der
 angegebenen Farbe zu zeichnen.</p></li>
 </ul>
-<dl class="py function">
-<dt class="sig sig-object py" id="homogen.draw">
-<span class="sig-prename descclassname"><span class="pre">homogen.</span></span><span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_to_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/homogen.html#draw"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#homogen.draw" title="Link to this definition"></a></dt>
-<dd><p>Draws a given mesh using the provided projection matrix into the given canvas using provided color.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameter<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mesh</strong> – 2-Tuple (vertices, indices) containing both the vertex buffer as well as the index buffer</p></li>
-<li><p><strong>local_to_image</strong> – Transformation matrix to transform vertices from local space to image space</p></li>
-<li><p><strong>canvas</strong> – OpenCV image to draw into (3 channel RGB, np.float32)</p></li>
-<li><p><strong>col</strong> – Color to draw (3-Tuple with (B, G, R) color intensities ranging from 0.0 to 1.0 each)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
@@ -1028,6 +761,7 @@ angegebenen Farbe zu zeichnen.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../HOG/index.html" class="btn btn-neutral float-left" title="Histogram of Oriented Gradients" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Zurück</a>
+        <a href="../mahalanobis/index.html" class="btn btn-neutral float-right" title="Mahalanobis-Distanz und Kovarianzellipsen" accesskey="n" rel="next">Weiter <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
