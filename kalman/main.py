@@ -19,11 +19,11 @@ import cv2
 RANGE_X = (-50.0, 50.0)
 RANGE_Y = (-50.0, 50.0)
 SCANS_PER_SECOND = 33
-CANVAS_WIDTH, CANVAS_HEIGHT = 1600, 1600
+CANVAS_WIDTH, CANVAS_HEIGHT = 1280, 1280
 
 class TerminateAfter(Module):
     def __init__(self, count):
-        super().__init__(name="Terminate After")
+        super().__init__(name="Terminate After", inputSignals=["config"])
         self.counter = count
         self.count = 0
         pass
@@ -46,14 +46,13 @@ class TerminateAfter(Module):
 class MeasurementGenerator(Module):
     def __init__(self):
         super().__init__(
+            inputSignals=["config"],
             outputSchema={"type": "object", "properties": {
-                "measurement": { 
+                "measurements": { 
                     "type": "object", 
                     "properties": {
-                      "state": { },
-                      "covariance": { }
-                    }, 
-                    "additionalProperties": False 
+                      
+                    }
                   },
                   "groundtruth": { 
                     "type": "object", 
@@ -67,6 +66,13 @@ class MeasurementGenerator(Module):
         )
 
     def start(self, data):
+        sensors = data["config"]["sensors"]
+        self.sensorOutageTimer = {}
+
+        for sensor in sensors:
+            name = sensor["name"]
+            self.sensorOutageTimer[name] = 0            
+
         gtX = np.random.uniform(RANGE_X[0], RANGE_X[1])
         gtY = np.random.uniform(RANGE_Y[0], RANGE_Y[1])
         self.position = np.array([gtX, gtY])
@@ -90,27 +96,86 @@ class MeasurementGenerator(Module):
 
         return {}
 
+    def generate_missing_detections(self, sensor, measurement, covariance):
+        # Get sensor miss chance and streak length
+        missChance, missLength = get_nested_key("missChance", sensor) or 0.1, get_nested_key("missLength", sensor) or 10
+
+        # Miss out certain detections
+        if self.steps > 3:
+            sensorName = sensor["name"]
+            if self.sensorOutageTimer[sensorName] == 0 and np.random.uniform() < missChance:
+                self.sensorOutageTimer[sensorName] = missLength
+                
+            if self.sensorOutageTimer[sensorName] > 0:
+                measurement = None
+                covariance = None
+                self.sensorOutageTimer[sensorName] -= 1
+
+        return measurement, covariance
+
+    def generate_radar_measurement(self, sensor):
+        # Get sensor position
+        position = sensor["position"]
+        position = np.array([position[0], position[1]])
+
+        # Get sensor longitudinal and lateral uncertainty
+        long, lat = sensor["longitudinalStdDev"], sensor["lateralStdDev"]
+        
+        # Get vector to target
+        toTarget = self.position - position
+        toTarget /= np.linalg.norm(toTarget)
+
+        # Get rotation angle with position x axis
+        alpha = np.arccos(-toTarget[0])
+
+        s, c = np.sin(alpha), np.cos(alpha)
+        R = np.array([[c, -s],[s, c]])
+        
+        covariance = R.T @ np.array([[long, 0],[0, lat]]) @ R
+
+        measurement = np.random.multivariate_normal(self.position, covariance)
+
+        return self.generate_missing_detections(sensor, measurement, covariance)
+    
+    def generate_global_measurement(self, sensor):
+        # Get sensor position
+        
+        # Get sensor longitudinal and lateral uncertainty
+        stdX, stdY, correlation = sensor["stdX"], sensor["stdY"], sensor["correlation"]
+        
+        # Get vector to target
+        covariance = np.array([
+            [stdX**2, correlation * stdX * stdY],
+            [correlation * stdX * stdY, stdY**2],
+            ])
+
+        measurement = np.random.multivariate_normal(self.position, covariance)
+
+        return self.generate_missing_detections(sensor, measurement, covariance)
+
+
+
+
     def step(self, data):
         # Move object
         self.position += self.velocity / SCANS_PER_SECOND
         self.velocity += self.acceleration / SCANS_PER_SECOND
 
-        # Make a measurement   
-        covariance = np.array([
-            [1.0, 0.0],
-            [0.0, 1.0]
-        ])
-        measurement = np.random.multivariate_normal(self.position, covariance)
+        sensors = data["config"]["sensors"]
+        measurements = {}
+        for sensor in sensors:
+          if sensor["type"] == "radar":
+            measurement, covariance = self.generate_radar_measurement(sensor)
+          elif sensor["type"] == "global":
+            measurement, covariance = self.generate_global_measurement(sensor)
+          
+          name = sensor["name"]
+          measurements[name] = {
+              "state": measurement,
+              "covariance": covariance
+          }
 
-        # Miss out certain detections
-        if self.steps > 30:
-            if self.miss_timer == 0 and np.random.uniform() < 0.1:
-                self.miss_timer = 15
-                
-            if self.miss_timer > 0:
-                measurement = None
-                covariance = None
-                self.miss_timer -= 1
+        
         
         self.steps += 1
 
@@ -118,10 +183,7 @@ class MeasurementGenerator(Module):
             "groundtruth": {
                 "state": self.position.copy()
             },
-            "measurement": {
-                "state": measurement,
-                "covariance": covariance
-            },
+            "measurements": measurements,
         }
 
     def stop(self, data):
@@ -129,7 +191,7 @@ class MeasurementGenerator(Module):
     
 class KalmanFilter(Module):
     def __init__(self):    
-        super().__init__(inputSignals=["measurement"], outputSchema={
+        super().__init__(inputSignals=["measurements"], outputSchema={
             "type": "object", "properties": {
                   "prior": { 
                     "type": "object", 
@@ -154,11 +216,12 @@ class KalmanFilter(Module):
         self.P = None
     
     def step(self, data):
-        z = data["measurement"]["state"]
+        key = list(data["measurements"].keys())[0]
+        z = data["measurements"][key]["state"]
+        R = data["measurements"][key]["covariance"]
+
         if z is not None:
             z = z.reshape(-1,1)
-
-        R = data["measurement"]["covariance"]
 
         if self.X is None:
             self.X = np.array([[z[0][0], z[1][0], 0.0, 0.0]]).T
@@ -193,13 +256,19 @@ class KalmanFilter(Module):
                 [0.0, 1.0, 0.0, 0.0]
             ])
 
-            if z is not None:
-              y = z - H @ self.X 
-              S = H @ self.P @ H.T + R 
-              K = self.P @ H.T @ np.linalg.inv(S)
+            for _, measurement in data["measurements"].items():
+                key = list(data["measurements"].keys())[0]
+                z = measurement["state"]
+                R = measurement["covariance"]
+                if z is not None:
+                  z = z.reshape(-1,1)
 
-              self.X = self.X + K @ y
-              self.P = (np.eye(4) - K @ H) @ self.P
+                  y = z - H @ self.X 
+                  S = H @ self.P @ H.T + R 
+                  K = self.P @ H.T @ np.linalg.inv(S)
+
+                  self.X = self.X + K @ y
+                  self.P = (np.eye(4) - K @ H) @ self.P
 
         return {
             "prior": {
@@ -216,14 +285,24 @@ class KalmanFilter(Module):
 
 class Visualization(Module):
     def __init__(self):
-        super().__init__(inputSignals=["measurement", "groundtruth", "prior", "posterior"])
-        self.measurement_state_history = []
+        super().__init__(inputSignals=["config", "measurements", "groundtruth", "prior", "posterior"])
+        self.measurement_state_history = {}
         self.gt_state_history = []
         self.prior_state_history = []
         self.posterior_state_history = []
 
-    def layer(self, name, galy):
-        galy.layer(name)
+    def start(self, data):
+        # Create a dedicated measurement state history for each measurement
+        sensors = data["config"]["sensors"]
+        for sensor in sensors:
+            name = sensor["name"]
+            self.measurement_state_history[name] = []
+        
+        return {}
+
+
+    def layer(self, name, galy, alwaysVisible=False):
+        galy.layer(name, alwaysVisible)
 
         # Setup affine mapping to image
         scaleX = CANVAS_WIDTH / (RANGE_X[1] - RANGE_X[0])
@@ -264,11 +343,23 @@ class Visualization(Module):
         galy.mahalanobis(state, cov, base_color + 0.33 * (white - base_color), scale=2.0, thickness=2)
         galy.mahalanobis(state, cov, base_color + 0.67 * (white - base_color), scale=3.0, thickness=2)
 
+    def draw_sensor(self, galy, sensor):
+        if sensor["type"] == "radar":
+          position = sensor["position"]
+          for radius in [3, 7, 11]:
+              col = 0.1 + radius * 0.03
+              galy.circle(position, radius, (col, col, col), 2)
+
+          x = position[0] - 2.2
+          y = position[1] - 2.5  
+          galy.putText(sensor["name"], (x, y), color=(0.1, 0.1, 0.1),fontScale=0.6, thickness=1)
+
     def step(self, data):
         # Append states to history
-        measurement = data["measurement"]["state"]
-        if measurement is not None:
-          self.measurement_state_history.append(data["measurement"]["state"])
+        for sensorName, measurement in data["measurements"].items():
+          state = measurement["state"]
+          if state is not None:
+            self.measurement_state_history[sensorName].append(state)
 
         self.gt_state_history.append(data["groundtruth"]["state"])
         self.prior_state_history.append(data["prior"]["state"][:2, 0])
@@ -277,7 +368,14 @@ class Visualization(Module):
         # Draw GALY
         galy = GALY()
         galy.canvas("Main", (CANVAS_WIDTH, CANVAS_HEIGHT), (1.0, 1.0, 1.0))
-        self.layer("Grid", galy)
+
+        # Draw sensor configuration
+        self.layer("Sensors", galy)
+        sensors = data["config"]["sensors"]
+        for sensor in sensors:
+          self.draw_sensor(galy, sensor)
+
+        self.layer("Grid", galy, alwaysVisible=True)
        
         # Draw coordinate grid
         for x in [-50.0, -40.0, -30.0, -20.0, -10.0, 0.0, 10.0, 20.0, 30.0, 40.0]:
@@ -296,13 +394,17 @@ class Visualization(Module):
         self.draw_state_history(layerName = "Ground Truth", galy = galy, history = self.gt_state_history, base_color = np.array([0.2, 0.2, 1.0]), white = np.array([0.7, 0.7, 1.0]))
         
         # Draw detection history
-        self.draw_state_history(layerName = "Measurement History", galy = galy, history = self.measurement_state_history, base_color = np.array([1.0, 0.2, 0.2]), white = np.array([1.0, 0.7, 0.7]))
+        for sensorName, history in self.measurement_state_history.items():
+          self.draw_state_history(layerName = f"Measurement History - {sensorName}", galy = galy, history = history, base_color = np.array([1.0, 0.2, 0.2]), white = np.array([1.0, 0.7, 0.7]))
 
         # Draw detection
-        if measurement is not None:
-          self.draw_state("Measurement", galy, data["measurement"]["state"], data["measurement"]["covariance"], np.array([1.0, 0.2, 0.2]))
-        else:
-          galy.putText("Measurement missing", (-49,48), color=(0.2, 0.0, 0.9), thickness=2)
+        for sensorName, measurement in data["measurements"].items():
+            state = measurement["state"]
+            covariance = measurement["covariance"]
+            if state is not None:
+              self.draw_state(f"Measurement - {sensorName}", galy, state, covariance, np.array([1.0, 0.2, 0.2]))
+            else:
+              galy.putText("Measurement missing", (-49,48), color=(0.2, 0.0, 0.9), thickness=2)
 
         # Draw prior history
         self.draw_state_history(layerName = "Prior History", galy = galy, history = self.prior_state_history, base_color = np.array([0.2, 0.5, 0.2]), white = np.array([0.7, 1.0, 0.7]))
