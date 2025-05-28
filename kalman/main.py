@@ -18,17 +18,16 @@ import cv2
 
 RANGE_X = (-50.0, 50.0)
 RANGE_Y = (-50.0, 50.0)
-SCANS_PER_SECOND = 33
 CANVAS_WIDTH, CANVAS_HEIGHT = 1280, 1280
 
 class TerminateAfter(Module):
-    def __init__(self, count):
+    def __init__(self):
         super().__init__(name="Terminate After", inputSignals=["config"])
-        self.counter = count
         self.count = 0
         pass
 
     def start(self, data):
+        self.counter = get_nested_key("config.simulation.steps", data, 120)
         self.count = 0
         return {}
 
@@ -66,6 +65,13 @@ class MeasurementGenerator(Module):
         )
 
     def start(self, data):
+        minDistance = get_nested_key("config.target.minDistance", data, 35.0)
+        maxDistance = get_nested_key("config.target.maxDistance", data, 45.0)
+        minVelocity = get_nested_key("config.target.minVelocity", data, 15.0)
+        maxVelocity = get_nested_key("config.target.maxVelocity", data, 25.0)
+        minAcceleration = get_nested_key("config.target.minAcceleration", data, 1.0)
+        maxAcceleration = get_nested_key("config.target.maxAcceleration", data, 1.5)
+        
         sensors = data["config"]["sensors"]
         self.sensorOutageTimer = {}
 
@@ -77,19 +83,23 @@ class MeasurementGenerator(Module):
         gtY = np.random.uniform(RANGE_Y[0], RANGE_Y[1])
         self.position = np.array([gtX, gtY])
         self.position /= np.linalg.norm(self.position)
-        self.position = np.power(np.abs(self.position), 0.5) * np.sign(self.position)
-        self.position *= np.random.uniform(50.0, 50.0)
+        self.position *= np.random.uniform(minDistance, maxDistance)
 
-
+        gtX, gtY = self.position[0], self.position[1]
         vX = -gtX * np.random.uniform(0.8, 1.2)
         vY = -gtY * np.random.uniform(0.8, 1.2)
         self.velocity = np.array([vX, vY])
         self.velocity /= np.linalg.norm(self.velocity)
-        self.velocity *= np.random.uniform(15.0, 25.0) 
+        self.velocity *= np.random.uniform(minVelocity, maxVelocity) 
 
-        self.acceleration = np.array([-gtY, -gtX])
-        self.acceleration /= np.linalg.norm(self.velocity)
-        self.acceleration *= np.random.uniform(1.0, 1.5) 
+        velocityNorm = np.linalg.norm(self.velocity)
+        if velocityNorm > 1e-2:
+          self.acceleration = np.array([-gtY, -gtX])
+          self.acceleration /= np.linalg.norm(self.velocity)
+          self.acceleration *= np.random.uniform(minAcceleration, maxAcceleration) 
+        else:
+           self.acceleration = np.array([0.0, 0.0])
+        
 
         self.steps = 0
         self.miss_timer = 0
@@ -157,9 +167,10 @@ class MeasurementGenerator(Module):
 
 
     def step(self, data):
+        scansPerSecond = get_nested_key("config.simulation.scansPerSecond", data, 33)
         # Move object
-        self.position += self.velocity / SCANS_PER_SECOND
-        self.velocity += self.acceleration / SCANS_PER_SECOND
+        self.position += self.velocity / scansPerSecond
+        self.velocity += self.acceleration / scansPerSecond
 
         sensors = data["config"]["sensors"]
         measurements = {}
@@ -216,25 +227,8 @@ class KalmanFilter(Module):
         self.P = None
     
     def step(self, data):
-        key = list(data["measurements"].keys())[0]
-        z = data["measurements"][key]["state"]
-        R = data["measurements"][key]["covariance"]
-
-        if z is not None:
-            z = z.reshape(-1,1)
-
-        if self.X is None:
-            self.X = np.array([[z[0][0], z[1][0], 0.0, 0.0]]).T
-            self.P = np.array([
-                [R[0][0], 0.0, 0.0, 0.0],
-                [0.0, R[1][1], 0.0, 0.0],
-                [0.0, 0.0, 100.0, 0.0],
-                [0.0, 0.0, 0.0, 100.0],
-                ])
-            
-            prediction = self.X.copy()
-            priorCov = self.P.copy()
-        else:
+        # Predict next state 
+        if self.X is not None:
             F = np.array([
                 [1.0, 0.0, 1.0, 0.0],
                 [0.0, 1.0, 0.0, 1.0],
@@ -245,30 +239,44 @@ class KalmanFilter(Module):
             
             Q = np.eye(4) * 0.001
 
-            self.X = F @ self.X 
-            self.P = F @ self.P @ F.T + Q
+            self.X, self.P = F @ self.X, F @ self.P @ F.T + Q
             
             prediction = self.X.copy()
             priorCov = self.P.copy()
 
-            H = np.array([
-                [1.0, 0.0, 0.0, 0.0],
-                [0.0, 1.0, 0.0, 0.0]
-            ])
+        # Update with measurements
+        H = np.array([
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0]
+        ])
 
-            for _, measurement in data["measurements"].items():
-                key = list(data["measurements"].keys())[0]
-                z = measurement["state"]
-                R = measurement["covariance"]
-                if z is not None:
-                  z = z.reshape(-1,1)
+        for _, measurement in data["measurements"].items():
+            key = list(data["measurements"].keys())[0]
+            z, R = measurement["state"], measurement["covariance"]
 
-                  y = z - H @ self.X 
-                  S = H @ self.P @ H.T + R 
-                  K = self.P @ H.T @ np.linalg.inv(S)
+            if z is None:
+                continue
+            
+            z = z.reshape(-1,1)
+            
+            if self.X is None:
+              self.X = np.array([[z[0][0], z[1][0], 0.0, 0.0]]).T
+              self.P = np.array([
+                  [R[0][0], 0.0, 0.0, 0.0],
+                  [0.0, R[1][1], 0.0, 0.0],
+                  [0.0, 0.0, 100.0, 0.0],
+                  [0.0, 0.0, 0.0, 100.0],
+                  ])
+              
+              prediction = self.X.copy()
+              priorCov = self.P.copy()
+            else:              
+              y = z - H @ self.X 
+              S = H @ self.P @ H.T + R 
+              K = self.P @ H.T @ np.linalg.inv(S)
 
-                  self.X = self.X + K @ y
-                  self.P = (np.eye(4) - K @ H) @ self.P
+              self.X = self.X + K @ y
+              self.P = (np.eye(4) - K @ H) @ self.P
 
         return {
             "prior": {
@@ -465,7 +473,7 @@ parser.add_argument("--mode", action="store", default="none")
 parser.add_argument("--recorder.file", action="store")
 parser.add_argument("--engine.singlestep", action="store_true", default=False)
 parser.add_argument("--webcam.width", required=False)
-modules = [ConfigParser(parser), MeasurementGenerator(), KalmanFilter(), Visualization(), TerminateAfter(120)]
+modules = [ConfigParser(parser), MeasurementGenerator(), KalmanFilter(), Visualization(), TerminateAfter()]
 
 
 engine = Engine(modules=modules, signals={})
