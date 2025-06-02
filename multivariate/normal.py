@@ -51,24 +51,24 @@ if __name__ == "__main__":
         cluster3 = np.random.multivariate_normal(mu, cov, size=SAMPLES_PER_CLUSTER)
 
         draw_cluster(image, cluster1, col=(0.7, 0.8, 1.0))
-        draw_cluster(image, cluster2, col=(1.00, 0.8, 0.7))
-        draw_cluster(image, cluster3, col=(0.7, 1.0, 0.7))
+        #draw_cluster(image, cluster2, col=(1.00, 0.8, 0.7))
+        #draw_cluster(image, cluster3, col=(0.7, 1.0, 0.7))
 
         draw_mahalanobis(image, mu1, cov1)
-        draw_mahalanobis(image, mu2, cov2, col=(0.92, 0.14, 0.0))
-        draw_mahalanobis(image, mu, cov, col=(0.14, 0.92, 0.14))
+        #draw_mahalanobis(image, mu2, cov2, col=(0.92, 0.14, 0.0))
+        #draw_mahalanobis(image, mu, cov, col=(0.14, 0.92, 0.14))
 
         col = (0.6, 0.6, 0.6)
         if control == 1:
             col = (0.0, 0.14, 0.92)
         draw_text(image, mu1, cov1, col=col)
 
-        col = (0.6, 0.6, 0.6)
-        if control == 2:
-            col = (0.92, 0.14, 0.0)
-        draw_text(image, mu2, cov2, yOffset=100, col=col)
+        # col = (0.6, 0.6, 0.6)
+        # if control == 2:
+        #     col = (0.92, 0.14, 0.0)
+        # draw_text(image, mu2, cov2, yOffset=100, col=col)
 
-        draw_text(image, mu, cov, yOffset=200, col=(0.15, 0.92, 0.14))
+        # draw_text(image, mu, cov, yOffset=200, col=(0.15, 0.92, 0.14))
 
         draw_axes(image)
         cv2.imshow("Clusters", image)
