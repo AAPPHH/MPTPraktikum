@@ -71,6 +71,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#initialisierung-des-kalman-filters">Initialisierung des Kalman-Filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#beispiel-1-dimensionales-kalman-filter"><strong>Beispiel</strong>: 1-dimensionales Kalman-Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mehrere-messungen-zum-selben-zeitpunkt">Mehrere Messungen zum selben Zeitpunkt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1"><strong>Aufgabe 1</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
 </ul>
 </li>
@@ -280,6 +281,12 @@ R = \begin{bmatrix} R^{(1)} &amp;        &amp;        \\
 <li><p>Die <strong>sequentielle Verarbeitung</strong> (Option 2) ist flexibler und erlaubt z. B. unterschiedliche Messraten oder unsortierten Eingang.</p></li>
 </ul>
 <p>Beide Methoden liefern bei korrekt spezifizierten Modellen und Rauschkovarianzen identische Resultate, solange die Messfehler unabhängig sind.</p>
+</section>
+<section id="aufgabe-1">
+<h2><strong>Aufgabe 1</strong><a class="headerlink" href="#aufgabe-1" title="Permalink to this heading"></a></h2>
+<p>Den Filter initialisieren.</p>
+<p>Implementieren Sie eine nun die Funktion <code class="xref py py-meth docutils literal notranslate"><span class="pre">kalman.kalman.init_filter()</span></code>. Folgen Sie den
+Anweisungen im Code sowie dieser Beschreibung.</p>
 </section>
 <section id="musterlosung">
 <h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>

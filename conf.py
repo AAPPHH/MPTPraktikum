@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.abspath("./forwardalgorithm"))
 sys.path.insert(0, os.path.abspath("./multivariate"))
 sys.path.insert(0, os.path.abspath("./nonlinearmapping"))
 sys.path.insert(0, os.path.abspath("./mahalanobis"))
+sys.path.insert(0, os.path.abspath('./kalman'))
 
 project = "Machine Perception and Tracking - Praktikum"
 copyright = "2025, Prof. Dr. Dennis Müller"

@@ -268,6 +268,20 @@ Wenn mehrere Messungen :math:`z_k^{(1)}, z_k^{(2)}, \dots, z_k^{(n)}` zum gleich
 
 Beide Methoden liefern bei korrekt spezifizierten Modellen und Rauschkovarianzen identische Resultate, solange die Messfehler unabhängig sind.
 
+**Aufgabe 1**
+--------------
+Den Filter initialisieren.
+
+Implementieren Sie eine nun die Funktion :py:meth:`kalman.kalman.init_filter`. Folgen Sie den 
+Anweisungen im Code sowie dieser Beschreibung.
+
+.. autoclass:: kalman.KalmanFilter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automethod:: kalman.KalmanFilter.init_filter    
+
 
 Musterlösung
 ------------

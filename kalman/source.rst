@@ -1,6 +1,6 @@
 Das Kalman-Filter - Musterlösung
 ================================
 
-.. literalinclude:: ../kalman/main.py
+.. literalinclude:: ../kalman/solution.py
    :language: python
    :linenos:

@@ -62,7 +62,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Das Kalman-Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#einfuhrung-in-das-kalman-filter">Einführung in das Kalman-Filter</a></li>
 </ul>
 
         </div>
@@ -98,212 +97,225 @@
 <span class="linenos">  5</span><span class="kn">from</span> <span class="nn">visualization</span> <span class="kn">import</span> <span class="n">Visualization</span>
 <span class="linenos">  6</span><span class="kn">from</span> <span class="nn">terminateafter</span> <span class="kn">import</span> <span class="n">TerminateAfter</span>
 <span class="linenos">  7</span>
-<span class="linenos">  8</span>
-<span class="linenos">  9</span><span class="k">class</span> <span class="nc">KalmanFilter</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-<span class="linenos"> 10</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="linenos"> 11</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-<span class="linenos"> 12</span>            <span class="n">inputSignals</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;measurements&quot;</span><span class="p">],</span>
-<span class="linenos"> 13</span>            <span class="n">outputSchema</span><span class="o">=</span><span class="p">{</span>
-<span class="linenos"> 14</span>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-<span class="linenos"> 15</span>                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="linenos"> 16</span>                    <span class="s2">&quot;prior&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="linenos"> 17</span>                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-<span class="linenos"> 18</span>                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="p">{}},</span>
-<span class="linenos"> 19</span>                        <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<span class="linenos"> 20</span>                    <span class="p">},</span>
-<span class="linenos"> 21</span>                    <span class="s2">&quot;posterior&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="linenos"> 22</span>                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-<span class="linenos"> 23</span>                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="p">{}},</span>
-<span class="linenos"> 24</span>                        <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<span class="linenos"> 25</span>                    <span class="p">},</span>
-<span class="linenos"> 26</span>                <span class="p">},</span>
-<span class="linenos"> 27</span>            <span class="p">},</span>
-<span class="linenos"> 28</span>        <span class="p">)</span>
-<span class="linenos"> 29</span>
-<span class="linenos"> 30</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-<span class="linenos"> 31</span>        <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-<span class="linenos"> 32</span>
-<span class="linenos"> 33</span>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="linenos"> 34</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 35</span><span class="sd">        Predicts the next state and covariance of the system using the Kalman filter prediction step.</span>
-<span class="linenos"> 36</span><span class="sd">        This method applies the state transition model to estimate the next state vector (`self.X`)</span>
-<span class="linenos"> 37</span><span class="sd">        and updates the state covariance matrix (`self.P`) by incorporating process noise.</span>
-<span class="linenos"> 38</span><span class="sd">        The prediction is based on the following:</span>
-<span class="linenos"> 39</span><span class="sd">          - State transition matrix (F) models the system dynamics.</span>
-<span class="linenos"> 40</span><span class="sd">          - Process noise covariance matrix (Q) accounts for uncertainty in the process.</span>
-<span class="linenos"> 41</span>
-<span class="linenos"> 42</span><span class="sd">        For a 2D position and velocity model, the state vector is represented as:</span>
-<span class="linenos"> 43</span><span class="sd">        [x_position, y_position, x_velocity, y_velocity]. The state transition matrix F </span>
-<span class="linenos"> 44</span><span class="sd">        is designed to update the position based on the current velocity, assuming a constant</span>
-<span class="linenos"> 45</span><span class="sd">        velocity model. The process noise covariance matrix Q is set to a small value to reflect</span>
-<span class="linenos"> 46</span><span class="sd">        the uncertainty in the process.  </span>
-<span class="linenos"> 47</span>
-<span class="linenos"> 48</span><span class="sd">        Assuming constant velocity, the state transition matrix F is defined as:</span>
-<span class="linenos"> 49</span>
-<span class="linenos"> 50</span><span class="sd">            F = [[1, 0, dt, 0],</span>
-<span class="linenos"> 51</span><span class="sd">                [0, 1, 0, dt],</span>
-<span class="linenos"> 52</span><span class="sd">                [0, 0, 1, 0],</span>
-<span class="linenos"> 53</span><span class="sd">                [0, 0, 0, 1]]</span>
-<span class="linenos"> 54</span>
-<span class="linenos"> 55</span><span class="sd">        where dt is the time step between predictions. In this case, we assume dt = 1 for simplicity.</span>
-<span class="linenos"> 56</span>
-<span class="linenos"> 57</span><span class="sd">        The process noise covariance matrix Q is defined as:  </span>
-<span class="linenos"> 58</span>
-<span class="linenos"> 59</span><span class="sd">            Q = [[q_x, 0, 0, 0],</span>
-<span class="linenos"> 60</span><span class="sd">                [0, q_y, 0, 0],</span>
-<span class="linenos"> 61</span><span class="sd">                [0, 0, q_vx, 0],</span>
-<span class="linenos"> 62</span><span class="sd">                [0, 0, 0, q_vy]]</span>
-<span class="linenos"> 63</span>
-<span class="linenos"> 64</span><span class="sd">        where q_x, q_y, q_vx, and q_vy are small values representing the process noise for position. </span>
-<span class="linenos"> 65</span>
-<span class="linenos"> 66</span><span class="sd">        Use np.diag to create a diagonal matrix for Q, where the diagonal elements represent the process noise variances for each state variable.^</span>
-<span class="linenos"> 67</span><span class="sd">        Use small noise for position and larger noise for velocity to reflect the uncertainty in the process.</span>
-<span class="linenos"> 68</span><span class="sd">        The prediction step updates the state vector and covariance matrix as follows:  </span>
-<span class="linenos"> 69</span><span class="sd">        </span>
-<span class="linenos"> 70</span><span class="sd">        - `X = F @ X`: This updates the state vector by applying the state transition matrix F.</span>
-<span class="linenos"> 71</span><span class="sd">        - `P = F @ P @ F.T + Q`: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.</span>
-<span class="linenos"> 72</span><span class="sd">        </span>
-<span class="linenos"> 73</span><span class="sd">        Updates:</span>
-<span class="linenos"> 74</span><span class="sd">          self.X: Predicted state vector after applying the state transition.</span>
-<span class="linenos"> 75</span><span class="sd">          self.P: Predicted state covariance matrix after accounting for process noise.</span>
-<span class="linenos"> 76</span><span class="sd">        &quot;&quot;&quot;</span>
-<span class="linenos"> 77</span>        
-<span class="linenos"> 78</span>        <span class="c1"># TODO: Define the state transition matrix F</span>
-<span class="linenos"> 79</span>        <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-<span class="linenos"> 80</span>            <span class="p">[</span>
-<span class="linenos"> 81</span>                <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-<span class="linenos"> 82</span>                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-<span class="linenos"> 83</span>                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-<span class="linenos"> 84</span>                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-<span class="linenos"> 85</span>            <span class="p">]</span>
-<span class="linenos"> 86</span>        <span class="p">)</span>
-<span class="linenos"> 87</span>
-<span class="linenos"> 88</span>        <span class="c1"># TODO: Define the process noise covariance matrix Q</span>
-<span class="linenos"> 89</span>        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
-<span class="linenos"> 90</span>
-<span class="linenos"> 91</span>        <span class="c1"># TODO: Predict next state using the state transition matrix</span>
-<span class="linenos"> 92</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">F</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span>
-<span class="linenos"> 93</span>
-<span class="linenos"> 94</span>        <span class="c1"># TODO: Update the state covariance matrix using the state transition matrix and process noise</span>
-<span class="linenos"> 95</span>        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">F</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">Q</span>
-<span class="linenos"> 96</span>
-<span class="linenos"> 97</span>    <span class="k">def</span> <span class="nf">init_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
-<span class="linenos"> 98</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos"> 99</span><span class="sd">        Initializes the Kalman filter with thje first measurement and covariance.</span>
-<span class="linenos">100</span><span class="sd">        </span>
-<span class="linenos">101</span><span class="sd">        Parameters:</span>
-<span class="linenos">102</span><span class="sd">        - z: The first measurement (2D Vector with position in X and Y).</span>
-<span class="linenos">103</span><span class="sd">        - R: The covariance matrix associated with the measurement, which represents the uncertainty in the measurement.</span>
-<span class="linenos">104</span><span class="sd">        </span>
-<span class="linenos">105</span><span class="sd">        This method sets the initial state and covariance for the Kalman filter, which will be used</span>
-<span class="linenos">106</span><span class="sd">        in subsequent prediction and update steps.</span>
-<span class="linenos">107</span>
-<span class="linenos">108</span><span class="sd">        The state vector `self.X` is initialized with the first measurement, assuming a 2D position and velocity model.</span>
-<span class="linenos">109</span><span class="sd">        The covariance matrix `self.P` is initialized with the measurement noise covariance `R` for position, </span>
-<span class="linenos">110</span><span class="sd">        and larger values for velocity to reflect the uncertainty in the initial state.</span>
-<span class="linenos">111</span><span class="sd">        </span>
-<span class="linenos">112</span><span class="sd">        Updates:</span>
-<span class="linenos">113</span><span class="sd">          self.X: Predicted state vector after applying the state transition.</span>
-<span class="linenos">114</span><span class="sd">          self.P: Predicted state covariance matrix after accounting for process noise.</span>
-<span class="linenos">115</span><span class="sd">        &quot;&quot;&quot;</span>
-<span class="linenos">116</span>        <span class="c1"># TODO: Initialize the state vector with the initial measurement, assuming a 2D position and velocity model. </span>
-<span class="linenos">117</span>        <span class="c1"># Use the X and Y component of the measurement z, and set the velocity components to 0.0.</span>
-<span class="linenos">118</span>        <span class="c1"># HINT: The resulting state vector should be a 4D vector with the format [x_position, y_position, x_velocity, y_velocity] with shape (4, 1).</span>
-<span class="linenos">119</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
-<span class="linenos">120</span>
-<span class="linenos">121</span>        <span class="c1"># TODO: Initialize the covariance matrix with the measurement noise covariance R for position,</span>
-<span class="linenos">122</span>        <span class="c1"># and larger values for velocity to reflect the uncertainty in the initial state. </span>
-<span class="linenos">123</span>        <span class="c1"># HINT: The resulting covariance matrix should be a 4x4 matrix. You can use np.diag to create a diagonal matrix.        </span>
-<span class="linenos">124</span>        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">])</span>
+<span class="linenos">  8</span><span class="k">class</span> <span class="nc">KalmanFilter</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+<span class="linenos">  9</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 10</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+<span class="linenos"> 11</span>            <span class="n">inputSignals</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;measurements&quot;</span><span class="p">],</span>
+<span class="linenos"> 12</span>            <span class="n">outputSchema</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos"> 13</span>                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="linenos"> 14</span>                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 15</span>                    <span class="s2">&quot;prior&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 16</span>                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="linenos"> 17</span>                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="p">{}},</span>
+<span class="linenos"> 18</span>                        <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos"> 19</span>                    <span class="p">},</span>
+<span class="linenos"> 20</span>                    <span class="s2">&quot;posterior&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 21</span>                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="linenos"> 22</span>                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="p">{}},</span>
+<span class="linenos"> 23</span>                        <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos"> 24</span>                    <span class="p">},</span>
+<span class="linenos"> 25</span>                <span class="p">},</span>
+<span class="linenos"> 26</span>            <span class="p">},</span>
+<span class="linenos"> 27</span>        <span class="p">)</span>
+<span class="linenos"> 28</span>
+<span class="linenos"> 29</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+<span class="linenos"> 30</span>        <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+<span class="linenos"> 31</span>
+<span class="linenos"> 32</span>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 33</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 34</span><span class="sd">        Predicts the next state and covariance of the system using the Kalman filter prediction step.</span>
+<span class="linenos"> 35</span><span class="sd">        This method applies the state transition model to estimate the next state vector (`self.X`)</span>
+<span class="linenos"> 36</span><span class="sd">        and updates the state covariance matrix (`self.P`) by incorporating process noise.</span>
+<span class="linenos"> 37</span><span class="sd">        The prediction is based on the following:</span>
+<span class="linenos"> 38</span><span class="sd">          - State transition matrix (F) models the system dynamics.</span>
+<span class="linenos"> 39</span><span class="sd">          - Process noise covariance matrix (Q) accounts for uncertainty in the process.</span>
+<span class="linenos"> 40</span>
+<span class="linenos"> 41</span><span class="sd">        For a 2D position and velocity model, the state vector is represented as:</span>
+<span class="linenos"> 42</span><span class="sd">        [x_position, y_position, x_velocity, y_velocity]. The state transition matrix F </span>
+<span class="linenos"> 43</span><span class="sd">        is designed to update the position based on the current velocity, assuming a constant</span>
+<span class="linenos"> 44</span><span class="sd">        velocity model. The process noise covariance matrix Q is set to a small value to reflect</span>
+<span class="linenos"> 45</span><span class="sd">        the uncertainty in the process.  </span>
+<span class="linenos"> 46</span>
+<span class="linenos"> 47</span><span class="sd">        Assuming constant velocity, the state transition matrix F is defined as:</span>
+<span class="linenos"> 48</span>
+<span class="linenos"> 49</span><span class="sd">            F = [[1, 0, dt, 0],</span>
+<span class="linenos"> 50</span><span class="sd">                [0, 1, 0, dt],</span>
+<span class="linenos"> 51</span><span class="sd">                [0, 0, 1, 0],</span>
+<span class="linenos"> 52</span><span class="sd">                [0, 0, 0, 1]]</span>
+<span class="linenos"> 53</span>
+<span class="linenos"> 54</span><span class="sd">        where dt is the time step between predictions. In this case, we assume dt = 1 for simplicity.</span>
+<span class="linenos"> 55</span>
+<span class="linenos"> 56</span><span class="sd">        The process noise covariance matrix Q is defined as:  </span>
+<span class="linenos"> 57</span>
+<span class="linenos"> 58</span><span class="sd">            Q = [[q_x, 0, 0, 0],</span>
+<span class="linenos"> 59</span><span class="sd">                [0, q_y, 0, 0],</span>
+<span class="linenos"> 60</span><span class="sd">                [0, 0, q_vx, 0],</span>
+<span class="linenos"> 61</span><span class="sd">                [0, 0, 0, q_vy]]</span>
+<span class="linenos"> 62</span>
+<span class="linenos"> 63</span><span class="sd">        where q_x, q_y, q_vx, and q_vy are small values representing the process noise for position. </span>
+<span class="linenos"> 64</span>
+<span class="linenos"> 65</span><span class="sd">        Use np.diag to create a diagonal matrix for Q, where the diagonal elements represent the process noise variances for each state variable.^</span>
+<span class="linenos"> 66</span><span class="sd">        Use small noise for position and larger noise for velocity to reflect the uncertainty in the process.</span>
+<span class="linenos"> 67</span><span class="sd">        The prediction step updates the state vector and covariance matrix as follows:  </span>
+<span class="linenos"> 68</span><span class="sd">        </span>
+<span class="linenos"> 69</span><span class="sd">        - `X = F @ X`: This updates the state vector by applying the state transition matrix F.</span>
+<span class="linenos"> 70</span><span class="sd">        - `P = F @ P @ F.T + Q`: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.</span>
+<span class="linenos"> 71</span><span class="sd">        </span>
+<span class="linenos"> 72</span><span class="sd">        Updates:</span>
+<span class="linenos"> 73</span><span class="sd">          self.X: Predicted state vector after applying the state transition.</span>
+<span class="linenos"> 74</span><span class="sd">          self.P: Predicted state covariance matrix after accounting for process noise.</span>
+<span class="linenos"> 75</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos"> 76</span>        
+<span class="linenos"> 77</span>        <span class="c1"># TODO: Define the state transition matrix F</span>
+<span class="linenos"> 78</span>        <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="linenos"> 79</span>            <span class="p">[</span>
+<span class="linenos"> 80</span>                <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="linenos"> 81</span>                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="linenos"> 82</span>                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="linenos"> 83</span>                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="linenos"> 84</span>            <span class="p">]</span>
+<span class="linenos"> 85</span>        <span class="p">)</span>
+<span class="linenos"> 86</span>
+<span class="linenos"> 87</span>        <span class="c1"># TODO: Define the process noise covariance matrix Q</span>
+<span class="linenos"> 88</span>        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="linenos"> 89</span>
+<span class="linenos"> 90</span>        <span class="c1"># TODO: Predict next state using the state transition matrix</span>
+<span class="linenos"> 91</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">F</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span>
+<span class="linenos"> 92</span>
+<span class="linenos"> 93</span>        <span class="c1"># TODO: Update the state covariance matrix using the state transition matrix and process noise</span>
+<span class="linenos"> 94</span>        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">F</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">Q</span>
+<span class="linenos"> 95</span>
+<span class="linenos"> 96</span>    <span class="k">def</span> <span class="nf">init_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+<span class="linenos"> 97</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 98</span><span class="sd">        Initializes the Kalman filter with thje first measurement and covariance.</span>
+<span class="linenos"> 99</span><span class="sd">        </span>
+<span class="linenos">100</span><span class="sd">        Parameters:</span>
+<span class="linenos">101</span><span class="sd">        - z: The first measurement (2D Vector with position in X and Y).</span>
+<span class="linenos">102</span><span class="sd">        - R: The covariance matrix associated with the measurement, which represents the uncertainty in the measurement.</span>
+<span class="linenos">103</span><span class="sd">        </span>
+<span class="linenos">104</span><span class="sd">        This method sets the initial state and covariance for the Kalman filter, which will be used</span>
+<span class="linenos">105</span><span class="sd">        in subsequent prediction and update steps.</span>
+<span class="linenos">106</span>
+<span class="linenos">107</span><span class="sd">        The state vector `self.X` is initialized with the first measurement, assuming a 2D position and velocity model.</span>
+<span class="linenos">108</span><span class="sd">        The covariance matrix `self.P` is initialized with the measurement noise covariance `R` for position, </span>
+<span class="linenos">109</span><span class="sd">        and larger values for velocity to reflect the uncertainty in the initial state.</span>
+<span class="linenos">110</span><span class="sd">        </span>
+<span class="linenos">111</span><span class="sd">        Updates:</span>
+<span class="linenos">112</span><span class="sd">          self.X: Predicted state vector after applying the state transition.</span>
+<span class="linenos">113</span><span class="sd">          self.P: Predicted state covariance matrix after accounting for process noise.</span>
+<span class="linenos">114</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">115</span>        <span class="c1"># TODO: Initialize the state vector with the initial measurement, assuming a 2D position and velocity model. </span>
+<span class="linenos">116</span>        <span class="c1"># Use the X and Y component of the measurement z, and set the velocity components to 0.0.</span>
+<span class="linenos">117</span>        <span class="c1"># HINT: The resulting state vector should be a 4D vector with the format [x_position, y_position, x_velocity, y_velocity] with shape (4, 1).</span>
+<span class="linenos">118</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+<span class="linenos">119</span>
+<span class="linenos">120</span>        <span class="c1"># TODO: Initialize the covariance matrix with the measurement noise covariance R for position,</span>
+<span class="linenos">121</span>        <span class="c1"># and larger values for velocity to reflect the uncertainty in the initial state. </span>
+<span class="linenos">122</span>        <span class="c1"># HINT: The resulting covariance matrix should be a 4x4 matrix. You can use np.diag to create a diagonal matrix.        </span>
+<span class="linenos">123</span>        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">])</span>
+<span class="linenos">124</span>
 <span class="linenos">125</span>
-<span class="linenos">126</span>
-<span class="linenos">127</span>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
-<span class="linenos">128</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="linenos">129</span><span class="sd">        Performs the Kalman filter update step with the given measurement.</span>
-<span class="linenos">130</span><span class="sd">        Args:</span>
-<span class="linenos">131</span><span class="sd">          z (np.ndarray): The measurement vector. Shape is (2,1) for 2D position (no velocity estimates from the measurement).</span>
-<span class="linenos">132</span><span class="sd">          R (np.ndarray): The measurement noise covariance matrix. Shape is (2,2) for 2D position measurements.</span>
-<span class="linenos">133</span><span class="sd">        Updates:</span>
-<span class="linenos">134</span><span class="sd">          self.X (np.ndarray): The state estimate after incorporating the measurement.</span>
-<span class="linenos">135</span><span class="sd">          self.P (np.ndarray): The state covariance matrix after the update.</span>
-<span class="linenos">136</span>
-<span class="linenos">137</span><span class="sd">        If the filter is not initialized (self.X is None), initializes the filter with the measurement.</span>
-<span class="linenos">138</span><span class="sd">        Otherwise, computes the Kalman gain, updates the state estimate and covariance matrix.</span>
-<span class="linenos">139</span>
-<span class="linenos">140</span><span class="sd">        First, one needs to calculate the innovation (measurement residual) `y` and the innovation covariance `S`:</span>
-<span class="linenos">141</span><span class="sd">        :math:`\begin{array}{ccc}</span>
-<span class="linenos">142</span><span class="sd">                y &amp;=&amp; z - H\cdot X\\</span>
-<span class="linenos">143</span><span class="sd">                S &amp;=&amp; H \cdot P \cdot H^T + R</span>
-<span class="linenos">144</span><span class="sd">               \end{array}`</span>
-<span class="linenos">145</span><span class="sd">        </span>
-<span class="linenos">146</span><span class="sd">        where `z` is the measurement, `H` is the measurement matrix, `X` is the current state estimate, and `P` is the current covariance matrix.</span>
-<span class="linenos">147</span>
-<span class="linenos">148</span><span class="sd">        Then, compute the Kalman gain `K`:</span>
-<span class="linenos">149</span><span class="sd">        :math:`K = P \cdot H^T \cdot S^{-1}`</span>
-<span class="linenos">150</span>
-<span class="linenos">151</span><span class="sd">        Finally, update the state estimate and covariance matrix:</span>
-<span class="linenos">152</span>
-<span class="linenos">153</span><span class="sd">        :math:`X = X + K  \cdot y`</span>
-<span class="linenos">154</span><span class="sd">        :math:`P = (I - K \cdot H) \cdot P`</span>
-<span class="linenos">155</span>
-<span class="linenos">156</span><span class="sd">        where `H` is the measurement matrix and `I` is the identity matrix</span>
-<span class="linenos">157</span><span class="sd">        &quot;&quot;&quot;</span>                
-<span class="linenos">158</span>        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> 
-<span class="linenos">159</span>                      <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
-<span class="linenos">160</span>
-<span class="linenos">161</span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">162</span>            <span class="bp">self</span><span class="o">.</span><span class="n">init_filter</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
-<span class="linenos">163</span>            <span class="k">return</span>
-<span class="linenos">164</span>        
-<span class="linenos">165</span>        <span class="n">y</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="n">H</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span>
-<span class="linenos">166</span>        <span class="n">S</span> <span class="o">=</span> <span class="n">H</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">R</span>
-<span class="linenos">167</span>        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-<span class="linenos">168</span>
-<span class="linenos">169</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">+</span> <span class="n">K</span> <span class="o">@</span> <span class="n">y</span>
-<span class="linenos">170</span>        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">K</span> <span class="o">@</span> <span class="n">H</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span>
-<span class="linenos">171</span>
-<span class="linenos">172</span>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="linenos">173</span>        <span class="c1"># If there is a state already, predict the next state and covariance</span>
-<span class="linenos">174</span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">175</span>            <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+<span class="linenos">126</span>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+<span class="linenos">127</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">128</span><span class="sd">        Performs the Kalman filter update step with the given measurement.</span>
+<span class="linenos">129</span><span class="sd">        Args:</span>
+<span class="linenos">130</span><span class="sd">          z (np.ndarray): The measurement vector. Shape is (2,1) for 2D position (no velocity estimates from the measurement).</span>
+<span class="linenos">131</span><span class="sd">          R (np.ndarray): The measurement noise covariance matrix. Shape is (2,2) for 2D position measurements.</span>
+<span class="linenos">132</span><span class="sd">        Updates:</span>
+<span class="linenos">133</span><span class="sd">          self.X (np.ndarray): The state estimate after incorporating the measurement.</span>
+<span class="linenos">134</span><span class="sd">          self.P (np.ndarray): The state covariance matrix after the update.</span>
+<span class="linenos">135</span>
+<span class="linenos">136</span><span class="sd">        If the filter is not initialized (self.X is None), initializes the filter with the measurement.</span>
+<span class="linenos">137</span><span class="sd">        Otherwise, computes the Kalman gain, updates the state estimate and covariance matrix.</span>
+<span class="linenos">138</span>
+<span class="linenos">139</span><span class="sd">        First, one needs to calculate the innovation (measurement residual) `y` and the innovation covariance `S`:</span>
+<span class="linenos">140</span><span class="sd">        :math:`\begin{array}{ccc}</span>
+<span class="linenos">141</span><span class="sd">                y &amp;=&amp; z - H\cdot X\\</span>
+<span class="linenos">142</span><span class="sd">                S &amp;=&amp; H \cdot P \cdot H^T + R</span>
+<span class="linenos">143</span><span class="sd">               \end{array}`</span>
+<span class="linenos">144</span><span class="sd">        </span>
+<span class="linenos">145</span><span class="sd">        where `z` is the measurement, `H` is the measurement matrix, `X` is the current state estimate, and `P` is the current covariance matrix.</span>
+<span class="linenos">146</span>
+<span class="linenos">147</span><span class="sd">        Then, compute the Kalman gain `K`:</span>
+<span class="linenos">148</span><span class="sd">        :math:`K = P \cdot H^T \cdot S^{-1}`</span>
+<span class="linenos">149</span>
+<span class="linenos">150</span><span class="sd">        Finally, update the state estimate and covariance matrix:</span>
+<span class="linenos">151</span>
+<span class="linenos">152</span><span class="sd">        :math:`X = X + K  \cdot y`</span>
+<span class="linenos">153</span><span class="sd">        :math:`P = (I - K \cdot H) \cdot P`</span>
+<span class="linenos">154</span>
+<span class="linenos">155</span><span class="sd">        where `H` is the measurement matrix and `I` is the identity matrix</span>
+<span class="linenos">156</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">157</span>        <span class="c1"># TODO: If the filter is not initialized, initialize it with the first measurement and return</span>
+<span class="linenos">158</span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">159</span>            <span class="bp">self</span><span class="o">.</span><span class="n">init_filter</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+<span class="linenos">160</span>            <span class="k">return</span>
+<span class="linenos">161</span>
+<span class="linenos">162</span>        <span class="c1">### TODO: Define the measurement matrix H</span>
+<span class="linenos">163</span>        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> 
+<span class="linenos">164</span>                      <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+<span class="linenos">165</span>
+<span class="linenos">166</span>        <span class="c1">## TODO: Calculate the innovation (measurement residual) y and the innovation covariance S</span>
+<span class="linenos">167</span>        <span class="n">y</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="n">H</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span>
+<span class="linenos">168</span>        <span class="n">S</span> <span class="o">=</span> <span class="n">H</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">R</span>
+<span class="linenos">169</span>
+<span class="linenos">170</span>        <span class="c1">## TODO: Compute the Kalman gain K</span>
+<span class="linenos">171</span>        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="linenos">172</span>
+<span class="linenos">173</span>        <span class="c1"># TODO: Update the state estimate with the measurement</span>
+<span class="linenos">174</span>        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">+</span> <span class="n">K</span> <span class="o">@</span> <span class="n">y</span>
+<span class="linenos">175</span>        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">K</span> <span class="o">@</span> <span class="n">H</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span>
 <span class="linenos">176</span>
-<span class="linenos">177</span>            <span class="c1"># Make a copy of the current state and covariance for visualization of the prior </span>
-<span class="linenos">178</span>            <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="linenos">179</span>            <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="linenos">180</span>
-<span class="linenos">181</span>        <span class="c1"># Update with measurements</span>
-<span class="linenos">182</span>        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;measurements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="linenos">183</span>            <span class="n">z</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">measurement</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">],</span> <span class="n">measurement</span><span class="p">[</span><span class="s2">&quot;covariance&quot;</span><span class="p">]</span>
+<span class="linenos">177</span>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="linenos">178</span>        <span class="c1"># If there is a state already, predict the next state and covariance</span>
+<span class="linenos">179</span>        <span class="c1"># Also, make a copy of the current state and covariance for visualization of the prior </span>
+<span class="linenos">180</span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">181</span>            <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+<span class="linenos">182</span>            <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos">183</span>            <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="linenos">184</span>
-<span class="linenos">185</span>            <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">R</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">186</span>              <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
-<span class="linenos">187</span>
-<span class="linenos">188</span>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">189</span>                <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="linenos">190</span>                <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="linenos">191</span>
-<span class="linenos">192</span>        <span class="k">return</span> <span class="p">{</span>
-<span class="linenos">193</span>            <span class="s2">&quot;prior&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span><span class="p">},</span>
-<span class="linenos">194</span>            <span class="s2">&quot;posterior&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="p">},</span>
-<span class="linenos">195</span>        <span class="p">}</span>
-<span class="linenos">196</span>
-<span class="linenos">197</span>
-<span class="linenos">198</span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="s2">&quot;Example Program&quot;</span><span class="p">)</span>
-<span class="linenos">199</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--mode&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
-<span class="linenos">200</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--recorder.file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">)</span>
-<span class="linenos">201</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--engine.singlestep&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="linenos">202</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--webcam.width&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="linenos">203</span><span class="n">modules</span> <span class="o">=</span> <span class="p">[</span>
-<span class="linenos">204</span>    <span class="n">ConfigParser</span><span class="p">(</span><span class="n">parser</span><span class="p">),</span>
-<span class="linenos">205</span>    <span class="n">MeasurementGenerator</span><span class="p">(),</span>
-<span class="linenos">206</span>    <span class="n">KalmanFilter</span><span class="p">(),</span>
-<span class="linenos">207</span>    <span class="n">Visualization</span><span class="p">(),</span>
-<span class="linenos">208</span>    <span class="n">TerminateAfter</span><span class="p">(),</span>
-<span class="linenos">209</span><span class="p">]</span>
-<span class="linenos">210</span>
+<span class="linenos">185</span>        <span class="c1"># We iterate over all measurements in the data and update the filter with each measurement.</span>
+<span class="linenos">186</span>        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;measurements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="linenos">187</span>            <span class="c1"># Extract the measurement state and covariance</span>
+<span class="linenos">188</span>            <span class="n">z</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">measurement</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">],</span> <span class="n">measurement</span><span class="p">[</span><span class="s2">&quot;covariance&quot;</span><span class="p">]</span>
+<span class="linenos">189</span>
+<span class="linenos">190</span>            <span class="c1"># If there is an actual measurenent, update the filter with the measurement</span>
+<span class="linenos">191</span>            <span class="c1"># Measurements may be missing, in which case z and R are None.</span>
+<span class="linenos">192</span>            <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">R</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+<span class="linenos">193</span>              <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+<span class="linenos">194</span>
+<span class="linenos">195</span>            <span class="c1"># If the filter has not been initialized yet, we set the prediction and priorCov to the current state and covariance</span>
+<span class="linenos">196</span>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">197</span>                <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos">198</span>                <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="linenos">199</span>
+<span class="linenos">200</span>        <span class="c1"># Return the prior and posterior state and covariance</span>
+<span class="linenos">201</span>        <span class="k">return</span> <span class="p">{</span>
+<span class="linenos">202</span>            <span class="s2">&quot;prior&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span><span class="p">},</span>
+<span class="linenos">203</span>            <span class="s2">&quot;posterior&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="p">},</span>
+<span class="linenos">204</span>        <span class="p">}</span>
+<span class="linenos">205</span>
+<span class="linenos">206</span>
+<span class="linenos">207</span><span class="c1">################################################# </span>
+<span class="linenos">208</span><span class="c1"># Main program to run the Kalman filter example #</span>
+<span class="linenos">209</span><span class="c1"># Donot modify the code below this line        #</span>
+<span class="linenos">210</span><span class="c1">#################################################</span>
 <span class="linenos">211</span>
-<span class="linenos">212</span><span class="n">engine</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="n">modules</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">{})</span>
-<span class="linenos">213</span><span class="n">signals</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">run</span><span class="p">({})</span>
+<span class="linenos">212</span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="s2">&quot;Example Program&quot;</span><span class="p">)</span>
+<span class="linenos">213</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--mode&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+<span class="linenos">214</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--recorder.file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">)</span>
+<span class="linenos">215</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--engine.singlestep&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">216</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--webcam.width&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">217</span><span class="n">modules</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">218</span>    <span class="n">ConfigParser</span><span class="p">(</span><span class="n">parser</span><span class="p">),</span>
+<span class="linenos">219</span>    <span class="n">MeasurementGenerator</span><span class="p">(),</span>
+<span class="linenos">220</span>    <span class="n">KalmanFilter</span><span class="p">(),</span>
+<span class="linenos">221</span>    <span class="n">Visualization</span><span class="p">(),</span>
+<span class="linenos">222</span>    <span class="n">TerminateAfter</span><span class="p">(),</span>
+<span class="linenos">223</span><span class="p">]</span>
+<span class="linenos">224</span>
+<span class="linenos">225</span><span class="n">engine</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="n">modules</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">{})</span>
+<span class="linenos">226</span><span class="n">signals</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">run</span><span class="p">({})</span>
 </pre></div>
 </div>
 </section>
