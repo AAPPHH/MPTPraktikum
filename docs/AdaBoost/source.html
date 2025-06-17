@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AdaBoost - Musterlösung &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/AdaBoost/source.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
@@ -58,11 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
@@ -93,14 +88,14 @@
            <div itemprop="articleBody">
              
   <section id="adaboost-musterlosung">
-<h1>AdaBoost - Musterlösung<a class="headerlink" href="#adaboost-musterlosung" title="Link to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span>
-<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="linenos">  3</span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<h1>AdaBoost - Musterlösung<a class="headerlink" href="#adaboost-musterlosung" title="Permalink to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="linenos">  2</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">  3</span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="linenos">  4</span>
 <span class="linenos">  5</span>
-<span class="linenos">  6</span><span class="k">class</span><span class="w"> </span><span class="nc">WeakClassifier</span><span class="p">:</span>
-<span class="linenos">  7</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">):</span>
+<span class="linenos">  6</span><span class="k">class</span> <span class="nc">WeakClassifier</span><span class="p">:</span>
+<span class="linenos">  7</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">):</span>
 <span class="linenos">  8</span>        <span class="c1"># The alpha value for later if this classifier is picked into the cascade</span>
 <span class="linenos">  9</span>        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="linenos"> 10</span>
@@ -109,12 +104,12 @@
 <span class="linenos"> 13</span>        <span class="bp">self</span><span class="o">.</span><span class="n">featureA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">))</span>
 <span class="linenos"> 14</span>        <span class="bp">self</span><span class="o">.</span><span class="n">featureB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nFeatures</span><span class="p">))</span>
 <span class="linenos"> 15</span>
-<span class="linenos"> 16</span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+<span class="linenos"> 16</span>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
 <span class="linenos"> 17</span>        <span class="n">values</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">featureA</span><span class="p">]</span> <span class="o">-</span> <span class="n">samples</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">featureB</span><span class="p">]</span>
 <span class="linenos"> 18</span>        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 <span class="linenos"> 19</span>
 <span class="linenos"> 20</span>
-<span class="linenos"> 21</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">():</span>
+<span class="linenos"> 21</span><span class="k">def</span> <span class="nf">load_data</span><span class="p">():</span>
 <span class="linenos"> 22</span>    <span class="c1"># Load the Digits dataset</span>
 <span class="linenos"> 23</span>    <span class="c1"># The digits dataset contains images of resolution 8x8 pixels. Each pixel contains values between 0 and 15.</span>
 <span class="linenos"> 24</span>    <span class="c1"># They resemble images of the hand-written digits 0 to 9</span>
@@ -136,7 +131,7 @@
 <span class="linenos"> 40</span>    <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span>
 <span class="linenos"> 41</span>
 <span class="linenos"> 42</span>
-<span class="linenos"> 43</span><span class="k">def</span><span class="w"> </span><span class="nf">generate_weak_classifiers</span><span class="p">():</span>
+<span class="linenos"> 43</span><span class="k">def</span> <span class="nf">generate_weak_classifiers</span><span class="p">():</span>
 <span class="linenos"> 44</span>    <span class="c1"># Generate a random selection of weak classifiers. The AdaBoost Algorithm</span>
 <span class="linenos"> 45</span>    <span class="c1"># will pick one of these for the next cascade stage</span>
 <span class="linenos"> 46</span>    <span class="n">weakClassifiers</span> <span class="o">=</span> <span class="p">[]</span>
@@ -147,7 +142,7 @@
 <span class="linenos"> 51</span>    <span class="k">return</span> <span class="n">weakClassifiers</span>
 <span class="linenos"> 52</span>
 <span class="linenos"> 53</span>
-<span class="linenos"> 54</span><span class="k">def</span><span class="w"> </span><span class="nf">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">):</span>
+<span class="linenos"> 54</span><span class="k">def</span> <span class="nf">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">):</span>
 <span class="linenos"> 55</span>    <span class="c1"># We try to find the one classifier out of the given classifiers</span>
 <span class="linenos"> 56</span>    <span class="c1"># which minimize the sum of weights for wrongly classifier samples</span>
 <span class="linenos"> 57</span>    <span class="n">minimalSum</span> <span class="o">=</span> <span class="kc">None</span>
@@ -173,7 +168,7 @@
 <span class="linenos"> 77</span>    <span class="k">return</span> <span class="n">bestClassifier</span>
 <span class="linenos"> 78</span>
 <span class="linenos"> 79</span>
-<span class="linenos"> 80</span><span class="k">def</span><span class="w"> </span><span class="nf">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+<span class="linenos"> 80</span><span class="k">def</span> <span class="nf">build_one_stage</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
 <span class="linenos"> 81</span>    <span class="c1"># Pick the best weak classifier given current weights</span>
 <span class="linenos"> 82</span>    <span class="n">classifier</span> <span class="o">=</span> <span class="n">pick_weak_classifiers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">classifiers</span><span class="p">)</span>
 <span class="linenos"> 83</span>
@@ -198,7 +193,7 @@
 <span class="linenos">102</span>    <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">cascade</span>
 <span class="linenos">103</span>
 <span class="linenos">104</span>
-<span class="linenos">105</span><span class="k">def</span><span class="w"> </span><span class="nf">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
+<span class="linenos">105</span><span class="k">def</span> <span class="nf">predict_cascade</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cascade</span><span class="p">):</span>
 <span class="linenos">106</span>    <span class="c1"># Evaluate the cascaded classifier</span>
 <span class="linenos">107</span>    <span class="c1"># This is the weighted (with alpha) sum of all individual classification decisions</span>
 <span class="linenos">108</span>    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>

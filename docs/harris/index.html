@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Der Harris Eckendetektor &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/harris/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -72,11 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
@@ -107,7 +102,7 @@
            <div itemprop="articleBody">
              
   <section id="der-harris-eckendetektor">
-<h1>Der Harris Eckendetektor<a class="headerlink" href="#der-harris-eckendetektor" title="Link to this heading"></a></h1>
+<h1>Der Harris Eckendetektor<a class="headerlink" href="#der-harris-eckendetektor" title="Permalink to this heading"></a></h1>
 <p>1988 beschrieben Chris Harris und Mike Stephens einen verbesserten
 <a class="reference external" href="https://en.wikipedia.org/wiki/Harris_corner_detector">Eckendetektor</a> als
 Erweiterung des Eckendetektors von <a class="reference external" href="https://en.wikipedia.org/wiki/Corner_detection#Moravec_corner_detection_algorithm">Moravec</a>.</p>
@@ -160,7 +155,7 @@ Harris und Stephens berechnen dann die s.g. Eckenstärke als</p>
 <p>mit <span class="math notranslate nohighlight">\(\kappa \approx 0.04\)</span>.
 In diesem Praktikum implementieren wir den Eckendetektor „from scatch“.</p>
 <section id="der-code">
-<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<h2>Der Code<a class="headerlink" href="#der-code" title="Permalink to this heading"></a></h2>
 <p>In diesem Praktikum arbeiten Sie in der Datei</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kanten</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
@@ -168,7 +163,7 @@ In diesem Praktikum implementieren wir den Eckendetektor „from scatch“.</p>
 <p>und implementieren die Funktion <em>processImage</em></p>
 </section>
 <section id="schritt-1-das-bild-in-graustufen-umwandeln">
-<h2><strong>Schritt 1</strong>: Das Bild in Graustufen umwandeln<a class="headerlink" href="#schritt-1-das-bild-in-graustufen-umwandeln" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 1</strong>: Das Bild in Graustufen umwandeln<a class="headerlink" href="#schritt-1-das-bild-in-graustufen-umwandeln" title="Permalink to this heading"></a></h2>
 <p>Wir müssen zunächst das Bild in Graustufen umwandeln. Konvertieren Sie
 das Bild mit der <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-cvtcolor-method/">cv2.cvtColor</a> Methode.
 Wandeln Sie das Bild danach über <a class="reference external" href="https://numpy.org/doc/stable/user/basics.types.html">np.float32</a> in ein Float-Bild um.
@@ -182,7 +177,7 @@ Normieren Sie die Grauwerte vorher indem Sie durch 255.0 teilen.</p>
 </div>
 </section>
 <section id="schritt-2-die-bildgradienten-berechnen">
-<h2><strong>Schritt 2</strong>: Die Bildgradienten berechnen<a class="headerlink" href="#schritt-2-die-bildgradienten-berechnen" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 2</strong>: Die Bildgradienten berechnen<a class="headerlink" href="#schritt-2-die-bildgradienten-berechnen" title="Permalink to this heading"></a></h2>
 <p>Berechnen Sie nun mit der <a class="reference external" href="https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html#gacea54f142e81b6758cb6f375ce782c8d">cv2.Sobel</a> Methode wieder die Bildableitungen in X- und Y-Richtung. Verwenden Sie <cite>ksize=3</cite> und <cite>ddepth=cv2.CV_32F</cite>.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
@@ -193,7 +188,7 @@ Normieren Sie die Grauwerte vorher indem Sie durch 255.0 teilen.</p>
 </div>
 </section>
 <section id="schritt-3-den-strukturtensor-m-vorbereiten">
-<h2><strong>Schritt 3</strong>: Den Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> vorbereiten<a class="headerlink" href="#schritt-3-den-strukturtensor-m-vorbereiten" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 3</strong>: Den Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> vorbereiten<a class="headerlink" href="#schritt-3-den-strukturtensor-m-vorbereiten" title="Permalink to this heading"></a></h2>
 <p>Um den Strukturtensor berechnen zu können berechnen Sie zunächst</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
@@ -212,7 +207,7 @@ I_x\cdot I_y &amp;=&amp; \left(\frac{\partial I}{\partial x}\right)\cdot\left(\f
 </div>
 </section>
 <section id="schritt-4-den-strukturtensor-berechnen">
-<h2><strong>Schritt 4</strong>: Den Strukturtensor berechnen<a class="headerlink" href="#schritt-4-den-strukturtensor-berechnen" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 4</strong>: Den Strukturtensor berechnen<a class="headerlink" href="#schritt-4-den-strukturtensor-berechnen" title="Permalink to this heading"></a></h2>
 <p>Der Strukturtensor <span class="math notranslate nohighlight">\(M\)</span> für jeden einzelnen Pixel ergibt sich durch
 Summation der Bilder <span class="math notranslate nohighlight">\(I_x^2\)</span>, <span class="math notranslate nohighlight">\(I_y^2\)</span> sowie <span class="math notranslate nohighlight">\(I_x I_y\)</span>. Um dies zu erreichen falten wir diese Bilder
 mit einem s.g. Block-Kernel</p>
@@ -237,7 +232,7 @@ um diese Faltung durchzuführen. Sie können einen geeigneten Kernel mit <a clas
 </div>
 </section>
 <section id="schritt-5-die-eckenstarke-berechnen">
-<h2><strong>Schritt 5</strong>: Die Eckenstärke berechnen<a class="headerlink" href="#schritt-5-die-eckenstarke-berechnen" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 5</strong>: Die Eckenstärke berechnen<a class="headerlink" href="#schritt-5-die-eckenstarke-berechnen" title="Permalink to this heading"></a></h2>
 <p>Um die Eckenstärke zu berechnen betrachten wir zunächst die nochmal Gleichung</p>
 <div class="math notranslate nohighlight">
 \[R = det(M) - tr(M)^2\]</div>
@@ -266,7 +261,7 @@ um diese Faltung durchzuführen. Sie können einen geeigneten Kernel mit <a clas
 </div>
 </section>
 <section id="schritt-6-die-eckenstarke-anzeigen">
-<h2><strong>Schritt 6</strong>: Die Eckenstärke anzeigen<a class="headerlink" href="#schritt-6-die-eckenstarke-anzeigen" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 6</strong>: Die Eckenstärke anzeigen<a class="headerlink" href="#schritt-6-die-eckenstarke-anzeigen" title="Permalink to this heading"></a></h2>
 <p>Die Eckenstärke kann sowohl negativ als auch positiv sein. Wir sind jedoch nur an großen positiven Werten interessiert.
 Normieren Sie die Eckenstärke, indem Sie durch das globale Maximum dividieren (verwenden Sie <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.max.html">np.max</a>).</p>
 <p>Nun binarisieren wir das Bild indem wir zunächst ein gleichgroßes Bild erzeugen (z.B. mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.zeros_like.html">np.zeros_like</a>)
@@ -286,7 +281,7 @@ Zeigen Sie dann beide Bilder mit <a class="reference external" href="https://num
 </div>
 </section>
 <section id="musterlosung">
-<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">Harris Eckendetektor - Musterlösung</span></a></p>
 </section>
 </section>

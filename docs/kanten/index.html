@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kantendetektion mit Sobel &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/kanten/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -78,11 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
@@ -113,24 +108,23 @@
            <div itemprop="articleBody">
              
   <section id="kantendetektion-mit-sobel">
-<h1>Kantendetektion mit Sobel<a class="headerlink" href="#kantendetektion-mit-sobel" title="Link to this heading"></a></h1>
+<h1>Kantendetektion mit Sobel<a class="headerlink" href="#kantendetektion-mit-sobel" title="Permalink to this heading"></a></h1>
 <p>In diesem Praktikum wollen wir einen einfachen Kantendetektor mit dem
 Sobeloperator implementieren.</p>
-<a class="reference internal image-reference" href="../_images/kanten1.jpg"><img alt="Kantendetektion" class="align-center" src="../_images/kanten1.jpg" style="width: 1024px;" />
-</a>
+<a class="reference internal image-reference" href="../_images/kanten1.jpg"><img alt="Kantendetektion" class="align-center" src="../_images/kanten1.jpg" style="width: 1024px;" /></a>
 <section id="der-code">
-<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<h2>Der Code<a class="headerlink" href="#der-code" title="Permalink to this heading"></a></h2>
 <p>In diesem Praktikum arbeiten Sie in der Datei</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kanten</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 </section>
 <section id="die-kantendetektion">
-<h2>Die Kantendetektion<a class="headerlink" href="#die-kantendetektion" title="Link to this heading"></a></h2>
+<h2>Die Kantendetektion<a class="headerlink" href="#die-kantendetektion" title="Permalink to this heading"></a></h2>
 <p>In dieser Aufgabe implementieren Sie die Funktion <cite>processImage</cite></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="kanten.processImage">
-<span class="sig-prename descclassname"><span class="pre">kanten.</span></span><span class="sig-name descname"><span class="pre">processImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kanten.html#processImage"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kanten.processImage" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kanten.</span></span><span class="sig-name descname"><span class="pre">processImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kanten.html#processImage"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kanten.processImage" title="Link zu dieser Definition"></a></dt>
 <dd><p>Process the provided image (3-channel BGR) and calculate
 gradients in X and Y direction as well as the gradient magnitude.</p>
 <p>gx and gy shall contain the gradient direction image with values between -1 and +1
@@ -170,7 +164,7 @@ Dabei wird das Bild mit zwei Masken gefaltet. Für den Gradienten in X-Richtung 
 </ul>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">processImage</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="n">frame_gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
     <span class="n">frame_gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">frame_gray</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span>
 
@@ -185,11 +179,11 @@ Dabei wird das Bild mit zwei Masken gefaltet. Für den Gradienten in X-Richtung 
 </div>
 </section>
 <section id="die-anzeige">
-<h2>Die Anzeige<a class="headerlink" href="#die-anzeige" title="Link to this heading"></a></h2>
+<h2>Die Anzeige<a class="headerlink" href="#die-anzeige" title="Permalink to this heading"></a></h2>
 <p>In dieser Aufgabe implementieren Sie die Funktion <cite>displayImage</cite></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="kanten.displayImage">
-<span class="sig-prename descclassname"><span class="pre">kanten.</span></span><span class="sig-name descname"><span class="pre">displayImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kanten.html#displayImage"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kanten.displayImage" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kanten.</span></span><span class="sig-name descname"><span class="pre">displayImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kanten.html#displayImage"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kanten.displayImage" title="Link zu dieser Definition"></a></dt>
 <dd><p>Apply appropriate scaling and display the provided images.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameter<span class="colon">:</span></dt>
@@ -213,7 +207,7 @@ Schwarz und 1.0 auf weiß abgebildet wird. Kleinere sowie größere Werte werden
 </ul>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">displayImage</span><span class="p">(</span><span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">displayImage</span><span class="p">(</span><span class="n">gx</span><span class="p">,</span> <span class="n">gy</span><span class="p">,</span> <span class="n">grad</span><span class="p">):</span>
     <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Gradient X&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">gx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
     <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Gradient Y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">gy</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
 
@@ -223,18 +217,18 @@ Schwarz und 1.0 auf weiß abgebildet wird. Kleinere sowie größere Werte werden
 </div>
 </section>
 <section id="der-haupt-loop">
-<h2>Der Haupt-Loop<a class="headerlink" href="#der-haupt-loop" title="Link to this heading"></a></h2>
+<h2>Der Haupt-Loop<a class="headerlink" href="#der-haupt-loop" title="Permalink to this heading"></a></h2>
 <p>In dieser Aufgabe implementieren Sie die letzte Funktion <cite>mainLoop</cite></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="kanten.mainLoop">
-<span class="sig-prename descclassname"><span class="pre">kanten.</span></span><span class="sig-name descname"><span class="pre">mainLoop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kanten.html#mainLoop"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kanten.mainLoop" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">kanten.</span></span><span class="sig-name descname"><span class="pre">mainLoop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kanten.html#mainLoop"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kanten.mainLoop" title="Link zu dieser Definition"></a></dt>
 <dd><p>The main loop of this program</p>
 </dd></dl>
 
 <p>Folgen Sie den kommentierten TODO-Anweisungen.</p>
 </section>
 <section id="musterlosung">
-<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">Kantendetektion - Musterlösung</span></a></p>
 </section>
 </section>

@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Histogram of Oriented Gradients - Musterlösung &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/HOG/source.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
@@ -58,11 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
@@ -93,13 +88,13 @@
            <div itemprop="articleBody">
              
   <section id="histogram-of-oriented-gradients-musterlosung">
-<h1>Histogram of Oriented Gradients - Musterlösung<a class="headerlink" href="#histogram-of-oriented-gradients-musterlosung" title="Link to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
-<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<h1>Histogram of Oriented Gradients - Musterlösung<a class="headerlink" href="#histogram-of-oriented-gradients-musterlosung" title="Permalink to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">os</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_gradient_directions</span><span class="p">(</span><span class="n">totalDirections</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="linenos"> 6</span><span class="k">def</span> <span class="nf">calculate_gradient_directions</span><span class="p">(</span><span class="n">totalDirections</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="linenos"> 7</span>    <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
 <span class="linenos"> 8</span>    <span class="n">hogDirections</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">))</span>
 <span class="linenos"> 9</span>
@@ -109,7 +104,7 @@
 <span class="linenos">13</span>    <span class="k">return</span> <span class="n">hogDirections</span>
 <span class="linenos">14</span>
 <span class="linenos">15</span>
-<span class="linenos">16</span><span class="k">def</span><span class="w"> </span><span class="nf">hog_cell</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">winningBin</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">):</span>
+<span class="linenos">16</span><span class="k">def</span> <span class="nf">hog_cell</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">winningBin</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">):</span>
 <span class="linenos">17</span>    <span class="n">cellVector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">totalDirections</span><span class="p">)</span>
 <span class="linenos">18</span>    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">totalDirections</span><span class="p">):</span>
 <span class="linenos">19</span>        <span class="n">cellVector</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">[</span><span class="n">winningBin</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -117,7 +112,7 @@
 <span class="linenos">21</span>    <span class="k">return</span> <span class="n">cellVector</span> <span class="o">/</span> <span class="mf">256.0</span>  <span class="c1"># / np.linalg.norm(cellVector)</span>
 <span class="linenos">22</span>
 <span class="linenos">23</span>
-<span class="linenos">24</span><span class="k">def</span><span class="w"> </span><span class="nf">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)):</span>
+<span class="linenos">24</span><span class="k">def</span> <span class="nf">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)):</span>
 <span class="linenos">25</span>    <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 <span class="linenos">26</span>    <span class="n">W</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="linenos">27</span>    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cellVector</span><span class="p">):</span>
@@ -130,7 +125,7 @@
 <span class="linenos">34</span>    <span class="k">return</span> <span class="n">cell</span>
 <span class="linenos">35</span>
 <span class="linenos">36</span>
-<span class="linenos">37</span><span class="k">def</span><span class="w"> </span><span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+<span class="linenos">37</span><span class="k">def</span> <span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
 <span class="linenos">38</span>    <span class="n">hogDirections</span> <span class="o">=</span> <span class="n">calculate_gradient_directions</span><span class="p">(</span><span class="n">totalDirections</span><span class="p">)</span>
 <span class="linenos">39</span>
 <span class="linenos">40</span>    <span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>

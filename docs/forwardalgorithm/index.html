@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Der Vorwärts-Algorithmus &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/forwardalgorithm/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -61,11 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Der Vorwärts-Algorithmus</a><ul>
@@ -128,11 +123,11 @@
            <div itemprop="articleBody">
              
   <section id="der-vorwarts-algorithmus">
-<h1>Der Vorwärts-Algorithmus<a class="headerlink" href="#der-vorwarts-algorithmus" title="Link to this heading"></a></h1>
+<h1>Der Vorwärts-Algorithmus<a class="headerlink" href="#der-vorwarts-algorithmus" title="Permalink to this heading"></a></h1>
 <p>In diesem Praktikum implementieren Sie den Vorwärts-Algorithmus am Beispiel
 von überlieferten Texten einer fiktiven uralten Zivilisation.</p>
 <section id="archaologie-das-setting">
-<h2>Archäologie - Das Setting<a class="headerlink" href="#archaologie-das-setting" title="Link to this heading"></a></h2>
+<h2>Archäologie - Das Setting<a class="headerlink" href="#archaologie-das-setting" title="Permalink to this heading"></a></h2>
 <p>Bei einer Ausgrabung finden Sie fünf Texte einer uralten Zivilisation.
 Diese Texte lauten wir folgt</p>
 <p><strong>Erster Text</strong>:</p>
@@ -212,7 +207,7 @@ mit Hilfe des Vorwärts-Algorithmus aus der Vorlesung die gesuchte Wahrscheinlic
 jeden der fünf Texte berechnet.</p>
 </section>
 <section id="hidden-markov-modelle-hmms">
-<h2>Hidden Markov Modelle (HMMs)<a class="headerlink" href="#hidden-markov-modelle-hmms" title="Link to this heading"></a></h2>
+<h2>Hidden Markov Modelle (HMMs)<a class="headerlink" href="#hidden-markov-modelle-hmms" title="Permalink to this heading"></a></h2>
 <p>Ein Hidden Markov Modell (HMM) ist ein statistisches Modell, das eine Folge von Beobachtungen beschreibt,
 die durch eine zugrunde liegende, <strong>versteckte Zustandsfolge</strong> erzeugt wird. Es eignet sich besonders
 gut für Aufgaben, bei denen man aus einer beobachtbaren Datenreihe (z.B. Zeichen, Geräusche, etc.)
@@ -233,7 +228,7 @@ Sie sollen mit Hilfe eines HMMs <strong>rekonstruieren</strong>, aus welchem Tex
 </ul>
 </section>
 <section id="id1">
-<h2>Der Vorwärts-Algorithmus<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<h2>Der Vorwärts-Algorithmus<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p>Der Vorwärts-Algorithmus ist nun ein Algorithmus zur rekursiven Berechnung einer Wahrscheinlichkeit
 dafür sich in einem bestimmten Zustand <span class="math notranslate nohighlight">\(x_t\)</span> zu befinden gegeben eine Zeitreihe von Beobachtungen
 <span class="math notranslate nohighlight">\(y_{1:t}\)</span>. Mit der Notation <span class="math notranslate nohighlight">\(y_{1:t\}\)</span> ist dabei die Menge alle Beobachtungen
@@ -278,7 +273,7 @@ p(x_t | x_{t-1})
 <p>Man normiert also die Alpha-Werte indem man durch deren Summe über alle möglichen Zustände dividiert.</p>
 </section>
 <section id="der-code">
-<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
+<h2>Der Code<a class="headerlink" href="#der-code" title="Permalink to this heading"></a></h2>
 <p>In diesem Praktikum arbeiten Sie in der Datei</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
@@ -291,12 +286,12 @@ und bestimmen mit diesem die Wahrscheinlichkeiten für jeden der fünf Zustände
 beobachtete Zeichensequenz.</p>
 </section>
 <section id="schritt-1-den-text-saubern">
-<h2><strong>Schritt 1</strong>: Den Text säubern<a class="headerlink" href="#schritt-1-den-text-saubern" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 1</strong>: Den Text säubern<a class="headerlink" href="#schritt-1-den-text-saubern" title="Permalink to this heading"></a></h2>
 <p>Bevor wir die Beobachtungswahrscheinlichkeiten bestimmen können müssen wir die
 Texte zunächste von unerwünschten Zeichen säubern. Implementieren Sie die Methode</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.clean_text">
-<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#clean_text"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.clean_text" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#clean_text"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.clean_text" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>:
 Clean the text by removing all white spaces and new line character (\n)</p>
 <dl class="field-list simple">
@@ -313,20 +308,20 @@ Clean the text by removing all white spaces and new line character (\n)</p>
 <a class="reference external" href="https://www.w3schools.com/python/ref_string_replace.asp">replace</a> um unerwünschte Zeichen zu entfernen.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
   <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="schritt-2-beobachtungswahrscheinlichkeiten-pro-text">
-<h2><strong>Schritt 2</strong>: Beobachtungswahrscheinlichkeiten pro Text<a class="headerlink" href="#schritt-2-beobachtungswahrscheinlichkeiten-pro-text" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 2</strong>: Beobachtungswahrscheinlichkeiten pro Text<a class="headerlink" href="#schritt-2-beobachtungswahrscheinlichkeiten-pro-text" title="Permalink to this heading"></a></h2>
 <p>Um die Beobachtungswahrscheinlichkeiten der Zeichen für einen einzelnen Text zu berechnen müssen wir im Grunde
 nur zählen wie oft ein bestimmtes Zeichen in diesem Text vorkommt und dies ins Verhältniss zu allen Zeichen in dem Text setzen.</p>
 <p>Implementieren Sie die nun die Methode</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.character_propabilities">
-<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">character_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_chars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#character_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.character_propabilities" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">character_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_chars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#character_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.character_propabilities" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>:
 Given a text, calculate the empirical observation propability of
 all characters from the „all_chars“ list.</p>
@@ -350,7 +345,7 @@ number of characters in the string.</p>
 Zeichen in einem String zu zählen. Rufen Sie zunächst <code class="xref py py-func docutils literal notranslate"><span class="pre">clean_text()</span></code> auf um den übergebenen Text zu säubern.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">):</span>
   <span class="n">text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
   <span class="k">return</span> <span class="p">{</span>
     <span class="n">char</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">all_chars</span>
@@ -360,12 +355,12 @@ Zeichen in einem String zu zählen. Rufen Sie zunächst <code class="xref py py-
 </div>
 </section>
 <section id="schritt-3-alle-beobachtungswahrscheinlichkeiten-berechnen">
-<h2><strong>Schritt 3</strong>: Alle Beobachtungswahrscheinlichkeiten berechnen<a class="headerlink" href="#schritt-3-alle-beobachtungswahrscheinlichkeiten-berechnen" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 3</strong>: Alle Beobachtungswahrscheinlichkeiten berechnen<a class="headerlink" href="#schritt-3-alle-beobachtungswahrscheinlichkeiten-berechnen" title="Permalink to this heading"></a></h2>
 <p>Nun müssen wir lediglich noch einmal systematisch alle Beobachtungswahrscheinlichkeiten
 berechnen und als Liste zurückgeben. Implementieren Sie dazu die Methode</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.get_emmision_propabilities">
-<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_emmision_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_texts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_emmision_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_emmision_propabilities" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_emmision_propabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_texts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_emmision_propabilities"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_emmision_propabilities" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>:
 Return the emmision propabilities for each character in all the sets.
 This is essentially a list of dictionaries provided by <a class="reference internal" href="#forward.character_propabilities" title="forward.character_propabilities"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward.character_propabilities()</span></code></a></p>
@@ -388,7 +383,7 @@ This is essentially a list of dictionaries provided by <a class="reference inter
 <a class="reference external" href="https://www.w3schools.com/python/ref_string_join.asp">join</a>.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_emmision_propabilities</span><span class="p">(</span><span class="n">all_texts</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_emmision_propabilities</span><span class="p">(</span><span class="n">all_texts</span><span class="p">):</span>
   <span class="c1"># Join all texts and clean them</span>
   <span class="n">joined_text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_texts</span><span class="p">))</span>
 
@@ -402,7 +397,7 @@ This is essentially a list of dictionaries provided by <a class="reference inter
 </div>
 </section>
 <section id="schritt-4-der-initiale-alpha-vektor">
-<h2><strong>Schritt 4</strong>: Der initiale Alpha-Vektor<a class="headerlink" href="#schritt-4-der-initiale-alpha-vektor" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 4</strong>: Der initiale Alpha-Vektor<a class="headerlink" href="#schritt-4-der-initiale-alpha-vektor" title="Permalink to this heading"></a></h2>
 <p>Wir werden den Vorwärts-Algorithmus in vektorisierter Form implementieren, d.h. wir
 berechnen die geschätzten Zustandswahrscheinlichkeiten (die Alpha-Werte <span class="math notranslate nohighlight">\(\alpha_t\)</span>) als
 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html">np.array</a>. Da unser
@@ -415,7 +410,7 @@ der Kollege zu lesen beginnt, die Zustände <span class="math notranslate nohigh
 <p>Implementieren Sie nun die Methode</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.get_initial_alpha">
-<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_initial_alpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_initial_alpha"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_initial_alpha" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_initial_alpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_initial_alpha"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_initial_alpha" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>:
 Return the initial alpha vector for the forward algorithm.</p>
 <p>Hint: In the beginning, all states are equally likely</p>
@@ -428,7 +423,7 @@ Return the initial alpha vector for the forward algorithm.</p>
 
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_initial_alpha</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_initial_alpha</span><span class="p">():</span>
   <span class="c1"># In the begining, we don´t know which text our colleague choose</span>
   <span class="c1"># to start with, so all texts are equally likely</span>
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
@@ -437,7 +432,7 @@ Return the initial alpha vector for the forward algorithm.</p>
 </div>
 </section>
 <section id="schritt-5-die-zustandsubergangsmatrix">
-<h2><strong>Schritt 5</strong>: Die Zustandsübergangsmatrix<a class="headerlink" href="#schritt-5-die-zustandsubergangsmatrix" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 5</strong>: Die Zustandsübergangsmatrix<a class="headerlink" href="#schritt-5-die-zustandsubergangsmatrix" title="Permalink to this heading"></a></h2>
 <p>Im Laufe des Vorwärts-Algorthmus müssen wir den Term</p>
 <div class="math notranslate nohighlight">
 \[\sum_{x_{t-1}}  p(x_t | x_{t-1}) \alpha_t(x_{t-1})\]</div>
@@ -455,7 +450,7 @@ läßt sich demnach als Matrixmultiplikation ausdrücken.</p>
 <p>Implementieren Sie nun die Methode</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.get_state_transition_matrix">
-<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_state_transition_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_state_transition_matrix"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_state_transition_matrix" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">get_state_transition_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#get_state_transition_matrix"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.get_state_transition_matrix" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>:
 Return the state transition matrix for the forward algorithm.</p>
 <p>Hint: With 90% chance the state stays the same while the remaining 10% shall be equally divided between the four other states.</p>
@@ -468,7 +463,7 @@ Return the state transition matrix for the forward algorithm.</p>
 
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_state_transition_matrix</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_state_transition_matrix</span><span class="p">():</span>
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
     <span class="p">[</span><span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
     <span class="p">[</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.900</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">],</span>
@@ -481,7 +476,7 @@ Return the state transition matrix for the forward algorithm.</p>
 </div>
 </section>
 <section id="schritt-6-ein-schritt-im-vorwarts-algorithmus">
-<h2><strong>Schritt 6</strong>: Ein Schritt im Vorwärts-Algorithmus<a class="headerlink" href="#schritt-6-ein-schritt-im-vorwarts-algorithmus" title="Link to this heading"></a></h2>
+<h2><strong>Schritt 6</strong>: Ein Schritt im Vorwärts-Algorithmus<a class="headerlink" href="#schritt-6-ein-schritt-im-vorwarts-algorithmus" title="Permalink to this heading"></a></h2>
 <p>Was nun noch zu tun bleibt ist einen konkreten Schritt im Vorswärtsalgorithmus auszurechnen, also konkret</p>
 <div class="math notranslate nohighlight">
 \[\alpha_t(x_t) = p(y_t | x_t) \sum_{x_{t-1}}
@@ -496,7 +491,7 @@ gegen den konkreten Text aus dem es stammt. Diese Wahrscheinlichkeiten haben wir
 <p>Implementieren Sie nun die Methode</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="forward.forward">
-<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">character</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_transition_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emmision_propabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#forward"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.forward" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">forward.</span></span><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">character</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_transition_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emmision_propabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/forward.html#forward"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#forward.forward" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>: Implement one step of the forward algorithm.</p>
 <ul class="simple">
 <li><p>Given the past alpha-values and the newly read character, use the state_transition_matrix</p></li>
@@ -528,7 +523,7 @@ gegen den konkreten Text aus dem es stammt. Diese Wahrscheinlichkeiten haben wir
 <p>und folgen Sie den TODO-Anweisungen.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">):</span>
   <span class="c1"># TODO: Implement state transition and update the alpha vector accordingly</span>
   <span class="n">alpha</span> <span class="o">=</span> <span class="n">state_transition_matrix</span> <span class="o">@</span> <span class="n">alpha</span>
 
@@ -546,12 +541,11 @@ gegen den konkreten Text aus dem es stammt. Diese Wahrscheinlichkeiten haben wir
 </div>
 </section>
 <section id="ergebnisse">
-<h2>Ergebnisse<a class="headerlink" href="#ergebnisse" title="Link to this heading"></a></h2>
+<h2>Ergebnisse<a class="headerlink" href="#ergebnisse" title="Permalink to this heading"></a></h2>
 <p>Wenn Sie alles richtig implemeniert haben sehen Sie eine Grafik welche die Verteilung der
 geschätzten Zustandswahrscheinlichkeiten (Alpha-Werte) nach jedem einzelnen Zeichen zeigt.
 Dunklere Kästchen entsprechen dabei höheren Wahrscheinlichkeiten für den jeweiligen Zustand (Text).</p>
-<a class="reference internal image-reference" href="../_images/alphaovertime.png"><img alt="Alpha über Zeitpunkt" class="align-center" src="../_images/alphaovertime.png" style="width: 800px;" />
-</a>
+<a class="reference internal image-reference" href="../_images/alphaovertime.png"><img alt="Alpha über Zeitpunkt" class="align-center" src="../_images/alphaovertime.png" style="width: 800px;" /></a>
 <p>Es ist schön zu sehen das zunächst (für die ersten 25 Schritte) der erste Text am wahrscheinlichsten ist.
 Text 4 ist jedoch ähnlich wahrscheinlich. Etwa zu Schritt 25 schätzt das Modell nun das der <em>hidden state</em>
 (also der Text, aus dem vorgelesen wurde) sich zu Text 4 verändert hat weil die Wahrscheinlichkeit für Text 1
@@ -565,7 +559,7 @@ also wäre, das dieser am Ende aus dem zweiten Text liest. Der Vorwärts-Algorit
 und die Beobachtung so miteinander zu kombinieren das wir den wahrscheinlichsten Zustand ermitteln können.</p>
 </section>
 <section id="musterlosung">
-<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">Vorswärtsalgorithmus - Musterlösung</span></a></p>
 </section>
 </section>

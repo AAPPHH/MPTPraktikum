@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vorswärtsalgorithmus - Musterlösung &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/forwardalgorithm/source.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
@@ -58,11 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobis-Distanz und Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#kovarianzellipsen">Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#darstellung-von-kovarianzellipsen">Darstellung von Kovarianzellipsen</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#aufgabe-1-zeichnen-einer-kovarianzellipse"><strong>Aufgabe 1</strong>: Zeichnen einer Kovarianzellipse</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html#musterlosung">Musterlösung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Der Vorwärts-Algorithmus</a></li>
@@ -93,12 +88,12 @@
            <div itemprop="articleBody">
              
   <section id="vorswartsalgorithmus-musterlosung">
-<h1>Vorswärtsalgorithmus - Musterlösung<a class="headerlink" href="#vorswartsalgorithmus-musterlosung" title="Link to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-<span class="linenos">  3</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="linenos">  4</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
-<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<h1>Vorswärtsalgorithmus - Musterlösung<a class="headerlink" href="#vorswartsalgorithmus-musterlosung" title="Permalink to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">  2</span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="linenos">  3</span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="linenos">  4</span><span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="linenos">  5</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="linenos">  6</span>
 <span class="linenos">  7</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.family&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Segoe UI Emoji&quot;</span>
 <span class="linenos">  8</span>
@@ -159,7 +154,7 @@
 <span class="linenos"> 63</span><span class="n">sequence</span> <span class="o">=</span> <span class="s2">&quot;😎😎🥦🦊🦺🥑🤇🧛🥦🦟🦘😼🥾🥦🤇🥌🦺🤶🦊😎🦟🥷🥷🥌😒🥑🦟🦺🤶🤶🥾🥾😼🥑😎🤫😎🦘🥷🦘🤯🤯🦟🤟🤯😎🥷🦊🥾🦟&quot;</span>
 <span class="linenos"> 64</span>
 <span class="linenos"> 65</span>
-<span class="linenos"> 66</span><span class="k">def</span><span class="w"> </span><span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="linenos"> 66</span><span class="k">def</span> <span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
 <span class="linenos"> 67</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 68</span><span class="sd">    **TODO**:</span>
 <span class="linenos"> 69</span><span class="sd">    Clean the text by removing all white spaces and new line character (\\\\n)</span>
@@ -170,7 +165,7 @@
 <span class="linenos"> 74</span>    <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 <span class="linenos"> 75</span>
 <span class="linenos"> 76</span>
-<span class="linenos"> 77</span><span class="k">def</span><span class="w"> </span><span class="nf">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">):</span>
+<span class="linenos"> 77</span><span class="k">def</span> <span class="nf">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">):</span>
 <span class="linenos"> 78</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 79</span><span class="sd">    **TODO**:</span>
 <span class="linenos"> 80</span><span class="sd">    Given a text, calculate the empirical observation propability of</span>
@@ -188,7 +183,7 @@
 <span class="linenos"> 92</span>    <span class="k">return</span> <span class="p">{</span><span class="n">char</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">all_chars</span><span class="p">}</span>
 <span class="linenos"> 93</span>
 <span class="linenos"> 94</span>
-<span class="linenos"> 95</span><span class="k">def</span><span class="w"> </span><span class="nf">get_emmision_propabilities</span><span class="p">(</span><span class="n">all_texts</span><span class="p">):</span>
+<span class="linenos"> 95</span><span class="k">def</span> <span class="nf">get_emmision_propabilities</span><span class="p">(</span><span class="n">all_texts</span><span class="p">):</span>
 <span class="linenos"> 96</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 97</span><span class="sd">    **TODO**:</span>
 <span class="linenos"> 98</span><span class="sd">    Return the emmision propabilities for each character in all the sets.</span>
@@ -211,7 +206,7 @@
 <span class="linenos">115</span>    <span class="k">return</span> <span class="p">[</span><span class="n">character_propabilities</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">all_chars</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">all_texts</span><span class="p">]</span>
 <span class="linenos">116</span>
 <span class="linenos">117</span>
-<span class="linenos">118</span><span class="k">def</span><span class="w"> </span><span class="nf">get_initial_alpha</span><span class="p">():</span>
+<span class="linenos">118</span><span class="k">def</span> <span class="nf">get_initial_alpha</span><span class="p">():</span>
 <span class="linenos">119</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">120</span><span class="sd">    **TODO**:</span>
 <span class="linenos">121</span><span class="sd">    Return the initial alpha vector for the forward algorithm.</span>
@@ -225,7 +220,7 @@
 <span class="linenos">129</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 <span class="linenos">130</span>
 <span class="linenos">131</span>
-<span class="linenos">132</span><span class="k">def</span><span class="w"> </span><span class="nf">get_state_transition_matrix</span><span class="p">():</span>
+<span class="linenos">132</span><span class="k">def</span> <span class="nf">get_state_transition_matrix</span><span class="p">():</span>
 <span class="linenos">133</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">134</span><span class="sd">    **TODO**:</span>
 <span class="linenos">135</span><span class="sd">    Return the state transition matrix for the forward algorithm.</span>
@@ -245,7 +240,7 @@
 <span class="linenos">149</span>    <span class="p">)</span>
 <span class="linenos">150</span>
 <span class="linenos">151</span>
-<span class="linenos">152</span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">):</span>
+<span class="linenos">152</span><span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">state_transition_matrix</span><span class="p">,</span> <span class="n">emmision_propabilities</span><span class="p">):</span>
 <span class="linenos">153</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">154</span><span class="sd">    **TODO**: Implement one step of the forward algorithm.</span>
 <span class="linenos">155</span>

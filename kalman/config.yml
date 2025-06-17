@@ -10,13 +10,13 @@ target:
   minAcceleration: 0.0
   maxAcceleration: 0.0
 sensors:
-  - name: GPS
-    type: global
-    stdX: 5.0 # Unit: meters
-    stdY: 5.0 # Unit: meters
-    correlation: 0.0 # between -1 and 1
-    missChance: 0.05
-    missLength: 5
+  # - name: GPS
+  #   type: global
+  #   stdX: 5.0 # Unit: meters
+  #   stdY: 5.0 # Unit: meters
+  #   correlation: 0.0 # between -1 and 1
+  #   missChance: 0.05
+  #   missLength: 5
   # - name: dGPS
   #   type: global
   #   stdX: 1.0 # Unit: meters

@@ -23,4 +23,5 @@ In diesem Dokument finden Sie die verschiedenen Aufgaben und Beispiele zum MPT-P
    Nichtlineare Abbildung normalverteilter Zufallsvariablen <../nonlinearmapping/index>
    Minimum Varianz Fusion <../multivariate/index>
    Der Vorwärts-Algorithmus <../forwardalgorithm/index>
+   Das Kalman-Filter <../kalman/index>
 

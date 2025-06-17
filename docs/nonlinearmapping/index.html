@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de" data-content_root="../">
+<html class="writer-html5" lang="de">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,15 +15,14 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/nonlinearmapping/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=245627df"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=79cc9f76"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/translations.js?v=70a09b52"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -124,7 +123,7 @@
            <div itemprop="articleBody">
              
   <section id="normalverteilte-zufallsvariablen-nichtlineare-abbildungen">
-<h1>Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen<a class="headerlink" href="#normalverteilte-zufallsvariablen-nichtlineare-abbildungen" title="Link to this heading"></a></h1>
+<h1>Normalverteilte Zufallsvariablen - Nichtlineare Abbildungen<a class="headerlink" href="#normalverteilte-zufallsvariablen-nichtlineare-abbildungen" title="Permalink to this heading"></a></h1>
 <p>Viele Meßgrößen von Sensoren sowie Zustände von Systeme lassen sich in
 der Praxis durch normalverteile Zufallsvariablen sehr gut beschreiben.
 Dies ist eine Konsequenz auf dem <a class="reference external" href="https://de.wikipedia.org/wiki/Zentraler_Grenzwertsatz">zentralen Grenzwertsatz (central limit theorem)</a>,
@@ -155,7 +154,7 @@ sowie der dazugehörigen Kovarianzmatrix beschrieben. Man sagt der Vektor von Zu
 Varianzen <span class="math notranslate nohighlight">\((\sigma_{1}^2,\dots,\sigma_{n}^2)\)</span> der Zufallsvariablen. Der Term
 <span class="math notranslate nohighlight">\(\sigma_{ij}\)</span> entspricht dann der Kovarianz zwischen <span class="math notranslate nohighlight">\(x_i\)</span> und <span class="math notranslate nohighlight">\(x_j\)</span>.</p>
 <section id="lineare-abbildungen-von-zufallsvariablen">
-<h2>Lineare Abbildungen von Zufallsvariablen<a class="headerlink" href="#lineare-abbildungen-von-zufallsvariablen" title="Link to this heading"></a></h2>
+<h2>Lineare Abbildungen von Zufallsvariablen<a class="headerlink" href="#lineare-abbildungen-von-zufallsvariablen" title="Permalink to this heading"></a></h2>
 <p>Im folgenden betrachten wir eine multivariat normalverteilte Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{x}\in\mathbb{R}^n\)</span>, also</p>
 <div class="math notranslate nohighlight">
 \[\boldsymbol{x} \sim \mathcal{N}\left(\boldsymbol{\mu}, \Sigma\right)\]</div>
@@ -170,7 +169,7 @@ Da die Summe normalverteilter Zufallsvariablen ebenfalls wieder normalverteilt i
 <div class="math notranslate nohighlight">
 \[Cov[A\cdot \boldsymbol{x}] = A\cdot Cov[\boldsymbol{x}]\cdot A^T = A \cdot \Sigma \cdot A^T\]</div>
 <section id="lineare-abbildung-ein-beispiel">
-<h3>Lineare Abbildung - Ein Beispiel<a class="headerlink" href="#lineare-abbildung-ein-beispiel" title="Link to this heading"></a></h3>
+<h3>Lineare Abbildung - Ein Beispiel<a class="headerlink" href="#lineare-abbildung-ein-beispiel" title="Permalink to this heading"></a></h3>
 <p>In dem folgenden Beispiel wurde eine multivariate Zufallsvariable mit Mittelwert
 <span class="math notranslate nohighlight">\(\boldsymbol{\mu} = (1.5, 0.5)\)</span> und Kovarianz</p>
 <div class="math notranslate nohighlight">
@@ -199,8 +198,7 @@ Da die Summe normalverteilter Zufallsvariablen ebenfalls wieder normalverteilt i
 0.6 &amp; 0.28\\
 0.28 &amp; 1.5
 \end{pmatrix}\end{split}\]</div>
-<a class="reference internal image-reference" href="../_images/linearmapping.png"><img alt="Linear Mapping of Random Variablen" class="align-center" src="../_images/linearmapping.png" style="width: 1024px;" />
-</a>
+<a class="reference internal image-reference" href="../_images/linearmapping.png"><img alt="Linear Mapping of Random Variablen" class="align-center" src="../_images/linearmapping.png" style="width: 1024px;" /></a>
 <p>Gezeigt sind die Kovarianzellipsen (Regionen konstanter Mahalanobis-Distanz)
 sowie eine Stichprobe von 512 zufälligen Samples (Ausprägungen) der Zufallsvariable.
 Im linken Teil der Grafik ist die Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> abgebildet.</p>
@@ -213,12 +211,11 @@ Beide sind nahezu deckungsgleich. Die beobachtete Abweichung ergibt sich daraus,
 </section>
 </section>
 <section id="nicht-lineare-abbildungen-von-zufallsvariablen">
-<h2>Nicht-Lineare Abbildungen von Zufallsvariablen<a class="headerlink" href="#nicht-lineare-abbildungen-von-zufallsvariablen" title="Link to this heading"></a></h2>
+<h2>Nicht-Lineare Abbildungen von Zufallsvariablen<a class="headerlink" href="#nicht-lineare-abbildungen-von-zufallsvariablen" title="Permalink to this heading"></a></h2>
 <p>Wird eine multivariat normalverteilte Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> durch eine nicht-lineare Funktion
 <span class="math notranslate nohighlight">\(f: \mathbb{R}^n\mapsto\mathbb{R}^m\)</span> abgebildet, so ist <span class="math notranslate nohighlight">\(\boldsymbol{Y} = f(\boldsymbol{X})\)</span> ebenfalls
 eine Zufallsvariable. In der Regel ist <span class="math notranslate nohighlight">\(\boldsymbol{Y}\)</span> jedoch nicht mehr normalverteilt.</p>
-<a class="reference internal image-reference" href="../_images/nonlinear.png"><img alt="Non-linear mapping of random variables" class="align-center" src="../_images/nonlinear.png" style="width: 1024px;" />
-</a>
+<a class="reference internal image-reference" href="../_images/nonlinear.png"><img alt="Non-linear mapping of random variables" class="align-center" src="../_images/nonlinear.png" style="width: 1024px;" /></a>
 <p>Die Abbildung zeigt ein einfaches Beispiel. Links ist das Histogram von 400.000 Samples einer normalverteilten Zufallsvariable mit
 Mittelwert <span class="math notranslate nohighlight">\(\mu=3\)</span> und Varianz <span class="math notranslate nohighlight">\(\sigma^2 = 1\)</span> gezeigt. Wird die Zufallsvariable durch
 <span class="math notranslate nohighlight">\(f(x) = x^2\)</span> auf eine neue Zufallsvariable <span class="math notranslate nohighlight">\(\boldsymbol{Y} = f(\boldsymbol{X})\)</span> abgebildet,
@@ -248,7 +245,7 @@ Für genauere Approximationen existieren alternative Methoden wie die
 <a class="reference external" href="https://en.wikipedia.org/wiki/Unscented_transform">Unscented Transform</a>,
 bei der deterministisch gewählte Sigma-Punkte durch die nichtlineare Abbildung propagiert werden.</p>
 <section id="die-jacobi-matrix">
-<h3>Die Jacobi-Matrix<a class="headerlink" href="#die-jacobi-matrix" title="Link to this heading"></a></h3>
+<h3>Die Jacobi-Matrix<a class="headerlink" href="#die-jacobi-matrix" title="Permalink to this heading"></a></h3>
 <p>Die Jacobi-Matrix ist eine Matrix, die alle ersten partiellen Ableitungen einer vektorwertigen Funktion enthält.
 Betrachtet man eine Funktion <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \rightarrow \mathbb{R}^m\)</span>, so ergibt sich die Jacobi-Matrix
 <span class="math notranslate nohighlight">\(J_f(\boldsymbol{x})\)</span> als eine <span class="math notranslate nohighlight">\(m \times n\)</span>-Matrix:</p>
@@ -266,7 +263,7 @@ Sie ist die natürliche Verallgemeinerung der Ableitung aus der eindimensionalen
 durch eine lineare Abbildung zu approximieren.</p>
 </section>
 <section id="die-jacobi-matrix-ein-beispiel">
-<h3>Die Jacobi-Matrix - Ein Beispiel<a class="headerlink" href="#die-jacobi-matrix-ein-beispiel" title="Link to this heading"></a></h3>
+<h3>Die Jacobi-Matrix - Ein Beispiel<a class="headerlink" href="#die-jacobi-matrix-ein-beispiel" title="Permalink to this heading"></a></h3>
 <p>Es sei <span class="math notranslate nohighlight">\((r, \alpha)\)</span> ein zwei-dimensionaler Punkt in
 <a class="reference external" href="https://de.wikipedia.org/wiki/Polarkoordinaten">Polarkoordinaten</a>, also dargestellt über
 seinen Abstand zum Ursprung <span class="math notranslate nohighlight">\(r\)</span> sowie den Winkel zum x-Achse <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
@@ -298,8 +295,7 @@ in die Approximation</p>
 <div class="math notranslate nohighlight">
 \[\Sigma_{(x,y)} \approx J_f(\boldsymbol{\mu}_{(r,\alpha)}) \, \Sigma_{(r,\alpha)} \, J_f(\boldsymbol{\mu}_{(r,\alpha)})^\top\]</div>
 <p>eine Näherung der Kovarianzmatrix im kartesischen Raum berechnen.</p>
-<a class="reference internal image-reference" href="../_images/polar.png"><img alt="Non-Linear Mapping of Random Variable" class="align-center" src="../_images/polar.png" style="width: 1024px;" />
-</a>
+<a class="reference internal image-reference" href="../_images/polar.png"><img alt="Non-Linear Mapping of Random Variable" class="align-center" src="../_images/polar.png" style="width: 1024px;" /></a>
 <p>Der obige Plot zeigt ein Beispiel für eine solche Transformation. Links ist die normalverteilte Zufallsvariable
 <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> zu sehen. Die Zufallsvariable weißt in <span class="math notranslate nohighlight">\(r\)</span>-Richtung (horizontal) nur eine geringe Unsicherheit
 auf. Das entspricht einer hohen Genauigkeit was Entfernungsschätzungen angeht. In <span class="math notranslate nohighlight">\(\alpha\)</span>-Richtung (vertikal) ist die Unsicherheit
@@ -308,9 +304,8 @@ deutlich größer, die Winkelgenauigkeit ist also deutlich schlechter. Das entsp
 die Winkelunsicherheit nicht zu groß ist kann die entstehende Verteilung hinreichend gut durch eine Normalverteilung beschrieben werden.</p>
 </section>
 <section id="was-passiert-nun-wenn-die-winkelunsicherheit-zu-grosz-wird">
-<h3>Was passiert nun wenn die Winkelunsicherheit zu groß wird?<a class="headerlink" href="#was-passiert-nun-wenn-die-winkelunsicherheit-zu-grosz-wird" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="../_images/polar2.png"><img alt="Non-Linear Mapping of Random Variable" class="align-center" src="../_images/polar2.png" style="width: 1024px;" />
-</a>
+<h3>Was passiert nun wenn die Winkelunsicherheit zu groß wird?<a class="headerlink" href="#was-passiert-nun-wenn-die-winkelunsicherheit-zu-grosz-wird" title="Permalink to this heading"></a></h3>
+<a class="reference internal image-reference" href="../_images/polar2.png"><img alt="Non-Linear Mapping of Random Variable" class="align-center" src="../_images/polar2.png" style="width: 1024px;" /></a>
 <p>Im  obigen Plot wurde die Winkelunsicherheit deutlich erhöht. Die möglichen Meßwerte (die einzelnen Punkte der Punktwolke)
 decken nun einen so großen Bereich ab, dass die Transformation in kartesische Koordinate nicht mehr sinnvoll
 durch eine Normalverteilung beschrieben werden kann. Dies zeigt sich auch daran das die durch
@@ -319,7 +314,7 @@ Mittelwert und der tatsächlchen Kovarianz der transformierten Punkte (gezeichne
 </section>
 </section>
 <section id="aufgabe-1-lineare-abbildung">
-<h2><strong>Aufgabe 1</strong>: Lineare Abbildung<a class="headerlink" href="#aufgabe-1-lineare-abbildung" title="Link to this heading"></a></h2>
+<h2><strong>Aufgabe 1</strong>: Lineare Abbildung<a class="headerlink" href="#aufgabe-1-lineare-abbildung" title="Permalink to this heading"></a></h2>
 <p>In dieser Aufgabe arbeiten Sie in der Datei</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nonlinearmapping/linear.py
 </pre></div>
@@ -327,7 +322,7 @@ Mittelwert und der tatsächlchen Kovarianz der transformierten Punkte (gezeichne
 <p>Implementieren Sie die Methode <a class="reference internal" href="#linear.map_samples" title="linear.map_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">linear.map_samples()</span></code></a>. Folgen Sie den Anweisungen im Code.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="linear.map_samples">
-<span class="sig-prename descclassname"><span class="pre">linear.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/linear.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#linear.map_samples" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">linear.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/linear.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#linear.map_samples" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>
 Assume you have a normal distributed random variable <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>
 with mean</p>
@@ -367,7 +362,7 @@ with mean</p>
 
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
    <span class="c1"># TODO: Calculate Matrix A</span>
    <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
 
@@ -392,7 +387,7 @@ with mean</p>
 Kovarianzellipsen (hellblau) stets nahezu identisch sind mit denen von ihnen berechneten sind.</p>
 </section>
 <section id="aufgabe-2-polarkoordinaten-nach-kartesisch">
-<h2><strong>Aufgabe 2</strong>: Polarkoordinaten nach Kartesisch<a class="headerlink" href="#aufgabe-2-polarkoordinaten-nach-kartesisch" title="Link to this heading"></a></h2>
+<h2><strong>Aufgabe 2</strong>: Polarkoordinaten nach Kartesisch<a class="headerlink" href="#aufgabe-2-polarkoordinaten-nach-kartesisch" title="Permalink to this heading"></a></h2>
 <p>In dieser Aufgabe arbeiten Sie in der Datei</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nonlinearmapping/polar.py
 </pre></div>
@@ -400,7 +395,7 @@ Kovarianzellipsen (hellblau) stets nahezu identisch sind mit denen von ihnen ber
 <p>Implementieren Sie die Methode <a class="reference internal" href="#polar.map_samples" title="polar.map_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">polar.map_samples()</span></code></a>. Folgen Sie den Anweisungen im Code.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="polar.map_samples">
-<span class="sig-prename descclassname"><span class="pre">polar.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/polar.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#polar.map_samples" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/polar.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#polar.map_samples" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong> 
 Assume you have a normal distributed random variable <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span>
 with mean</p>
@@ -440,7 +435,7 @@ derived mean and covariance of the mapped random variable.
 
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
    <span class="c1"># TODO: Map all samples from polar to cartesian coordinates</span>
    <span class="n">r</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">samples</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 
@@ -466,7 +461,7 @@ derived mean and covariance of the mapped random variable.
 Kovarianzellipsen (hellblau) stets nahezu identisch sind mit denen von ihnen berechneten sind.</p>
 </section>
 <section id="aufgabe-3-polarkoordinaten-nach-kartesisch-teil-2">
-<h2><strong>Aufgabe 3</strong>: Polarkoordinaten nach Kartesisch - Teil 2<a class="headerlink" href="#aufgabe-3-polarkoordinaten-nach-kartesisch-teil-2" title="Link to this heading"></a></h2>
+<h2><strong>Aufgabe 3</strong>: Polarkoordinaten nach Kartesisch - Teil 2<a class="headerlink" href="#aufgabe-3-polarkoordinaten-nach-kartesisch-teil-2" title="Permalink to this heading"></a></h2>
 <p>Erhöhen Sie im Skript den Wert der Variable</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">STD_ALPHA</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># Standard deviation of angular values (degrees)</span>
 </pre></div>
@@ -474,10 +469,10 @@ Kovarianzellipsen (hellblau) stets nahezu identisch sind mit denen von ihnen ber
 <p>auf z.B. 25° und schauen Sie was passiert.</p>
 </section>
 <section id="praxisbeispiel-fur-nichtlineare-transformation-sauerstoffsattigung-im-blut">
-<h2>Praxisbeispiel für nichtlineare Transformation: Sauerstoffsättigung im Blut<a class="headerlink" href="#praxisbeispiel-fur-nichtlineare-transformation-sauerstoffsattigung-im-blut" title="Link to this heading"></a></h2>
+<h2>Praxisbeispiel für nichtlineare Transformation: Sauerstoffsättigung im Blut<a class="headerlink" href="#praxisbeispiel-fur-nichtlineare-transformation-sauerstoffsattigung-im-blut" title="Permalink to this heading"></a></h2>
 </section>
 <section id="medizinischer-hintergrund">
-<h2>Medizinischer Hintergrund<a class="headerlink" href="#medizinischer-hintergrund" title="Link to this heading"></a></h2>
+<h2>Medizinischer Hintergrund<a class="headerlink" href="#medizinischer-hintergrund" title="Permalink to this heading"></a></h2>
 <p>Die Sauerstoffsättigung des Hämoglobins im menschlichen Blut ist eine wichtige medizinische Messgröße.
 Sie beschreibt, wie viel Prozent des verfügbaren Hämoglobins mit Sauerstoff beladen ist – ein zentraler Indikator
 für die Versorgung des Körpers mit Sauerstoff.</p>
@@ -487,7 +482,7 @@ Zwischen dem Partialdruck und der Sättigung besteht ein <strong>nichtlinearer</
 der durch die sogenannte <strong>Hill-Gleichung</strong> beschrieben werden kann.</p>
 </section>
 <section id="die-hill-gleichung">
-<h2>Die Hill-Gleichung<a class="headerlink" href="#die-hill-gleichung" title="Link to this heading"></a></h2>
+<h2>Die Hill-Gleichung<a class="headerlink" href="#die-hill-gleichung" title="Permalink to this heading"></a></h2>
 <p>Die Sauerstoffsättigung <span class="math notranslate nohighlight">\(S\)</span> in Abhängigkeit vom Sauerstoffpartialdruck <span class="math notranslate nohighlight">\(p\)</span> lässt sich durch die folgende Funktion annähern:</p>
 <div class="math notranslate nohighlight">
 \[S(p) = \frac{p^n}{p^n + K^n}\]</div>
@@ -501,7 +496,7 @@ auf die Verteilung der Sauerstoffsättigung auswirken – insbesondere bei Verwe
 mittels Taylor-Entwicklung erster Ordnung.</p>
 </section>
 <section id="das-experiment">
-<h2>Das Experiment<a class="headerlink" href="#das-experiment" title="Link to this heading"></a></h2>
+<h2>Das Experiment<a class="headerlink" href="#das-experiment" title="Permalink to this heading"></a></h2>
 <p>Ein typisches Experiment in diesem Bereich sieht so aus:</p>
 <ol class="arabic">
 <li><p>Gegeben ist eine normalverteilte Zufallsvariable für den Sauerstoffpartialdruck:</p>
@@ -526,7 +521,7 @@ Transformieren Sie jeden Wert mit <span class="math notranslate nohighlight">\(S
 <p>Wir wollen dieses Experiment im folgenden in Python mit NumPy durchführen.</p>
 </section>
 <section id="aufgabe-4-sauerstoffsattigung-bestimmen">
-<h2><strong>Aufgabe 4</strong>: Sauerstoffsättigung bestimmen<a class="headerlink" href="#aufgabe-4-sauerstoffsattigung-bestimmen" title="Link to this heading"></a></h2>
+<h2><strong>Aufgabe 4</strong>: Sauerstoffsättigung bestimmen<a class="headerlink" href="#aufgabe-4-sauerstoffsattigung-bestimmen" title="Permalink to this heading"></a></h2>
 <p>In dieser Aufgabe arbeiten Sie in der Datei</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nonlinearmapping/oxygen.py
 </pre></div>
@@ -534,7 +529,7 @@ Transformieren Sie jeden Wert mit <span class="math notranslate nohighlight">\(S
 <p>Implementieren Sie die Methode <a class="reference internal" href="#oxygen.map_samples" title="oxygen.map_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">oxygen.map_samples()</span></code></a>. Folgen Sie den Anweisungen im Code.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="oxygen.map_samples">
-<span class="sig-prename descclassname"><span class="pre">oxygen.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oxygen.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#oxygen.map_samples" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">oxygen.</span></span><span class="sig-name descname"><span class="pre">map_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oxygen.html#map_samples"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#oxygen.map_samples" title="Link zu dieser Definition"></a></dt>
 <dd><p><strong>TODO</strong>: Transform samples of a normally distributed oxygen partial pressure (p)
 using the Hill equation to approximate blood oxygen saturation.</p>
 <div class="math notranslate nohighlight">
@@ -551,7 +546,7 @@ normally distributed with unknown mean and variance.</p>
 </dd>
 </dl>
 <section id="returns">
-<h3>Returns:<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<h3>Returns:<a class="headerlink" href="#returns" title="Permalink to this heading"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">return<span class="colon">:</span></dt>
 <dd class="field-odd"><p>3-Tuple of mapped_samples, the estimated mean and the estimated variance of the saturation (via Taylor expansion)</p>
@@ -562,7 +557,7 @@ normally distributed with unknown mean and variance.</p>
 
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">map_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
    <span class="n">N</span><span class="p">,</span> <span class="n">K</span> <span class="o">=</span> <span class="mf">2.7</span><span class="p">,</span> <span class="mi">26</span>
 
    <span class="c1"># TODO: Apply the Hill function to each sample to get saturation values</span>
@@ -588,7 +583,7 @@ normally distributed with unknown mean and variance.</p>
 </div>
 </section>
 <section id="aufgabe-5-experimentieren-mit-den-werten">
-<h2><strong>Aufgabe 5</strong>: Experimentieren mit den Werten<a class="headerlink" href="#aufgabe-5-experimentieren-mit-den-werten" title="Link to this heading"></a></h2>
+<h2><strong>Aufgabe 5</strong>: Experimentieren mit den Werten<a class="headerlink" href="#aufgabe-5-experimentieren-mit-den-werten" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>Experimentieren Sie im Skript mit verschiedenen Werten für den Mittelwert <span class="math notranslate nohighlight">\(\mu_p\)</span> und die Standardabweichung <span class="math notranslate nohighlight">\(\sigma_p\)</span></dt><dd><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\mu_p = 20\)</span> mmHg</p></li>
@@ -606,7 +601,7 @@ normally distributed with unknown mean and variance.</p>
 </dl>
 </section>
 <section id="musterlosung">
-<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="linearsource.html"><span class="doc">Lineare Abbildung - Musterlösung</span></a></p></li>
 <li><p><a class="reference internal" href="polarsource.html"><span class="doc">Nicht-Lineare Abbildung - Musterlösung</span></a></p></li>
