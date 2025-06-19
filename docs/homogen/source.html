@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de">
+<html class="writer-html5" lang="de" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homogene Koordinaten - Musterlösung &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,14 +15,15 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/homogen/source.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=70a09b52"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
@@ -61,6 +62,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html#bewegungs-und-messmodell">Bewegungs- und Messmodell</a></li>
 </ul>
 
         </div>
@@ -88,13 +91,13 @@
            <div itemprop="articleBody">
              
   <section id="homogene-koordinaten-musterlosung">
-<h1>Homogene Koordinaten - Musterlösung<a class="headerlink" href="#homogene-koordinaten-musterlosung" title="Permalink to this heading"></a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span> <span class="nn">cv2</span>
-<span class="linenos">  2</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos">  3</span><span class="kn">from</span> <span class="nn">misc</span> <span class="kn">import</span> <span class="n">build_axis</span><span class="p">,</span> <span class="n">build_cube</span><span class="p">,</span> <span class="n">build_grid</span><span class="p">,</span> <span class="n">Mode</span>
+<h1>Homogene Koordinaten - Musterlösung<a class="headerlink" href="#homogene-koordinaten-musterlosung" title="Link to this heading"></a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  3</span><span class="kn">from</span><span class="w"> </span><span class="nn">misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_axis</span><span class="p">,</span> <span class="n">build_cube</span><span class="p">,</span> <span class="n">build_grid</span><span class="p">,</span> <span class="n">Mode</span>
 <span class="linenos">  4</span>
 <span class="linenos">  5</span>
-<span class="linenos">  6</span><span class="k">def</span> <span class="nf">translate_3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="linenos">  6</span><span class="k">def</span><span class="w"> </span><span class="nf">translate_3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="linenos">  7</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">  8</span><span class="sd">    **TODO**: Return a homogeneous translation matrix which moves coordinates by (x, y, z) as presented during lecture.</span>
 <span class="linenos">  9</span>
@@ -111,7 +114,7 @@
 <span class="linenos"> 20</span>    <span class="p">)</span>
 <span class="linenos"> 21</span>
 <span class="linenos"> 22</span>
-<span class="linenos"> 23</span><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="linenos"> 23</span><span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="linenos"> 24</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 25</span><span class="sd">    **TODO**: Return a homogeneous scaling matrix which scales axes by (x, y, z) as presented during lecture.</span>
 <span class="linenos"> 26</span>
@@ -128,7 +131,7 @@
 <span class="linenos"> 37</span>    <span class="p">)</span>
 <span class="linenos"> 38</span>
 <span class="linenos"> 39</span>
-<span class="linenos"> 40</span><span class="k">def</span> <span class="nf">rotateX</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
+<span class="linenos"> 40</span><span class="k">def</span><span class="w"> </span><span class="nf">rotateX</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
 <span class="linenos"> 41</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 42</span><span class="sd">    **TODO**: Return a homogeneous rotation matrix which rotates around the</span>
 <span class="linenos"> 43</span><span class="sd">    X-axis by a given amount as presented during the lecture.</span>
@@ -149,7 +152,7 @@
 <span class="linenos"> 58</span>    <span class="p">)</span>
 <span class="linenos"> 59</span>
 <span class="linenos"> 60</span>
-<span class="linenos"> 61</span><span class="k">def</span> <span class="nf">rotateY</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
+<span class="linenos"> 61</span><span class="k">def</span><span class="w"> </span><span class="nf">rotateY</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
 <span class="linenos"> 62</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 63</span><span class="sd">    **TODO**: Return a homogeneous rotation matrix which rotates around the</span>
 <span class="linenos"> 64</span><span class="sd">    Y-axis by a given amount as presented during the lecture.</span>
@@ -170,7 +173,7 @@
 <span class="linenos"> 79</span>    <span class="p">)</span>
 <span class="linenos"> 80</span>
 <span class="linenos"> 81</span>
-<span class="linenos"> 82</span><span class="k">def</span> <span class="nf">rotateZ</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
+<span class="linenos"> 82</span><span class="k">def</span><span class="w"> </span><span class="nf">rotateZ</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
 <span class="linenos"> 83</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 84</span><span class="sd">    **TODO**: Return a homogeneous rotation matrix which rotates around the</span>
 <span class="linenos"> 85</span><span class="sd">    Z-axis by a given amount as presented during the lecture.</span>
@@ -191,7 +194,7 @@
 <span class="linenos">100</span>    <span class="p">)</span>
 <span class="linenos">101</span>
 <span class="linenos">102</span>
-<span class="linenos">103</span><span class="k">def</span> <span class="nf">rotateXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="linenos">103</span><span class="k">def</span><span class="w"> </span><span class="nf">rotateXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="linenos">104</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">105</span><span class="sd">    **TODO** Return a combined rotation matrix which first rotates around X, then Y then Z</span>
 <span class="linenos">106</span><span class="sd">    by the given amounts of radians.</span>
@@ -205,7 +208,7 @@
 <span class="linenos">114</span>    <span class="k">return</span> <span class="n">rotateZ</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateY</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateX</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="linenos">115</span>
 <span class="linenos">116</span>
-<span class="linenos">117</span><span class="k">def</span> <span class="nf">projection</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<span class="linenos">117</span><span class="k">def</span><span class="w"> </span><span class="nf">projection</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
 <span class="linenos">118</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">119</span><span class="sd">    **TODO**: Return a projection matrix which projects along the Z-axis as presented during the lecture.</span>
 <span class="linenos">120</span>
@@ -223,7 +226,7 @@
 <span class="linenos">132</span>    <span class="p">)</span>
 <span class="linenos">133</span>
 <span class="linenos">134</span>
-<span class="linenos">135</span><span class="k">def</span> <span class="nf">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<span class="linenos">135</span><span class="k">def</span><span class="w"> </span><span class="nf">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
 <span class="linenos">136</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">137</span><span class="sd">    **TODO**: Return the matrix which transforms NDC-coordinates to pixel coordinates in the final image</span>
 <span class="linenos">138</span>
@@ -238,7 +241,7 @@
 <span class="linenos">147</span>    <span class="k">return</span> <span class="n">translate_3d</span><span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">H</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">@</span> <span class="n">scale</span><span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">H</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="linenos">148</span>
 <span class="linenos">149</span>
-<span class="linenos">150</span><span class="k">def</span> <span class="nf">world_to_camera</span><span class="p">():</span>
+<span class="linenos">150</span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_camera</span><span class="p">():</span>
 <span class="linenos">151</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">152</span><span class="sd">    **TODO**: Return the matrix which transforms world to camera (view) coordinates.</span>
 <span class="linenos">153</span><span class="sd">    For this tutorial, use a combination of :py:func:`translate_3d`,</span>
@@ -262,7 +265,7 @@
 <span class="linenos">171</span>    <span class="p">)</span>
 <span class="linenos">172</span>
 <span class="linenos">173</span>
-<span class="linenos">174</span><span class="k">def</span> <span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">174</span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="linenos">175</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">176</span><span class="sd">    **TODO**: Return the complete projection matrix mapping from world coordinates to image coordinates.</span>
 <span class="linenos">177</span><span class="sd">    This is a concatenation of the `world_to_camera` matrix, the projection matrix and the mapping from</span>
@@ -278,7 +281,7 @@
 <span class="linenos">187</span>    <span class="k">return</span> <span class="n">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">@</span> <span class="n">projection</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">@</span> <span class="n">world_to_camera</span><span class="p">()</span>
 <span class="linenos">188</span>
 <span class="linenos">189</span>
-<span class="linenos">190</span><span class="k">def</span> <span class="nf">local_to_world</span><span class="p">(</span><span class="n">objectScale</span><span class="p">,</span> <span class="n">objectRotate</span><span class="p">,</span> <span class="n">objectTranslate</span><span class="p">,</span> <span class="n">objectOrbit</span><span class="p">):</span>
+<span class="linenos">190</span><span class="k">def</span><span class="w"> </span><span class="nf">local_to_world</span><span class="p">(</span><span class="n">objectScale</span><span class="p">,</span> <span class="n">objectRotate</span><span class="p">,</span> <span class="n">objectTranslate</span><span class="p">,</span> <span class="n">objectOrbit</span><span class="p">):</span>
 <span class="linenos">191</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">192</span><span class="sd">    **TODO**: Return the transformation from local coordinates to world coordinates.</span>
 <span class="linenos">193</span><span class="sd">    Apply the following transformations in this particular order</span>
@@ -304,7 +307,7 @@
 <span class="linenos">213</span>    <span class="p">)</span>
 <span class="linenos">214</span>
 <span class="linenos">215</span>
-<span class="linenos">216</span><span class="k">def</span> <span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+<span class="linenos">216</span><span class="k">def</span><span class="w"> </span><span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
 <span class="linenos">217</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">218</span><span class="sd">    **TODO**: Project all vertices in the provided vertex buffer using the given transformation</span>
 <span class="linenos">219</span><span class="sd">    and convert to euclidean coordinates by dividing by the w-component of each vertex.</span>
@@ -322,7 +325,7 @@
 <span class="linenos">231</span>    <span class="k">return</span> <span class="n">vertices</span>
 <span class="linenos">232</span>
 <span class="linenos">233</span>
-<span class="linenos">234</span><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+<span class="linenos">234</span><span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
 <span class="linenos">235</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">236</span><span class="sd">    Draws a given mesh using the provided projection matrix into the given canvas using provided color.</span>
 <span class="linenos">237</span>

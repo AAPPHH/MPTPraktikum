@@ -58,6 +58,11 @@ Diese Voraussetzungen sind in vielen realen Anwendungen nur näherungsweise erf�
 Filtergleichungen: Prädiktion und Update
 ----------------------------------------
 
+.. image:: filtering.png
+   :width: 800px
+   :align: center
+   :alt: Kalman-Filter Phasen
+
 Das Kalman-Filter operiert in zwei Hauptphasen: **Prädiktion (Vorhersage)** und **Update (Korrektur)**. In jeder Zeitschrittiteration werden nacheinander diese beiden Schritte ausgeführt, um den Systemzustand möglichst genau zu schätzen.
 
 **Prädiktionsschritt**
@@ -268,19 +273,110 @@ Wenn mehrere Messungen :math:`z_k^{(1)}, z_k^{(2)}, \dots, z_k^{(n)}` zum gleich
 
 Beide Methoden liefern bei korrekt spezifizierten Modellen und Rauschkovarianzen identische Resultate, solange die Messfehler unabhängig sind.
 
-**Aufgabe 1**
---------------
-Den Filter initialisieren.
+Das Meß- und Bewegungsmodell in dieser Aufgabe
+----------------------------------------------
+
+Für das Beispiel in diesem Praktikum wird ein einfaches lineares Modell mit konstanter Geschwindigkeit verwendet. 
+Der Systemzustand :math:`x_k` ist ein 4-dimensionaler Vektor bestehend aus Position und Geschwindigkeit in 2D:
+
+.. math::
+
+   x_k = \begin{bmatrix} x \\ y \\ \dot{x} \\ \dot{y} \end{bmatrix}_k
+
+Dabei sind :math:`x, y` die Positionen und :math:`\dot{x}, \dot{y}` die jeweiligen Geschwindigkeiten in x- und y-Richtung.
+
+**Bewegungsmodell**
+
+Das Bewegungsmodell basiert auf konstanter Geschwindigkeit und ist daher linear. Für eine feste Zeitschrittweite :math:`\Delta t` ergibt sich die Systemmatrix :math:`A`:
+
+.. math::
+
+   A = \begin{bmatrix}
+   1 & 0 & \Delta t & 0 \\
+   0 & 1 & 0 & \Delta t \\
+   0 & 0 & 1 & 0 \\
+   0 & 0 & 0 & 1
+   \end{bmatrix}
+
+Die Systemdynamik lautet:
+
+.. math::
+
+   x_k = A x_{k-1} + w_{k-1}
+
+mit :math:`w_k \sim \mathcal{N}(0, Q)` als Prozessrauschen.
+
+**Messmodell**
+
+Die Messungen liefern ausschließlich die Position (nicht die Geschwindigkeit) und sind 2-dimensional:
+
+.. math::
+
+   z_k = \begin{bmatrix} x \\ y \end{bmatrix}_k + v_k
+
+Das Messmodell ist ebenfalls linear, mit der Beobachtungsmatrix :math:`H`:
+
+.. math::
+
+   H = \begin{bmatrix}
+   1 & 0 & 0 & 0 \\
+   0 & 1 & 0 & 0
+   \end{bmatrix}
+
+Das Messrauschen :math:`v_k` wird vom Sensor bereitgestellt und ist im Allgemeinen zeitabhängig:
+
+.. math::
+
+   v_k \sim \mathcal{N}(0, R_k)
+
+Dabei ist :math:`R_k` eine 2×2-Kovarianzmatrix, die für jeden Zeitschritt vom Sensor mitgeliefert wird.
+
+Bemerkung:  
+Die Struktur dieses Modells erlaubt eine sehr effiziente Anwendung des Kalman-Filters, da beide Modelle linear sind und die Messungen direkt zur Korrektur der Positionsschätzung beitragen.
+
+
+**Aufgabe 1** - Abhängigkeiten installieren
+-------------------------------------------
+
+Installieren Sie zunächst die benötigten Abhängigkeiten, um das Kalman-Filter zu implementieren. 
+Wechseln Sie dazu in das Unterverzeichniss `kalman` und führen Sie den Befehl
+
+      pip install -r requirements.txt
+
+aus. Sie implementieren die folgenden Aufgaben in der Datei 
+
+      kalman.py
+          
+
+**Aufgabe 2** - Das Filter initialisieren
+-----------------------------------------
+
+Das Kalman Filter muss zunächst initialisiert werden, bevor es verwendet werden kann.
 
 Implementieren Sie eine nun die Funktion :py:meth:`kalman.kalman.init_filter`. Folgen Sie den 
 Anweisungen im Code sowie dieser Beschreibung.
 
-.. autoclass:: kalman.KalmanFilter
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 .. automethod:: kalman.KalmanFilter.init_filter    
+
+**Aufgabe 3** - Die Prädiktion
+------------------------------
+
+Bevor das Kalman-Filter neue Messungen verarbeiten kann, muss es den nächsten Zustand vorhersagen.
+
+Implementieren Sie eine nun die Funktion :py:meth:`kalman.kalman.predict`. Folgen Sie den 
+Anweisungen im Code sowie dieser Beschreibung.
+
+.. automethod:: kalman.KalmanFilter.predict
+
+**Aufgabe 4** - Die Messungen verarbeiten
+-----------------------------------------
+
+Nun kann das Kalman-Filter neue Messungen verarbeiten und den Zustand aktualisieren.
+
+Implementieren Sie eine nun die Funktion :py:meth:`kalman.kalman.update`. Folgen Sie den 
+Anweisungen im Code sowie dieser Beschreibung.
+
+.. automethod:: kalman.KalmanFilter.update
 
 
 Musterlösung

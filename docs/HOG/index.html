@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de">
+<html class="writer-html5" lang="de" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Histogram of Oriented Gradients &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,14 +15,15 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/HOG/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=70a09b52"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -77,6 +78,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html#bewegungs-und-messmodell">Bewegungs- und Messmodell</a></li>
 </ul>
 
         </div>
@@ -104,14 +107,14 @@
            <div itemprop="articleBody">
              
   <section id="histogram-of-oriented-gradients">
-<h1>Histogram of Oriented Gradients<a class="headerlink" href="#histogram-of-oriented-gradients" title="Permalink to this heading"></a></h1>
+<h1>Histogram of Oriented Gradients<a class="headerlink" href="#histogram-of-oriented-gradients" title="Link to this heading"></a></h1>
 <p>Bei den s.g. HoG (Histogram of Oriented Gradients) Featuren handelt es sich um eine frühe
 Technik aus einem Bild geeigente Informationen (Features) abzuleiten
 um damit komplexe Objekte klassifizeiren zu können. Konkret wurden HOG-Features
 zuerst von N. Dalal und B. Triggs in <a class="reference external" href="https://ieeexplore.ieee.org/document/1467360">Histograms of oriented gradients for human detection, IEEE 2005</a>
 vorgeschlagen.</p>
 <section id="hog-uberblick">
-<h2>HoG - Überblick<a class="headerlink" href="#hog-uberblick" title="Permalink to this heading"></a></h2>
+<h2>HoG - Überblick<a class="headerlink" href="#hog-uberblick" title="Link to this heading"></a></h2>
 <p>Zunächst werden für das Bild mit dem Sobel-Operator die Gradienten in X und Y-Richtung bestimmt.
 Es wird eine feste Anzahl an möglichen Gradientenrichtungen (z.B. 8) festgelegt und zu jedem Pixel wird
 festgelegt in welche dieser möglichen Richtungen der Gradient an dieser Stelle zeigt (die Gradientenrichtungen werden quantisiert).</p>
@@ -121,7 +124,7 @@ ein Histogram der vorkommenden Gradientenrichtungen erstellt. Um weniger sensibe
 die Gradientenrichtungen mit ihrer jeweiligen Gradientenstärke gewichtet.</p>
 </section>
 <section id="hog-from-scratch-die-webcam-offnen">
-<h2>HoG from Scratch - Die Webcam öffnen<a class="headerlink" href="#hog-from-scratch-die-webcam-offnen" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Die Webcam öffnen<a class="headerlink" href="#hog-from-scratch-die-webcam-offnen" title="Link to this heading"></a></h2>
 <p>Wir beginnen wieder mit unserem Standard Loop und öffnen die Webcam. Wandeln Sie das Bild direkt in ein Graustufenbild (0 bis 255) und
 <a class="reference external" href="https://numpy.org/doc/stable/user/basics.types.html">konvertieren</a> Sie den Datentyp in <cite>np.float32</cite> (0.0 bis 1.0).</p>
 <p>und rufen sie die noch zu
@@ -135,7 +138,7 @@ implementierende Methode <cite>process_hog</cite> mit diesem Grauwertbild auf. H
 </ul>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
   <span class="k">pass</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -165,7 +168,7 @@ implementierende Methode <cite>process_hog</cite> mit diesem Grauwertbild auf. H
 </div>
 </section>
 <section id="hog-from-scratch-die-gradientenrichtungen">
-<h2>HoG from Scratch - Die Gradientenrichtungen<a class="headerlink" href="#hog-from-scratch-die-gradientenrichtungen" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Die Gradientenrichtungen<a class="headerlink" href="#hog-from-scratch-die-gradientenrichtungen" title="Link to this heading"></a></h2>
 <p>Im ersten Schritt bestimmen wir zunächst die Richtungen der quantisierten Gradientenrichtungen.
 Dazu teilen wir das Intervall von 0 bis <span class="math notranslate nohighlight">\(2\pi\)</span> in gleichmäßige Schritten ein.</p>
 <p>Verwenden Sie <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html">numpy.linspace</a> und schließen Sie den letzten Datenpunkt
@@ -189,7 +192,7 @@ ihre Array dann so aussehen</p>
 <p>Schreiben Sie eine Funktion <cite>calculate_gradient_directions</cite> welche zu einer Anzahl an Richtungen dieses dazugehörige Array zurückgibt.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calculate_gradient_directions</span><span class="p">(</span><span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_gradient_directions</span><span class="p">(</span><span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
   <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
   <span class="n">hogDirections</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="n">totalDirections</span><span class="p">))</span>
 
@@ -202,7 +205,7 @@ ihre Array dann so aussehen</p>
 </div>
 </section>
 <section id="hog-from-scratch-gradienten-und-gradientestarke">
-<h2>HoG from Scratch - Gradienten und Gradientestärke<a class="headerlink" href="#hog-from-scratch-gradienten-und-gradientestarke" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Gradienten und Gradientestärke<a class="headerlink" href="#hog-from-scratch-gradienten-und-gradientestarke" title="Link to this heading"></a></h2>
 <p>Nun implementieren wir die <cite>process_hog</cite> Methode. Berechnen Sie zunächst wieder für das Grauwertbild mit <a class="reference external" href="https://docs.opencv.org/3.4/d4/d86/group__imgproc__filter.html#gacea54f142e81b6758cb6f375ce782c8d">cv2.Sobel</a>
 die Gradienten in X und Y-Richtung. Verwenden Sie <cite>ksize=5</cite> und berechnen Sie die Gradientenstärke als</p>
 <div class="math notranslate nohighlight">
@@ -211,7 +214,7 @@ die Gradienten in X und Y-Richtung. Verwenden Sie <cite>ksize=5</cite> und berec
 die Gradientstärke als <cite>mag</cite>.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
   <span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
   <span class="n">gy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
   <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -220,7 +223,7 @@ die Gradientstärke als <cite>mag</cite>.</p>
 </div>
 </section>
 <section id="hog-from-scratch-gradientenrichtung">
-<h2>HoG from Scratch - Gradientenrichtung<a class="headerlink" href="#hog-from-scratch-gradientenrichtung" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Gradientenrichtung<a class="headerlink" href="#hog-from-scratch-gradientenrichtung" title="Link to this heading"></a></h2>
 <p>Zur Bestimmung der Gradientenrichtung bestimmen wir das Skalarprodukt</p>
 <div class="math notranslate nohighlight">
 \[\left(I_x,  I_y\right) \cdot \vec v(\alpha)\]</div>
@@ -240,7 +243,7 @@ Gradienten des Pixels repräsentiert (in <cite>winningBin</cite>) sowie dessen G
 <p>Damit <cite>winningBin</cite> wieder als Bild interpretiert werden kann <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.reshape.html">reshapen</a> sie das Bild wieder auf die Größen des originalen Grauwertbildes.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
   <span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
   <span class="n">gy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
   <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -260,7 +263,7 @@ Gradienten des Pixels repräsentiert (in <cite>winningBin</cite>) sowie dessen G
 </div>
 </section>
 <section id="hog-from-scratch-gradientenrichtungen-anzeigen">
-<h2>HoG from Scratch - Gradientenrichtungen anzeigen<a class="headerlink" href="#hog-from-scratch-gradientenrichtungen-anzeigen" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Gradientenrichtungen anzeigen<a class="headerlink" href="#hog-from-scratch-gradientenrichtungen-anzeigen" title="Link to this heading"></a></h2>
 <p>Es macht Sinn diese Gradientenrichtungen konkret anzuzeigen um ein
 Gefühl für die so kodierte Information zu bekommen. Wandeln Sie dazu das <cite>winningBin</cite> Bild zunächst
 in ein Grauwertbild zurück indem Sie den Bereich der möglichen Bins <span class="math notranslate nohighlight">\([0,\dots,N-1]\)</span> linear auf den Bereich <span class="math notranslate nohighlight">\([0,\dots,255]\)</span>
@@ -269,10 +272,11 @@ abbilden. Wandeln Sie auch den Datentypen zurück in einen <cite>np.uint8</cite>
 <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-imshow-method/">cv2.imshow</a> an. Es kann für die Anzeige Sinn machen zu schwache Gradienten
 zu unterdrücken. Setzen Sie daher in ihrem Farbbild alle Pixel auf <span class="math notranslate nohighlight">\((0,0,0)\)</span>, für welche die Gradientestärke geringen als 1.5 ist.</p>
 <p>Ihr Bild sollte dann in etwa so aussehen (bei 12 Histogrambins):</p>
-<a class="reference internal image-reference" href="../_images/gradientdirections.png"><img alt="Gradientenrichtungsbild" class="align-center" src="../_images/gradientdirections.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/gradientdirections.png"><img alt="Gradientenrichtungsbild" class="align-center" src="../_images/gradientdirections.png" style="width: 400px;" />
+</a>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_hog</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">totalDirections</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
   <span class="n">gx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
   <span class="n">gy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_32F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
   <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -298,10 +302,10 @@ zu unterdrücken. Setzen Sie daher in ihrem Farbbild alle Pixel auf <span class=
 </div>
 </section>
 <section id="hog-from-scratch-der-feature-vektor">
-<h2>HoG from Scratch - Der Feature-Vektor<a class="headerlink" href="#hog-from-scratch-der-feature-vektor" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Der Feature-Vektor<a class="headerlink" href="#hog-from-scratch-der-feature-vektor" title="Link to this heading"></a></h2>
 <p>Implementieren Sie nun eine Methode <cite>hog_cell</cite>. Diese soll das Magnituden-Bild <cite>mag</cite>, die dominanten Gradientenrichtungen <cite>winningBin</cite>
 sowie die Anzahl der Gradientenrichtungen erhalten. Eine geeignete Signatur dieser Methode könnte so aussehen:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hog_cell</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">winningBin</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">hog_cell</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">winningBin</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">):</span>
 </pre></div>
 </div>
 <p>Das Ziel ist es hier für die übergebenen Bilder (später: Bildausschnitte) das Histogram der
@@ -316,7 +320,7 @@ Gradientenrichtungen zu berechnen und als normierten Feature-Vektor zurückzugeb
 den Vektor einfach nur durch eine Konstante (in diesem Fall: 256).</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hog_cell</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">winningBin</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">hog_cell</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">winningBin</span><span class="p">,</span> <span class="n">totalDirections</span><span class="p">):</span>
   <span class="n">cellVector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">totalDirections</span><span class="p">)</span>
   <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">totalDirections</span><span class="p">):</span>
     <span class="n">cellVector</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">[</span><span class="n">winningBin</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -327,11 +331,11 @@ den Vektor einfach nur durch eine Konstante (in diesem Fall: 256).</p>
 </div>
 </section>
 <section id="hog-from-scratch-visualisierung-einer-hog-zelle">
-<h2>HoG from Scratch - Visualisierung einer HoG-Zelle<a class="headerlink" href="#hog-from-scratch-visualisierung-einer-hog-zelle" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Visualisierung einer HoG-Zelle<a class="headerlink" href="#hog-from-scratch-visualisierung-einer-hog-zelle" title="Link to this heading"></a></h2>
 <p>Um eine einzelne HoG-Zelle zu visualisieren zeichnen wir für jede der Gradientenrichtungen einen stilisierten Vektorpfeil. Als Helligkeitsintenstät des
 Pfeils verwenden wir die akkumulierte Gradientenstärek. Schreiben Sie eine Methode <cite>visualize_hog_cell</cite> welche den gerade berechneten HoG-Vektor,
 das Array mit Gradientenrichtungsvektoren sowie die Größe der zu zeichnenden Zelle (Breite und Höhe) erhält. Eine geeignete Signatur dieser Methode könnte also so aussehen:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">)):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">)):</span>
 </pre></div>
 </div>
 <p>Diese Methode soll ein entsprechend der angegebenen Zellengröße dimensioniertes Grauwertbild zurückgeben. Erzeugen Sie dieses Bild indem Sie mit <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.zeros.html">np.zeros</a> eine
@@ -341,7 +345,7 @@ zeichnen. Skalieren Sie den Richtungsvektor <span class="math notranslate nohigh
 <p>Geben Sie schließlich das Bild zurück.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">)):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">visualize_hog_cell</span><span class="p">(</span><span class="n">cellVector</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">)):</span>
   <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
   <span class="n">W</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
   <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cellVector</span><span class="p">):</span>
@@ -357,7 +361,7 @@ zeichnen. Skalieren Sie den Richtungsvektor <span class="math notranslate nohigh
 </div>
 </section>
 <section id="hog-from-scratch-berechnen-der-features-uber-das-ganze-bild">
-<h2>HoG from Scratch - Berechnen der Features über das ganze Bild<a class="headerlink" href="#hog-from-scratch-berechnen-der-features-uber-das-ganze-bild" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Berechnen der Features über das ganze Bild<a class="headerlink" href="#hog-from-scratch-berechnen-der-features-uber-das-ganze-bild" title="Link to this heading"></a></h2>
 <p>Wir wollen das Bild nun in Zellen der Größe <span class="math notranslate nohighlight">\((12x12)\)</span> Pixel unterteilen. Für jede dieser Zelle schneiden wir den entsprechenden Abschnitt aus dem <cite>winningBin</cite>- und dem <cite>mag</cite>-Bild aus, rufen die
 gerade implementierte <cite>hog_cell</cite>-Methode auf um den Featurevektor zu bestimmen und lassen diesen mit der <cite>visualize_hog_cell</cite>-Methode zeichnen. Die entstehenden Einzelbilder kopieren wir zusammen in
 ein großes Bild und zeigen dieses ebenfalls an. Eine entsprechende Implementierung könnte z.B. so aussehen</p>
@@ -378,7 +382,7 @@ ein großes Bild und zeigen dieses ebenfalls an. Eine entsprechende Implementier
 </div></blockquote>
 </section>
 <section id="hog-from-scratch-musterlosung">
-<h2>HoG from Scratch - Musterlösung<a class="headerlink" href="#hog-from-scratch-musterlosung" title="Permalink to this heading"></a></h2>
+<h2>HoG from Scratch - Musterlösung<a class="headerlink" href="#hog-from-scratch-musterlosung" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">Histogram of Oriented Gradients - Musterlösung</span></a></p>
 </section>
 </section>

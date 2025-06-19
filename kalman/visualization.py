@@ -1,8 +1,9 @@
-from generator import RANGE_X, RANGE_Y
+from generator import RANGE_X, RANGE_Y, VEL_RANGE_X, VEL_RANGE_Y
 from SignalHub import Module, GALY
 import numpy as np
 
 CANVAS_WIDTH, CANVAS_HEIGHT = 1280, 1280
+VELOCITY_CANVAS_WIDTH, VELOCITY_CANVAS_HEIGHT = 640, 640
 
 
 class Visualization(Module):
@@ -32,6 +33,18 @@ class Visualization(Module):
         scaleY = CANVAS_HEIGHT / (RANGE_Y[0] - RANGE_Y[1])
         translateX = -RANGE_X[0] * scaleX
         translateY = -RANGE_Y[1] * scaleY
+
+        mapping = np.array([[scaleX, 0.0, translateX], [0.0, scaleY, translateY]])
+        galy.set_layer_affine_mapping(mapping)
+
+    def velocity_layer(self, name, galy, alwaysVisible=False):
+        galy.layer(name, alwaysVisible)
+
+        # Setup affine mapping to image
+        scaleX = VELOCITY_CANVAS_WIDTH / (VEL_RANGE_X[1] - VEL_RANGE_X[0])
+        scaleY = VELOCITY_CANVAS_HEIGHT / (VEL_RANGE_Y[0] - VEL_RANGE_Y[1])
+        translateX = -VEL_RANGE_X[0] * scaleX
+        translateY = -VEL_RANGE_Y[1] * scaleY
 
         mapping = np.array([[scaleX, 0.0, translateX], [0.0, scaleY, translateY]])
         galy.set_layer_affine_mapping(mapping)
@@ -82,6 +95,32 @@ class Visualization(Module):
                 fontScale=0.6,
                 thickness=1,
             )
+
+    def draw_velocity(self, galy, posterior, posteriorCovariance):
+        galy.canvas("velocity", (VELOCITY_CANVAS_WIDTH, VELOCITY_CANVAS_HEIGHT), (1.0, 1.0, 1.0))
+        self.velocity_layer("Velocity Grid", galy, alwaysVisible=True)
+        # Draw coordinate grid
+        for x in [-60.0, -40.0, -20.0, 20.0, 40.0, 60.0]:
+            galy.line((x, -60.0), (x, 60.0), (0.8, 0.8, 0.8), 1)
+
+            galy.putText(
+                f"{x:.0f}", (x + 1.0, 2.0), fontScale=0.4, color=(0.5, 0.5, 0.5)
+            )
+            galy.putText(
+                f"{x:.0f}", (1.0, x + 2.0), fontScale=0.4, color=(0.5, 0.5, 0.5)
+            )
+
+            galy.line((-60.0, x), (60.0, x), (0.8, 0.8, 0.8), 1)
+
+        galy.line((0.0, -60.0), (0.0, 60.0), (0.0, 0.0, 0.0), 2)
+        galy.line((-60.0, 0.0), (60.0, 0.0), (0.0, 0.0, 0.0), 2)
+
+        self.velocity_layer("Velocity", galy)   
+        dx, dy = posterior[0], posterior[1]
+        galy.line((0.0, 0.0), (dx, dy), (0.3, 0.4, 0.3), 3)
+        galy.mahalanobis((dx, dy), posteriorCovariance, (0.3, 0.4, 0.3), 1.0, 2)
+        galy.mahalanobis((dx, dy), posteriorCovariance, (0.3, 0.4, 0.3), 2.0, 2)
+        galy.mahalanobis((dx, dy), posteriorCovariance, (0.3, 0.4, 0.3), 3.0, 2)
 
     def step(self, data):
         # Append states to history
@@ -185,5 +224,10 @@ class Visualization(Module):
         state = data["posterior"]["state"][:2, 0]
         cov = data["posterior"]["covariance"][:2, :2]
         self.draw_state("Posterior", galy, state, cov, np.array([0.1, 0.2, 0.1]))
+
+        # Draw velocity
+        state = data["posterior"]["state"][2:, 0]
+        cov = data["posterior"]["covariance"][2:, 2:]
+        self.draw_velocity(galy, state, cov)
 
         return {"galy": galy}

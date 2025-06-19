@@ -8,7 +8,7 @@ class TerminateAfter(Module):
         pass
 
     def start(self, data):
-        self.counter = get_nested_key("config.simulation.steps", data, 120)
+        self.counter = int(get_nested_key("config.simulation.simulateSeconds", data, 2.0) * get_nested_key("config.simulation.scansPerSecond", data, 30.0))
         self.count = 0
         return {}
 

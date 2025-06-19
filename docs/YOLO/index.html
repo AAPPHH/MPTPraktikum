@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de">
+<html class="writer-html5" lang="de" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Objekterkennung mit YOLO &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,14 +15,15 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/YOLO/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=70a09b52"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -72,6 +73,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html#bewegungs-und-messmodell">Bewegungs- und Messmodell</a></li>
 </ul>
 
         </div>
@@ -99,10 +102,10 @@
            <div itemprop="articleBody">
              
   <section id="objekterkennung-mit-yolo">
-<h1>Objekterkennung mit YOLO<a class="headerlink" href="#objekterkennung-mit-yolo" title="Permalink to this heading"></a></h1>
+<h1>Objekterkennung mit YOLO<a class="headerlink" href="#objekterkennung-mit-yolo" title="Link to this heading"></a></h1>
 <p>In dieser Praktikumsaufgabe verwenden wir den YOLO Objektdektor von Ultralytics, um Objekte in einem Bild zu erkennen.</p>
 <section id="ultralytics-installieren">
-<h2>Ultralytics installieren<a class="headerlink" href="#ultralytics-installieren" title="Permalink to this heading"></a></h2>
+<h2>Ultralytics installieren<a class="headerlink" href="#ultralytics-installieren" title="Link to this heading"></a></h2>
 <p>Installieren Sie zunächst das Ultralytics Paket sowie gdown</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ultralytics<span class="w"> </span>gdown
 </pre></div>
@@ -110,7 +113,7 @@
 <p>Mehr Details finden Sie <a class="reference external" href="https://docs.ultralytics.com/quickstart/">hier</a>.</p>
 </section>
 <section id="das-yolo-netz-herunterladen">
-<h2>Das YOLO-Netz herunterladen<a class="headerlink" href="#das-yolo-netz-herunterladen" title="Permalink to this heading"></a></h2>
+<h2>Das YOLO-Netz herunterladen<a class="headerlink" href="#das-yolo-netz-herunterladen" title="Link to this heading"></a></h2>
 <p>Wir müssen auch noch die korrekten Gewichte für das zu verwendenen YOLO-Netz herunterladen. Verwenden Sie
 folgenden Code um die vortrainierten Gewichte von Google-Drive herunterladen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download YOLO Checkpoint from google drive</span>
@@ -122,7 +125,7 @@ folgenden Code um die vortrainierten Gewichte von Google-Drive herunterladen</p>
 </div>
 </section>
 <section id="yolo-laden-und-ausfuhren">
-<h2>YOLO laden und ausführen<a class="headerlink" href="#yolo-laden-und-ausfuhren" title="Permalink to this heading"></a></h2>
+<h2>YOLO laden und ausführen<a class="headerlink" href="#yolo-laden-und-ausfuhren" title="Link to this heading"></a></h2>
 <p>Instanzieren Sie das YOLO-Modul mit den gerade heruntergeladenen Gewichten (vgl. <a class="reference external" href="https://docs.ultralytics.com/de/usage/python/">hier</a>).
 Verwenden Sie <a class="reference external" href="https://docs.ultralytics.com/de/usage/python/">cv2.imread</a> um ein Bild zu laden. Führen Sie dann das YOLO-Netzwerk auf diesem Bild aus.
 Schauen Sie sich die Ausgabe an.</p>
@@ -156,7 +159,7 @@ Schauen Sie sich die Ausgabe an.</p>
 </div>
 </section>
 <section id="aufgabe-1-zeichnen-sie-die-yolo-detektionen">
-<h2>Aufgabe 1 - Zeichnen Sie die YOLO-Detektionen<a class="headerlink" href="#aufgabe-1-zeichnen-sie-die-yolo-detektionen" title="Permalink to this heading"></a></h2>
+<h2>Aufgabe 1 - Zeichnen Sie die YOLO-Detektionen<a class="headerlink" href="#aufgabe-1-zeichnen-sie-die-yolo-detektionen" title="Link to this heading"></a></h2>
 <p>Iterieren Sie über alle Ergebnisse. In jedem Ergeniss finden Sie ein <cite>boxes</cite>-Attribut.
 Iterieren Sie über jede dieser Boxen. Besorgen Sie sich die <strong>Klassen-ID</strong> der Detektion (<cite>box.cls.item()</cite>) und den dazugehörigen
 Klartextnamen aus der <cite>result.names</cite> Liste. Die <strong>Koordinaten der Detektion</strong> finden Sie im <cite>box.xyxy</cite> Tensor.</p>
@@ -166,7 +169,8 @@ Koordinaten zu finden.</p>
 <p>Verwenden Sie <a class="reference external" href="https://docs.opencv.org/4.x/dc/da5/tutorial_py_drawing_functions.html">cv2.rectangle</a> um die Detektion zu zeichnen.
 Verwenden Sie <a class="reference external" href="https://docs.opencv.org/4.x/dc/da5/tutorial_py_drawing_functions.html">cv2.putText</a> um den Klassennamen über die Box zu schreiben.</p>
 <p>Wenn Sie alles richtig gemacht haben sollten Sie ein Bild ähnlich diesem sehen:</p>
-<a class="reference internal image-reference" href="../_images/result.png"><img alt="YOLO Detektionen" class="align-center" src="../_images/result.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/result.png"><img alt="YOLO Detektionen" class="align-center" src="../_images/result.png" style="width: 800px;" />
+</a>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Iterate over all results (only one in this case)</span>
@@ -192,7 +196,7 @@ Verwenden Sie <a class="reference external" href="https://docs.opencv.org/4.x/dc
 </div>
 </section>
 <section id="yolo-musterlosung">
-<h2>YOLO - Musterlösung<a class="headerlink" href="#yolo-musterlosung" title="Permalink to this heading"></a></h2>
+<h2>YOLO - Musterlösung<a class="headerlink" href="#yolo-musterlosung" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">YOLO - Musterlösung</span></a></p>
 </section>
 </section>

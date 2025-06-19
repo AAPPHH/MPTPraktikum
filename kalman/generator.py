@@ -3,6 +3,8 @@ import numpy as np
 
 RANGE_X = (-50.0, 50.0)
 RANGE_Y = (-50.0, 50.0)
+VEL_RANGE_X = (-60.0, 60.0)
+VEL_RANGE_Y = (-60.0, 60.0)
 
 
 class MeasurementGenerator(Module):
@@ -12,11 +14,13 @@ class MeasurementGenerator(Module):
             outputSchema={
                 "type": "object",
                 "properties": {
+                    "dt": {"type": "number"},
                     "measurements": {"type": "object", "properties": {}},
                     "groundtruth": {
                         "type": "object",
                         "properties": {
                             "state": {},
+                            "velocity": {},
                         },
                         "additionalProperties": False,
                     },
@@ -61,7 +65,7 @@ class MeasurementGenerator(Module):
         else:
             self.acceleration = np.array([0.0, 0.0])
 
-        print(self.acceleration)
+        #print(self.acceleration)
 
         self.steps = 0
         self.miss_timer = 0
@@ -135,9 +139,12 @@ class MeasurementGenerator(Module):
 
     def step(self, data):
         scansPerSecond = get_nested_key("config.simulation.scansPerSecond", data, 33)
+
+        dt = 1.0 / scansPerSecond * np.random.uniform(0.75, 1.25)
+
         # Move object
-        self.position += self.velocity / scansPerSecond
-        self.velocity += self.acceleration / scansPerSecond
+        self.position += self.velocity * dt
+        self.velocity += self.acceleration * dt
 
         sensors = data["config"]["sensors"]
         measurements = {}
@@ -148,13 +155,17 @@ class MeasurementGenerator(Module):
                 measurement, covariance = self.generate_global_measurement(sensor)
 
             name = sensor["name"]
-            measurements[name] = {"state": measurement.reshape(-1,1), "covariance": covariance}
+            measurements[name] = {"state": measurement.reshape(-1,1) if measurement is not None else None, "covariance": covariance}
 
         self.steps += 1
 
         return {
-            "groundtruth": {"state": self.position.copy()},
+            "groundtruth": {
+                "state": self.position.copy(),
+                "velocity": self.velocity.copy()
+                },
             "measurements": measurements,
+            "dt": dt,
         }
 
     def stop(self, data):

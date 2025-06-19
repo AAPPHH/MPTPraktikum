@@ -32,6 +32,7 @@ extensions = [
     "sphinxcontrib.mermaid",
     "sphinx.ext.mathjax",
     "sphinx_togglebutton",
+    "sphinx.ext.napoleon",
 ]
 
 # -- General configuration ---------------------------------------------------
@@ -62,3 +63,5 @@ html_theme_options = {
     "canonical_url": "",
 }
 html_baseurl = "https://dmu1981.github.io/MPTPraktikum/"
+
+autodoc_typehints = "description"

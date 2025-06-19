@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="de" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kalman &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+
+  
+    <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/_modules/kalman.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Perception and Tracking - Praktikum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Dokumentation durchsuchen" aria-label="Dokumentation durchsuchen" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Aufgaben:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../webcam/index.html">Die Webcam öffnen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kanten/index.html">Kantendetektion mit Sobel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harris/index.html">Der Harris Eckendetektor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../YOLO/index.html">Objekterkennung mit YOLO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AdaBoost/index.html">AdaBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HOG/index.html">Histogram of Oriented Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../homogen/index.html">Rechnen mit homogene Koordinaten</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mahalanobis/index.html">Mahalanobisdistanz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html#bewegungs-und-messmodell">Bewegungs- und Messmodell</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Perception and Tracking - Praktikum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Modul-Quellcode</a></li>
+      <li class="breadcrumb-item active">kalman</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Quellcode für kalman</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">SignalHub</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">ConfigParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">Visualization</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">terminateafter</span><span class="w"> </span><span class="kn">import</span> <span class="n">TerminateAfter</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">KalmanFilter</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">inputSignals</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;measurements&quot;</span><span class="p">],</span>
+            <span class="n">outputSchema</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;prior&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="p">{}},</span>
+                        <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;posterior&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="p">{}},</span>
+                        <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="KalmanFilter.predict">
+<a class="viewcode-back" href="../kalman/index.html#kalman.KalmanFilter.predict">[Doku]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predicts the next state and covariance of the system using the Kalman filter prediction step.</span>
+<span class="sd">        This method applies the state transition model to estimate the next state vector (`self.X`)</span>
+<span class="sd">        and updates the state covariance matrix (`self.P`) by incorporating process noise.</span>
+<span class="sd">        The prediction is based on the following:</span>
+<span class="sd">          - State transition matrix (F) models the system dynamics.</span>
+<span class="sd">          - Process noise covariance matrix (Q) accounts for uncertainty in the process.</span>
+
+<span class="sd">        For a 2D position and velocity model, the state vector is represented as:</span>
+<span class="sd">        [x_position, y_position, x_velocity, y_velocity]. The state transition matrix F </span>
+<span class="sd">        is designed to update the position based on the current velocity, assuming a constant</span>
+<span class="sd">        velocity model. The process noise covariance matrix Q is set to a small value to reflect</span>
+<span class="sd">        the uncertainty in the process.  </span>
+
+<span class="sd">        Assuming constant velocity, the state transition matrix F is defined as:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                F = \\begin{pmatrix}</span>
+<span class="sd">                    1&amp;0&amp;dt&amp;0\\\\</span>
+<span class="sd">                    0&amp;1&amp;0&amp;dt\\\\</span>
+<span class="sd">                    0&amp;0&amp;1&amp;0\\\\</span>
+<span class="sd">                    0&amp;0&amp;0&amp;1</span>
+<span class="sd">                \\end{pmatrix}</span>
+
+<span class="sd">        where dt is the time step between predictions. In this case, we assume dt = 1 for simplicity.</span>
+
+<span class="sd">        The process noise covariance matrix Q is defined as:  </span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                F = \\begin{pmatrix}</span>
+<span class="sd">                    q_x&amp;0&amp;0&amp;0\\\\</span>
+<span class="sd">                    0&amp;q_y&amp;0&amp;0\\\\</span>
+<span class="sd">                    0&amp;0&amp;q_{vx}&amp;0\\\\</span>
+<span class="sd">                    0&amp;0&amp;0&amp;q_{vy}</span>
+<span class="sd">                \\end{pmatrix}</span>
+
+<span class="sd">        where :math:`q_x, q_y, q_{vx}` and :math:`q_{vy}` are small values representing the process noise for position.</span>
+
+<span class="sd">        Use `np.diag &lt;https://numpy.org/doc/2.0/reference/generated/numpy.diag.html&gt;`_ to create a diagonal matrix for Q, where the diagonal elements represent the process noise variances for each state variable.</span>
+<span class="sd">        Use small noise for position and larger noise for velocity to reflect the uncertainty in the process.</span>
+<span class="sd">        The prediction step updates the state vector and covariance matrix as follows:  </span>
+<span class="sd">        </span>
+<span class="sd">        :math:`X = F \cdot X`: This updates the state vector by applying the state transition matrix F.</span>
+
+<span class="sd">        :math:`P = F \cdot P \cdot F^T + Q`: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.</span>
+<span class="sd">        </span>
+
+<span class="sd">        Parameter</span>
+<span class="sd">        ---------</span>
+<span class="sd">        dt : float</span>
+<span class="sd">            The time step for the prediction, which is typically the time elapsed since the last prediction.</span>
+<span class="sd">        </span>
+<span class="sd">          </span>
+<span class="sd">        Updates</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.X : np.ndarray, shape (4,1)</span>
+<span class="sd">            Predicted state vector after applying the state transition.</span>
+<span class="sd">        self.P : np.ndarray, shape (4,4) </span>
+<span class="sd">            Predicted state covariance matrix after accounting for process noise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Define the state transition matrix F</span>
+
+        <span class="c1"># TODO: Define the process noise covariance matrix Q</span>
+
+        <span class="c1"># TODO: Predict next state using the state transition matrix</span>
+
+        <span class="c1"># TODO: Update the state covariance matrix using the state transition matrix and process noise</span>
+
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="KalmanFilter.init_filter">
+<a class="viewcode-back" href="../kalman/index.html#kalman.KalmanFilter.init_filter">[Doku]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the Kalman filter with thje first measurement and covariance.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters:</span>
+<span class="sd">        - z: The first measurement (2D Vector with position in X and Y).</span>
+<span class="sd">        - R: The covariance matrix associated with the measurement, which represents the uncertainty in the measurement.</span>
+<span class="sd">        </span>
+<span class="sd">        This method sets the initial state and covariance for the Kalman filter, which will be used</span>
+<span class="sd">        in subsequent prediction and update steps.</span>
+
+<span class="sd">        The state vector `self.X` is initialized with the first measurement, assuming a 2D position and velocity model.</span>
+<span class="sd">        The covariance matrix `self.P` is initialized with the measurement noise covariance `R` for position, </span>
+<span class="sd">        and larger values for velocity to reflect the uncertainty in the initial state.</span>
+<span class="sd">        </span>
+<span class="sd">        Updates:</span>
+<span class="sd">        --------</span>
+<span class="sd">        self.X : np.ndarray, shape (4,1)</span>
+<span class="sd">            Predicted state vector after applying the state transition.</span>
+<span class="sd">        self.P : np.ndarray, shape (4,4)</span>
+<span class="sd">            Predicted state covariance matrix after accounting for process noise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Initialize the state vector with the initial measurement, assuming a 2D position and velocity model. </span>
+        <span class="c1"># Use the X and Y component of the measurement z, and set the velocity components to 0.0.</span>
+        <span class="c1"># HINT: The resulting state vector should be a 4D vector with the format [x_position, y_position, x_velocity, y_velocity] with shape (4, 1).</span>
+
+        <span class="c1"># TODO: Initialize the covariance matrix with the measurement noise covariance R for position,</span>
+        <span class="c1"># and larger values for velocity to reflect the uncertainty in the initial state. </span>
+        <span class="c1"># HINT: The resulting covariance matrix should be a 4x4 matrix. You can use np.diag to create a diagonal matrix.        </span>
+
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="KalmanFilter.update">
+<a class="viewcode-back" href="../kalman/index.html#kalman.KalmanFilter.update">[Doku]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs the Kalman filter update step with the given measurement.</span>
+
+<span class="sd">        If the filter is not initialized (self.X is None), initializes the filter with the measurement.</span>
+<span class="sd">        Otherwise, computes the Kalman gain, updates the state estimate and covariance matrix.</span>
+<span class="sd">       </span>
+<span class="sd">        First, one needs to calculate the innovation (measurement residual) `y` and the innovation covariance `S`:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">                \\begin{array}{ccl}</span>
+<span class="sd">                y &amp;=&amp; z - H\cdot X\\\\</span>
+<span class="sd">                S &amp;=&amp; H \cdot P \cdot H^T + R</span>
+<span class="sd">               \\end{array}</span>
+
+<span class="sd">        </span>
+<span class="sd">        where :math:`z` is the measurement, :math:`H` is the measurement matrix, :math:`X` is the current state estimate, and :math:`P` is the current covariance matrix.</span>
+
+<span class="sd">        Then, compute the Kalman gain :math:`K`:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                K = P \cdot H^T \cdot S^{-1}</span>
+
+<span class="sd">        Finally, update the state estimate and covariance matrix:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                X = X + K  \cdot y</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">                P = (I - K \cdot H) \cdot P</span>
+
+<span class="sd">        where :math:`H` is the measurement matrix and :math:`I` is the identity matrix</span>
+
+<span class="sd">        Parameter:</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : np.ndarray, shape (2,1)</span>
+<span class="sd">            The measurement vector for 2D position (no velocity estimates from the measurement).</span>
+<span class="sd">        R : np.ndarray, shape (2,2)</span>
+<span class="sd">            The measurement noise covariance matrix. .</span>
+
+<span class="sd">        Updates:</span>
+<span class="sd">        --------</span>
+<span class="sd">        self.X : np.ndarray, shape (4,1) </span>
+<span class="sd">            The state estimate after incorporating the measurement.</span>
+<span class="sd">        self.P : np.ndarray, shape (4,4)</span>
+<span class="sd">            The state covariance matrix after the update.</span>
+
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: If the filter is not initialized, initialize it with the first measurement and return</span>
+
+        <span class="c1"># TODO: Define the measurement matrix H</span>
+
+        <span class="c1"># TODO: Calculate the innovation (measurement residual) y and the innovation covariance S</span>
+
+        <span class="c1"># TODO: Compute the Kalman gain K</span>
+
+        <span class="c1"># TODO: Update the state estimate with the measurement</span>
+
+        <span class="k">pass</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># If there is a state already, predict the next state and covariance</span>
+        <span class="c1"># Also, make a copy of the current state and covariance for visualization of the prior </span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># We iterate over all measurements in the data and update the filter with each measurement.</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;measurements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Extract the measurement state and covariance</span>
+            <span class="n">z</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">measurement</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">],</span> <span class="n">measurement</span><span class="p">[</span><span class="s2">&quot;covariance&quot;</span><span class="p">]</span>
+
+            <span class="c1"># If there is an actual measurenent, update the filter with the measurement</span>
+            <span class="c1"># Measurements may be missing, in which case z and R are None.</span>
+            <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">R</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+              <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+            <span class="c1"># If the filter has not been initialized yet, we set the prediction and priorCov to the current state and covariance</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Return the prior and posterior state and covariance</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;prior&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">priorCov</span><span class="p">},</span>
+            <span class="s2">&quot;posterior&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="p">},</span>
+        <span class="p">}</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1">################################################# </span>
+    <span class="c1"># Main program to run the Kalman filter example #</span>
+    <span class="c1"># Donot modify the code below this line        #</span>
+    <span class="c1">#################################################</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="s2">&quot;Example Program&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--mode&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--recorder.file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--engine.singlestep&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--webcam.width&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">modules</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ConfigParser</span><span class="p">(</span><span class="n">parser</span><span class="p">),</span>
+        <span class="n">MeasurementGenerator</span><span class="p">(),</span>
+        <span class="n">KalmanFilter</span><span class="p">(),</span>
+        <span class="n">Visualization</span><span class="p">(),</span>
+        <span class="n">TerminateAfter</span><span class="p">(),</span>
+    <span class="p">]</span>
+
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="n">modules</span><span class="p">,</span> <span class="n">signals</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">signals</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">run</span><span class="p">({})</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Prof. Dr. Dennis Müller.</p>
+  </div>
+
+  Erstellt mit <a href="https://www.sphinx-doc.org/">Sphinx</a> mit einem
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    bereitgestellt von <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

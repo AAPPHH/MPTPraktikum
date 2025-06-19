@@ -1,0 +1,1 @@
+SignalHub @ git+https://github.com/dmu1981/SignalHub.git@master

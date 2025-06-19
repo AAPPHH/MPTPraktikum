@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de">
+<html class="writer-html5" lang="de" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Das Kalman-Filter &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,14 +15,15 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/kalman/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=70a09b52"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -71,7 +72,20 @@
 <li class="toctree-l2"><a class="reference internal" href="#initialisierung-des-kalman-filters">Initialisierung des Kalman-Filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#beispiel-1-dimensionales-kalman-filter"><strong>Beispiel</strong>: 1-dimensionales Kalman-Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mehrere-messungen-zum-selben-zeitpunkt">Mehrere Messungen zum selben Zeitpunkt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1"><strong>Aufgabe 1</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#das-mesz-und-bewegungsmodell-in-dieser-aufgabe">Das Meß- und Bewegungsmodell in dieser Aufgabe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-1-abhangigkeiten-installieren"><strong>Aufgabe 1</strong> - Abhängigkeiten installieren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-2-das-filter-initialisieren"><strong>Aufgabe 2</strong> - Das Filter initialisieren</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.KalmanFilter.init_filter"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.init_filter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-3-die-pradiktion"><strong>Aufgabe 3</strong> - Die Prädiktion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.KalmanFilter.predict"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.predict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aufgabe-4-die-messungen-verarbeiten"><strong>Aufgabe 4</strong> - Die Messungen verarbeiten</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.KalmanFilter.update"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.update()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#musterlosung">Musterlösung</a></li>
 </ul>
 </li>
@@ -102,15 +116,15 @@
            <div itemprop="articleBody">
              
   <section id="das-kalman-filter">
-<h1>Das Kalman-Filter<a class="headerlink" href="#das-kalman-filter" title="Permalink to this heading"></a></h1>
+<h1>Das Kalman-Filter<a class="headerlink" href="#das-kalman-filter" title="Link to this heading"></a></h1>
 <section id="einfuhrung-in-das-kalman-filter">
-<h2>Einführung in das Kalman-Filter<a class="headerlink" href="#einfuhrung-in-das-kalman-filter" title="Permalink to this heading"></a></h2>
+<h2>Einführung in das Kalman-Filter<a class="headerlink" href="#einfuhrung-in-das-kalman-filter" title="Link to this heading"></a></h2>
 <p>Das Kalman-Filter ist ein rekursiver Schätzalgorithmus, der dazu verwendet wird, den Zustand eines dynamischen Systems aus einer Reihe unvollständiger und verrauschter Messdaten zu schätzen. Entwickelt wurde es in den 1960er Jahren von Rudolf E. Kálmán und hat seitdem breite Anwendung in verschiedenen technischen Disziplinen gefunden – von der Signalverarbeitung über die Robotik bis hin zur Navigation.</p>
 <p>Im Kern kombiniert das Kalman-Filter ein mathematisches Modell des Systems mit tatsächlichen Messungen, um eine optimierte Schätzung des Systemzustands zu erzeugen. Es basiert auf zwei grundlegenden Phasen: der Vorhersage (Prädiktion) und der Korrektur (Update). In der Vorhersagephase wird der zukünftige Zustand des Systems auf Basis des Modells abgeschätzt. In der Korrekturphase wird diese Vorhersage mithilfe neuer Messdaten aktualisiert, wobei das Vertrauen in Modell und Messung durch Kovarianzmatrizen gesteuert wird.</p>
 <p>Dank seiner Fähigkeit, auch bei starkem Messrauschen robuste Schätzungen zu liefern, ist das Kalman-Filter besonders in Anwendungen mit Echtzeitanforderungen und begrenzter Sensorpräzision unverzichtbar geworden.</p>
 </section>
 <section id="annahmen-des-kalman-filters">
-<h2>Annahmen des Kalman-Filters<a class="headerlink" href="#annahmen-des-kalman-filters" title="Permalink to this heading"></a></h2>
+<h2>Annahmen des Kalman-Filters<a class="headerlink" href="#annahmen-des-kalman-filters" title="Link to this heading"></a></h2>
 <p>Damit das Kalman-Filter optimale Ergebnisse liefert, beruht es auf einer Reihe fundamentaler Annahmen über das zugrundeliegende System und die Messungen:</p>
 <ol class="arabic">
 <li><p><strong>Lineare Modelle</strong>
@@ -145,7 +159,9 @@ Die Modellmatrizen (<span class="math notranslate nohighlight">\(A\)</span>, <sp
 <p>Diese Voraussetzungen sind in vielen realen Anwendungen nur näherungsweise erfüllt. Dennoch liefert das Kalman-Filter auch bei leicht verletzten Annahmen oft brauchbare Resultate. Für nichtlineare oder nicht-Gaussverteilungen existieren Erweiterungen wie das Extended Kalman Filter (EKF) oder Unscented Kalman Filter (UKF).</p>
 </section>
 <section id="filtergleichungen-pradiktion-und-update">
-<h2>Filtergleichungen: Prädiktion und Update<a class="headerlink" href="#filtergleichungen-pradiktion-und-update" title="Permalink to this heading"></a></h2>
+<h2>Filtergleichungen: Prädiktion und Update<a class="headerlink" href="#filtergleichungen-pradiktion-und-update" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="../_images/filtering.png"><img alt="Kalman-Filter Phasen" class="align-center" src="../_images/filtering.png" style="width: 800px;" />
+</a>
 <p>Das Kalman-Filter operiert in zwei Hauptphasen: <strong>Prädiktion (Vorhersage)</strong> und <strong>Update (Korrektur)</strong>. In jeder Zeitschrittiteration werden nacheinander diese beiden Schritte ausgeführt, um den Systemzustand möglichst genau zu schätzen.</p>
 <p><strong>Prädiktionsschritt</strong></p>
 <p>In der Prädiktionsphase wird der nächste Zustand des Systems basierend auf dem aktuellen Schätzwert und dem Modell vorhergesagt.</p>
@@ -181,7 +197,7 @@ Die Modellmatrizen (<span class="math notranslate nohighlight">\(A\)</span>, <sp
 <p>Diese rekursive Struktur macht das Kalman-Filter besonders effizient, da es keine historischen Messdaten speichern muss. Stattdessen wird der Zustandsschätzer und die Kovarianzmatrix bei jedem neuen Schritt nur anhand der neuesten Informationen aktualisiert.</p>
 </section>
 <section id="initialisierung-des-kalman-filters">
-<h2>Initialisierung des Kalman-Filters<a class="headerlink" href="#initialisierung-des-kalman-filters" title="Permalink to this heading"></a></h2>
+<h2>Initialisierung des Kalman-Filters<a class="headerlink" href="#initialisierung-des-kalman-filters" title="Link to this heading"></a></h2>
 <p>Bevor das Kalman-Filter mit der rekursiven Schätzung beginnen kann, müssen der anfängliche Zustand und seine Unsicherheit spezifiziert werden. Diese <strong>Initialisierung</strong> spielt eine wichtige Rolle für die Konvergenzgeschwindigkeit und Genauigkeit des Filters in den ersten Zeitschritten.</p>
 <p><strong>Zustandsschätzung aus der ersten Messung</strong></p>
 <p>In vielen praktischen Anwendungen liegen keine exakten Informationen über den Anfangszustand vor. Eine gängige Methode besteht daher darin, den <strong>ersten Messwert</strong> <span class="math notranslate nohighlight">\(z_0\)</span> als Startpunkt für die Zustandsschätzung zu verwenden. Dazu wird angenommen, dass der Messwert bereits eine (ggf. verrauschte) Beobachtung des tatsächlichen Zustands ist:</p>
@@ -205,7 +221,7 @@ Die Modellmatrizen (<span class="math notranslate nohighlight">\(A\)</span>, <sp
 <p>Auch wenn die Initialisierung ungenau ist, konvergiert das Kalman-Filter bei hinreichend informativen Messdaten in der Regel nach einigen Schritten gegen die optimale Schätzung. Dennoch kann eine sinnvolle Initialisierung das Verhalten in der Anfangsphase stark verbessern.</p>
 </section>
 <section id="beispiel-1-dimensionales-kalman-filter">
-<h2><strong>Beispiel</strong>: 1-dimensionales Kalman-Filter<a class="headerlink" href="#beispiel-1-dimensionales-kalman-filter" title="Permalink to this heading"></a></h2>
+<h2><strong>Beispiel</strong>: 1-dimensionales Kalman-Filter<a class="headerlink" href="#beispiel-1-dimensionales-kalman-filter" title="Link to this heading"></a></h2>
 <p>Dieses Beispiel zeigt die Funktionsweise des Kalman-Filters in einem einfachen 1D-Szenario, in dem der Zustand die Position eines sich gleichförmig bewegenden Objekts beschreibt. Wir nehmen an:</p>
 <ul class="simple">
 <li><p>Der Zustand ist die Position <span class="math notranslate nohighlight">\(x\)</span>.</p></li>
@@ -254,7 +270,7 @@ Dieses einfache Beispiel zeigt, wie das Kalman-Filter Messwerte mit Modellvorher
 <p>Weitere Iterationen würden nach dem gleichen Schema fortfahren.</p>
 </section>
 <section id="mehrere-messungen-zum-selben-zeitpunkt">
-<h2>Mehrere Messungen zum selben Zeitpunkt<a class="headerlink" href="#mehrere-messungen-zum-selben-zeitpunkt" title="Permalink to this heading"></a></h2>
+<h2>Mehrere Messungen zum selben Zeitpunkt<a class="headerlink" href="#mehrere-messungen-zum-selben-zeitpunkt" title="Link to this heading"></a></h2>
 <p>In vielen praktischen Anwendungen stehen mehrere Sensoren zur Verfügung, die <strong>zeitgleich</strong> Informationen über denselben Systemzustand liefern. Typische Beispiele sind GPS-, Lidar- und Radarsensoren in autonomen Fahrzeugen. Das Kalman-Filter lässt sich auf diese Situation elegant erweitern.</p>
 <p><strong>Grundidee</strong></p>
 <p>Wenn mehrere Messungen <span class="math notranslate nohighlight">\(z_k^{(1)}, z_k^{(2)}, \dots, z_k^{(n)}\)</span> zum gleichen Zeitpunkt vorliegen, können diese entweder:</p>
@@ -282,14 +298,199 @@ R = \begin{bmatrix} R^{(1)} &amp;        &amp;        \\
 </ul>
 <p>Beide Methoden liefern bei korrekt spezifizierten Modellen und Rauschkovarianzen identische Resultate, solange die Messfehler unabhängig sind.</p>
 </section>
-<section id="aufgabe-1">
-<h2><strong>Aufgabe 1</strong><a class="headerlink" href="#aufgabe-1" title="Permalink to this heading"></a></h2>
-<p>Den Filter initialisieren.</p>
+<section id="das-mesz-und-bewegungsmodell-in-dieser-aufgabe">
+<h2>Das Meß- und Bewegungsmodell in dieser Aufgabe<a class="headerlink" href="#das-mesz-und-bewegungsmodell-in-dieser-aufgabe" title="Link to this heading"></a></h2>
+<p>Für das Beispiel in diesem Praktikum wird ein einfaches lineares Modell mit konstanter Geschwindigkeit verwendet.
+Der Systemzustand <span class="math notranslate nohighlight">\(x_k\)</span> ist ein 4-dimensionaler Vektor bestehend aus Position und Geschwindigkeit in 2D:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}x_k = \begin{bmatrix} x \\ y \\ \dot{x} \\ \dot{y} \end{bmatrix}_k\end{split}\]</div>
+<p>Dabei sind <span class="math notranslate nohighlight">\(x, y\)</span> die Positionen und <span class="math notranslate nohighlight">\(\dot{x}, \dot{y}\)</span> die jeweiligen Geschwindigkeiten in x- und y-Richtung.</p>
+<p><strong>Bewegungsmodell</strong></p>
+<p>Das Bewegungsmodell basiert auf konstanter Geschwindigkeit und ist daher linear. Für eine feste Zeitschrittweite <span class="math notranslate nohighlight">\(\Delta t\)</span> ergibt sich die Systemmatrix <span class="math notranslate nohighlight">\(A\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A = \begin{bmatrix}
+1 &amp; 0 &amp; \Delta t &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; \Delta t \\
+0 &amp; 0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}\end{split}\]</div>
+<p>Die Systemdynamik lautet:</p>
+<div class="math notranslate nohighlight">
+\[x_k = A x_{k-1} + w_{k-1}\]</div>
+<p>mit <span class="math notranslate nohighlight">\(w_k \sim \mathcal{N}(0, Q)\)</span> als Prozessrauschen.</p>
+<p><strong>Messmodell</strong></p>
+<p>Die Messungen liefern ausschließlich die Position (nicht die Geschwindigkeit) und sind 2-dimensional:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}z_k = \begin{bmatrix} x \\ y \end{bmatrix}_k + v_k\end{split}\]</div>
+<p>Das Messmodell ist ebenfalls linear, mit der Beobachtungsmatrix <span class="math notranslate nohighlight">\(H\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}H = \begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0
+\end{bmatrix}\end{split}\]</div>
+<p>Das Messrauschen <span class="math notranslate nohighlight">\(v_k\)</span> wird vom Sensor bereitgestellt und ist im Allgemeinen zeitabhängig:</p>
+<div class="math notranslate nohighlight">
+\[v_k \sim \mathcal{N}(0, R_k)\]</div>
+<p>Dabei ist <span class="math notranslate nohighlight">\(R_k\)</span> eine 2×2-Kovarianzmatrix, die für jeden Zeitschritt vom Sensor mitgeliefert wird.</p>
+<p>Bemerkung:
+Die Struktur dieses Modells erlaubt eine sehr effiziente Anwendung des Kalman-Filters, da beide Modelle linear sind und die Messungen direkt zur Korrektur der Positionsschätzung beitragen.</p>
+</section>
+<section id="aufgabe-1-abhangigkeiten-installieren">
+<h2><strong>Aufgabe 1</strong> - Abhängigkeiten installieren<a class="headerlink" href="#aufgabe-1-abhangigkeiten-installieren" title="Link to this heading"></a></h2>
+<p>Installieren Sie zunächst die benötigten Abhängigkeiten, um das Kalman-Filter zu implementieren.
+Wechseln Sie dazu in das Unterverzeichniss <cite>kalman</cite> und führen Sie den Befehl</p>
+<blockquote>
+<div><p>pip install -r requirements.txt</p>
+</div></blockquote>
+<p>aus. Sie implementieren die folgenden Aufgaben in der Datei</p>
+<blockquote>
+<div><p>kalman.py</p>
+</div></blockquote>
+</section>
+<section id="aufgabe-2-das-filter-initialisieren">
+<h2><strong>Aufgabe 2</strong> - Das Filter initialisieren<a class="headerlink" href="#aufgabe-2-das-filter-initialisieren" title="Link to this heading"></a></h2>
+<p>Das Kalman Filter muss zunächst initialisiert werden, bevor es verwendet werden kann.</p>
 <p>Implementieren Sie eine nun die Funktion <code class="xref py py-meth docutils literal notranslate"><span class="pre">kalman.kalman.init_filter()</span></code>. Folgen Sie den
 Anweisungen im Code sowie dieser Beschreibung.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.KalmanFilter.init_filter">
+<span class="sig-prename descclassname"><span class="pre">KalmanFilter.</span></span><span class="sig-name descname"><span class="pre">init_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kalman.html#KalmanFilter.init_filter"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kalman.KalmanFilter.init_filter" title="Link to this definition"></a></dt>
+<dd><p>Initializes the Kalman filter with thje first measurement and covariance.</p>
+<p>Parameters:
+- z: The first measurement (2D Vector with position in X and Y).
+- R: The covariance matrix associated with the measurement, which represents the uncertainty in the measurement.</p>
+<p>This method sets the initial state and covariance for the Kalman filter, which will be used
+in subsequent prediction and update steps.</p>
+<p>The state vector <cite>self.X</cite> is initialized with the first measurement, assuming a 2D position and velocity model.
+The covariance matrix <cite>self.P</cite> is initialized with the measurement noise covariance <cite>R</cite> for position,
+and larger values for velocity to reflect the uncertainty in the initial state.</p>
+<section id="updates">
+<h3>Updates:<a class="headerlink" href="#updates" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>self.X<span class="classifier">np.ndarray, shape (4,1)</span></dt><dd><p>Predicted state vector after applying the state transition.</p>
+</dd>
+<dt>self.P<span class="classifier">np.ndarray, shape (4,4)</span></dt><dd><p>Predicted state covariance matrix after accounting for process noise.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="aufgabe-3-die-pradiktion">
+<h2><strong>Aufgabe 3</strong> - Die Prädiktion<a class="headerlink" href="#aufgabe-3-die-pradiktion" title="Link to this heading"></a></h2>
+<p>Bevor das Kalman-Filter neue Messungen verarbeiten kann, muss es den nächsten Zustand vorhersagen.</p>
+<p>Implementieren Sie eine nun die Funktion <code class="xref py py-meth docutils literal notranslate"><span class="pre">kalman.kalman.predict()</span></code>. Folgen Sie den
+Anweisungen im Code sowie dieser Beschreibung.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.KalmanFilter.predict">
+<span class="sig-prename descclassname"><span class="pre">KalmanFilter.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kalman.html#KalmanFilter.predict"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kalman.KalmanFilter.predict" title="Link to this definition"></a></dt>
+<dd><p>Predicts the next state and covariance of the system using the Kalman filter prediction step.
+This method applies the state transition model to estimate the next state vector (<cite>self.X</cite>)
+and updates the state covariance matrix (<cite>self.P</cite>) by incorporating process noise.
+The prediction is based on the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>State transition matrix (F) models the system dynamics.</p></li>
+<li><p>Process noise covariance matrix (Q) accounts for uncertainty in the process.</p></li>
+</ul>
+</div></blockquote>
+<p>For a 2D position and velocity model, the state vector is represented as:
+[x_position, y_position, x_velocity, y_velocity]. The state transition matrix F
+is designed to update the position based on the current velocity, assuming a constant
+velocity model. The process noise covariance matrix Q is set to a small value to reflect
+the uncertainty in the process.</p>
+<p>Assuming constant velocity, the state transition matrix F is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}F = \begin{pmatrix}
+    1&amp;0&amp;dt&amp;0\\
+    0&amp;1&amp;0&amp;dt\\
+    0&amp;0&amp;1&amp;0\\
+    0&amp;0&amp;0&amp;1
+\end{pmatrix}\end{split}\]</div>
+<p>where dt is the time step between predictions. In this case, we assume dt = 1 for simplicity.</p>
+<p>The process noise covariance matrix Q is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}F = \begin{pmatrix}
+    q_x&amp;0&amp;0&amp;0\\
+    0&amp;q_y&amp;0&amp;0\\
+    0&amp;0&amp;q_{vx}&amp;0\\
+    0&amp;0&amp;0&amp;q_{vy}
+\end{pmatrix}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_x, q_y, q_{vx}\)</span> and <span class="math notranslate nohighlight">\(q_{vy}\)</span> are small values representing the process noise for position.</p>
+<p>Use <a class="reference external" href="https://numpy.org/doc/2.0/reference/generated/numpy.diag.html">np.diag</a> to create a diagonal matrix for Q, where the diagonal elements represent the process noise variances for each state variable.
+Use small noise for position and larger noise for velocity to reflect the uncertainty in the process.
+The prediction step updates the state vector and covariance matrix as follows:</p>
+<p><span class="math notranslate nohighlight">\(X = F \cdot X\)</span>: This updates the state vector by applying the state transition matrix F.</p>
+<p><span class="math notranslate nohighlight">\(P = F \cdot P \cdot F^T + Q\)</span>: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.</p>
+<section id="parameter">
+<h3>Parameter<a class="headerlink" href="#parameter" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dt<span class="classifier">float</span></dt><dd><p>The time step for the prediction, which is typically the time elapsed since the last prediction.</p>
+</dd>
+</dl>
+</section>
+<section id="id1">
+<h3>Updates<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>self.X<span class="classifier">np.ndarray, shape (4,1)</span></dt><dd><p>Predicted state vector after applying the state transition.</p>
+</dd>
+<dt>self.P<span class="classifier">np.ndarray, shape (4,4)</span></dt><dd><p>Predicted state covariance matrix after accounting for process noise.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="aufgabe-4-die-messungen-verarbeiten">
+<h2><strong>Aufgabe 4</strong> - Die Messungen verarbeiten<a class="headerlink" href="#aufgabe-4-die-messungen-verarbeiten" title="Link to this heading"></a></h2>
+<p>Nun kann das Kalman-Filter neue Messungen verarbeiten und den Zustand aktualisieren.</p>
+<p>Implementieren Sie eine nun die Funktion <code class="xref py py-meth docutils literal notranslate"><span class="pre">kalman.kalman.update()</span></code>. Folgen Sie den
+Anweisungen im Code sowie dieser Beschreibung.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.KalmanFilter.update">
+<span class="sig-prename descclassname"><span class="pre">KalmanFilter.</span></span><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kalman.html#KalmanFilter.update"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#kalman.KalmanFilter.update" title="Link to this definition"></a></dt>
+<dd><p>Performs the Kalman filter update step with the given measurement.</p>
+<p>If the filter is not initialized (self.X is None), initializes the filter with the measurement.
+Otherwise, computes the Kalman gain, updates the state estimate and covariance matrix.</p>
+<p>First, one needs to calculate the innovation (measurement residual) <cite>y</cite> and the innovation covariance <cite>S</cite>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split} \begin{array}{ccl}
+ y &amp;=&amp; z - H\cdot X\\
+ S &amp;=&amp; H \cdot P \cdot H^T + R
+\end{array}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(z\)</span> is the measurement, <span class="math notranslate nohighlight">\(H\)</span> is the measurement matrix, <span class="math notranslate nohighlight">\(X\)</span> is the current state estimate, and <span class="math notranslate nohighlight">\(P\)</span> is the current covariance matrix.</p>
+<p>Then, compute the Kalman gain <span class="math notranslate nohighlight">\(K\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[K = P \cdot H^T \cdot S^{-1}\]</div>
+<p>Finally, update the state estimate and covariance matrix:</p>
+<div class="math notranslate nohighlight">
+\[X = X + K  \cdot y\]</div>
+<div class="math notranslate nohighlight">
+\[P = (I - K \cdot H) \cdot P\]</div>
+<p>where <span class="math notranslate nohighlight">\(H\)</span> is the measurement matrix and <span class="math notranslate nohighlight">\(I\)</span> is the identity matrix</p>
+<section id="id2">
+<h3>Parameter:<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>z<span class="classifier">np.ndarray, shape (2,1)</span></dt><dd><p>The measurement vector for 2D position (no velocity estimates from the measurement).</p>
+</dd>
+<dt>R<span class="classifier">np.ndarray, shape (2,2)</span></dt><dd><p>The measurement noise covariance matrix. .</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Updates:<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>self.X<span class="classifier">np.ndarray, shape (4,1)</span></dt><dd><p>The state estimate after incorporating the measurement.</p>
+</dd>
+<dt>self.P<span class="classifier">np.ndarray, shape (4,4)</span></dt><dd><p>The state covariance matrix after the update.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 <section id="musterlosung">
-<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">Das Kalman-Filter - Musterlösung</span></a></p>
 </section>
 </section>

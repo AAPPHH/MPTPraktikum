@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de">
+<html class="writer-html5" lang="de" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homogene Koordinaten &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,14 +15,15 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/homogen/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=70a09b52"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -140,7 +141,7 @@
            <div itemprop="articleBody">
              
   <section id="homogene-koordinaten">
-<h1>Homogene Koordinaten<a class="headerlink" href="#homogene-koordinaten" title="Permalink to this heading"></a></h1>
+<h1>Homogene Koordinaten<a class="headerlink" href="#homogene-koordinaten" title="Link to this heading"></a></h1>
 <p>Homogene Koordinaten erlauben es Verschiebungen (Translation), Rotationen (Drehungen) sowie Skalierungen (Größenänderung)
 einheitlich über Matrixmultiplikationen abzubilden. Die Verkettung mehrerer
 solcher Operationen läßt sich dann mit Hilfe des Assoziativgesetzes zu einer einzigen
@@ -150,9 +151,10 @@ ausdrücken. Damit lässt sich die gesame Abbildung von Objektlokalen 3D Koordin
 direkt über eine einzige Matrix-Multiplikation ausdrücken. In diesem Praktikum
 betrachten wir diese Abbildungsmöglichkeiten. Wir entwickeln unsere eigene kleine 3D-Engine, welche 3D-Koordinaten
 über eine simulierte Kamera auf ein Bild umrechnet und damit Objekte zeichnet.</p>
-<a class="reference internal image-reference" href="../_images/screenshot.jpg"><img alt="3D Abbildungen" class="align-center" src="../_images/screenshot.jpg" style="width: 1024px;" /></a>
+<a class="reference internal image-reference" href="../_images/screenshot.jpg"><img alt="3D Abbildungen" class="align-center" src="../_images/screenshot.jpg" style="width: 1024px;" />
+</a>
 <section id="der-code">
-<h2>Der Code<a class="headerlink" href="#der-code" title="Permalink to this heading"></a></h2>
+<h2>Der Code<a class="headerlink" href="#der-code" title="Link to this heading"></a></h2>
 <p>Für dieses Praktikum arbeiten Sie in der Datei</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">homogen</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
@@ -160,12 +162,13 @@ betrachten wir diese Abbildungsmöglichkeiten. Wir entwickeln unsere eigene klei
 <p>und implementieren nach und nach die verschiedenen Methoden. Die Erklärungen in diesem Dokument sollen Ihnen dabei helfen.</p>
 </section>
 <section id="unsere-eigene-kleine-3d-rendering-engine">
-<h2>Unsere eigene kleine 3D Rendering Engine<a class="headerlink" href="#unsere-eigene-kleine-3d-rendering-engine" title="Permalink to this heading"></a></h2>
+<h2>Unsere eigene kleine 3D Rendering Engine<a class="headerlink" href="#unsere-eigene-kleine-3d-rendering-engine" title="Link to this heading"></a></h2>
 <p>In diesem Praktikum wollen wir eine einfache kleine 3D Rendering Engine
 implementieren welche Punkte im 3D über eine Kamera in 2D-Koordinaten überführt und zeichnet.
 Dazu orientieren wir uns stark an dem von <a class="reference external" href="https://learnopengl.com/Getting-started/Coordinate-Systems">OpenGL</a>
 verwendeten Ansatz und betrachten im folgenden fünf verschiedene Koordinatensystem.</p>
-<a class="reference internal image-reference" href="../_images/coordinate_systems.png"><img alt="Koordinatensysteme" class="align-center" src="../_images/coordinate_systems.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/coordinate_systems.png"><img alt="Koordinatensysteme" class="align-center" src="../_images/coordinate_systems.png" style="width: 800px;" />
+</a>
 <ul class="simple">
 <li><p>Lokale Koordinaten sind die Koordinaten des Objekts relativ zu seinem lokalen Ursprung; das sind die Koordinaten, in denen sich das Objekt anfangs befindet.</p></li>
 <li><p>Der nächste Schritt besteht darin, die lokalen Koordinaten in Weltkoordinaten zu transformieren, also Koordinaten im Bezug auf eine globale Welt. Diese Koordinaten sind relativ zu einem globalen Ursprung der Welt, zusammen mit vielen anderen Objekten, die ebenfalls relativ zu diesem Weltursprung platziert sind.</p></li>
@@ -175,7 +178,7 @@ verwendeten Ansatz und betrachten im folgenden fünf verschiedene Koordinatensys
 </ul>
 </section>
 <section id="einmal-von-euklidisch-nach-homogen-und-zuruck">
-<h2>Einmal von euklidisch nach homogen und zurück<a class="headerlink" href="#einmal-von-euklidisch-nach-homogen-und-zuruck" title="Permalink to this heading"></a></h2>
+<h2>Einmal von euklidisch nach homogen und zurück<a class="headerlink" href="#einmal-von-euklidisch-nach-homogen-und-zuruck" title="Link to this heading"></a></h2>
 <p>Eine Darstellung <span class="math notranslate nohighlight">\(\mathcal{p}\)</span> heißt <em>homogen</em>, wenn für alle <span class="math notranslate nohighlight">\(\lambda\neq 0\)</span>
 gilt :</p>
 <div class="math notranslate nohighlight">
@@ -194,7 +197,7 @@ zu überführen dividieren wir durch die <span class="math notranslate nohighlig
 \[\textbf{q} = (x_q / w_q, y_q / w_q, z_q / w_q)\]</div>
 </section>
 <section id="translationen-in-homogenen-koordinaten">
-<h2>Translationen in homogenen Koordinaten<a class="headerlink" href="#translationen-in-homogenen-koordinaten" title="Permalink to this heading"></a></h2>
+<h2>Translationen in homogenen Koordinaten<a class="headerlink" href="#translationen-in-homogenen-koordinaten" title="Link to this heading"></a></h2>
 <p>Um einen Punkt <span class="math notranslate nohighlight">\(\textbf{p}\)</span> in homogenen Koordinaten um einen Vektor
 <span class="math notranslate nohighlight">\(\vec v\)</span> zu verschieben multiplizieren wir mit der folgenden Matrix</p>
 <div class="math notranslate nohighlight">
@@ -212,10 +215,10 @@ x_p\\y_p\\z_p\\1
 x_p + x_v\\y_p + y_v\\z_p + z_v\\1
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktion-translate-3d">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>translate_3d</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktion-translate-3d" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>translate_3d</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktion-translate-3d" title="Link to this heading"></a></h3>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">translate_3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">translate_3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
       <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
       <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
@@ -228,7 +231,7 @@ x_p + x_v\\y_p + y_v\\z_p + z_v\\1
 </section>
 </section>
 <section id="skalierung-in-homogenen-koordinaten">
-<h2>Skalierung in homogenen Koordinaten<a class="headerlink" href="#skalierung-in-homogenen-koordinaten" title="Permalink to this heading"></a></h2>
+<h2>Skalierung in homogenen Koordinaten<a class="headerlink" href="#skalierung-in-homogenen-koordinaten" title="Link to this heading"></a></h2>
 <p>Um einen Punkt <span class="math notranslate nohighlight">\(\textbf{p}\)</span> in homogenen Koordinaten entlang der
 Hauptachsen zu skalieren (relativ zum Urspung <span class="math notranslate nohighlight">\((0,0,0)\)</span>) multiplizieren wir mit der folgenden Matrix</p>
 <div class="math notranslate nohighlight">
@@ -246,10 +249,10 @@ x_p\\y_p\\z_p\\1
 x_s \cdot x_p\\y_s \cdot y_p\\z_s \cdot z_p\\1
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktion-scale">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>scale</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktion-scale" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktion <em>scale</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktion-scale" title="Link to this heading"></a></h3>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
       <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
       <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
@@ -262,7 +265,7 @@ x_s \cdot x_p\\y_s \cdot y_p\\z_s \cdot z_p\\1
 </section>
 </section>
 <section id="mehrere-transformationen-zusammenfassen">
-<h2>Mehrere Transformationen zusammenfassen<a class="headerlink" href="#mehrere-transformationen-zusammenfassen" title="Permalink to this heading"></a></h2>
+<h2>Mehrere Transformationen zusammenfassen<a class="headerlink" href="#mehrere-transformationen-zusammenfassen" title="Link to this heading"></a></h2>
 <p>Um mehrere Transformationen nacheinander auszuführen multiplizieren
 wir die entsprechenden Transformationsmatrizen jeweils <strong>von links</strong>.
 Dabei spielt die Reihenfolge eine Rolle (Matrix-Multiplikation ist nicht kommutativ),
@@ -394,7 +397,7 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
 </div>
 </section>
 <section id="rotationen">
-<h2>Rotationen<a class="headerlink" href="#rotationen" title="Permalink to this heading"></a></h2>
+<h2>Rotationen<a class="headerlink" href="#rotationen" title="Link to this heading"></a></h2>
 <p>Um einen Punkt um den Ursprung um die X-Achse zu rotieren verwenden wir die folgende Rotationsmatrix:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}R_x(\alpha) =
@@ -423,10 +426,10 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
 0 &amp; 0 &amp; 0 &amp; 1
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateX</em>, <em>rotateY</em> und <em>rotateZ</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateX</em>, <em>rotateY</em> und <em>rotateZ</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-rotatex-rotatey-und-rotatez" title="Link to this heading"></a></h3>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rotateX</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">rotateX</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
     <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
@@ -436,7 +439,7 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
         <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
     <span class="p">])</span>
 
-<span class="k">def</span> <span class="nf">rotateY</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotateY</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
     <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
@@ -446,7 +449,7 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
         <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
     <span class="p">])</span>
 
-<span class="k">def</span> <span class="nf">rotateZ</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotateZ</span><span class="p">(</span><span class="n">radians</span><span class="p">):</span>
     <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
@@ -461,20 +464,21 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
 </section>
 </section>
 <section id="auf-die-reihenfolge-kommt-es-an">
-<h2>Auf die Reihenfolge kommt es an<a class="headerlink" href="#auf-die-reihenfolge-kommt-es-an" title="Permalink to this heading"></a></h2>
+<h2>Auf die Reihenfolge kommt es an<a class="headerlink" href="#auf-die-reihenfolge-kommt-es-an" title="Link to this heading"></a></h2>
 <p>Die Reihenfolge der Rotationen spielt eine Rolle. Daher gibt es die allgemeine Konvention Rotationen nach dem Schema</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Roll</span> <span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="n">Pitch</span> <span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">-</span> <span class="n">Yaw</span> <span class="p">(</span><span class="n">Z</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>umzusetzen.</p>
-<a class="reference internal image-reference" href="../_images/rollpitchyaw.png"><img alt="Roll - Pich - Yaw" class="align-center" src="../_images/rollpitchyaw.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="../_images/rollpitchyaw.png"><img alt="Roll - Pich - Yaw" class="align-center" src="../_images/rollpitchyaw.png" style="width: 600px;" />
+</a>
 <section id="aufgabe-implementieren-sie-die-funktionen-rotatexyz">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateXYZ</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-rotatexyz" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>rotateXYZ</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-rotatexyz" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>rotateXYZ</em>, indem Sie die die Funktionen
 <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateX()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateY()</span></code> und <code class="xref py py-func docutils literal notranslate"><span class="pre">homogen.rotateZ()</span></code> in der korrekten Reihenfolge anwenden.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rotateXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">rotateXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rotateZ</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateY</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateX</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -482,14 +486,16 @@ um den Vektor <span class="math notranslate nohighlight">\((-2, -2, -2)\)</span>
 </section>
 </section>
 <section id="die-projektion-von-3d-nach-2d">
-<h2>Die Projektion von 3D nach 2D<a class="headerlink" href="#die-projektion-von-3d-nach-2d" title="Permalink to this heading"></a></h2>
+<h2>Die Projektion von 3D nach 2D<a class="headerlink" href="#die-projektion-von-3d-nach-2d" title="Link to this heading"></a></h2>
 <p>Für die Projektion unserer 3D Koordinaten auf die zwei-dimensionale
 Abbildungsebene verwenden wir das s.g. Pinhole-Kamera Model (Lochkameramodel).</p>
-<a class="reference internal image-reference" href="../_images/pinhole1.png"><img alt="Lochkameramodel" class="align-center" src="../_images/pinhole1.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="../_images/pinhole1.png"><img alt="Lochkameramodel" class="align-center" src="../_images/pinhole1.png" style="width: 600px;" />
+</a>
 <p>Punkte im 3D werden dabei über den <a class="reference external" href="https://de.wikipedia.org/wiki/Strahlensatz">Strahlensatz</a>.
 abgebildet. Für einen Punkt <span class="math notranslate nohighlight">\(P(x_1,x_2,x_3)\)</span>, wobei <span class="math notranslate nohighlight">\(x_1\)</span> die vertikale Komponente und <span class="math notranslate nohighlight">\(x_3\)</span>
 die longitudinale (Entfernung) darstellt finden wir die folgende Strahlensatzfigur</p>
-<a class="reference internal image-reference" href="../_images/pinhole3.png"><img alt="Lochkameramodel" class="align-center" src="../_images/pinhole3.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../_images/pinhole3.png"><img alt="Lochkameramodel" class="align-center" src="../_images/pinhole3.png" style="width: 500px;" />
+</a>
 <p>und damit auch den Zusammenhang</p>
 <div class="math notranslate nohighlight">
 \[\frac{-y_1}{f} = \frac{x_1}{x_3}\]</div>
@@ -507,15 +513,16 @@ Koordinaten ausgedrückt läßt sich diese Projektion darstellen als.</p>
 0 &amp;  0 &amp; 1 &amp; 0
 \end{pmatrix}\end{split}\]</div>
 <p>Die so erhaltenden Koordinaten sind s.g. <strong>Normalized Device Coordinates</strong> (NDC)</p>
-<a class="reference internal image-reference" href="../_images/ndcspace.png"><img alt="Clipping-Koordinaten" class="align-center" src="../_images/ndcspace.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../_images/ndcspace.png"><img alt="Clipping-Koordinaten" class="align-center" src="../_images/ndcspace.png" style="width: 500px;" />
+</a>
 <p>Hierbei haben Punkte <em>vor</em> der Kamera ein <span class="math notranslate nohighlight">\(z &gt; 0\)</span> während Punkte <em>hinter</em>
 der Kamera ein <span class="math notranslate nohighlight">\(z &lt; 0\)</span> haben. Das wird später wichtig werden weil wir
 natürlich nur Punkte vor der Kamera zeichnen wollen.</p>
 <section id="aufgabe-implementieren-sie-die-funktionen-projection">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>projection</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-projection" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>projection</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-projection" title="Link to this heading"></a></h3>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">projection</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">projection</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">],</span>
             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">],</span>
@@ -528,7 +535,7 @@ natürlich nur Punkte vor der Kamera zeichnen wollen.</p>
 </section>
 </section>
 <section id="abbildung-in-bild-koordinaten-pixel">
-<h2>Abbildung in Bild-Koordinaten (Pixel)<a class="headerlink" href="#abbildung-in-bild-koordinaten-pixel" title="Permalink to this heading"></a></h2>
+<h2>Abbildung in Bild-Koordinaten (Pixel)<a class="headerlink" href="#abbildung-in-bild-koordinaten-pixel" title="Link to this heading"></a></h2>
 <p>Um die NDC-Koordinaten in Pixelkoordinaten für unser Zielbild zu transformieren
 multiplizieren wir zunächst mit der halben Bildbreite bzw. Höhe und verschieben
 den Mittelpunkt <span class="math notranslate nohighlight">\((0,0,0)\)</span> dann in die Bildmitte. Dazu benötigen wir die kombinierte
@@ -541,10 +548,10 @@ Matrix</p>
 0 &amp; 0 &amp; 0 &amp; 1
 \end{pmatrix}\end{split}\]</div>
 <section id="aufgabe-implementieren-sie-die-funktionen-ndc-to-image">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>ndc_to_image</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-ndc-to-image" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>ndc_to_image</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-ndc-to-image" title="Link to this heading"></a></h3>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">translate_3d</span><span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">H</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">@</span> <span class="n">scale</span><span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">H</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -552,7 +559,7 @@ Matrix</p>
 </section>
 </section>
 <section id="die-kameramatrix">
-<h2>Die Kameramatrix<a class="headerlink" href="#die-kameramatrix" title="Permalink to this heading"></a></h2>
+<h2>Die Kameramatrix<a class="headerlink" href="#die-kameramatrix" title="Link to this heading"></a></h2>
 <p>Die Kameramatrix beschreibt, wie die Weltkoordiaten in das Kamerakoordinatensystem transformiert werden.
 Auch wenn die Kameramatrix in dieser Transformationsrichtung angegebenen werden muß kann es einfach er sein sich
 zunächst vorzustellen was mit der Kamera in der Welt passieren soll (welche Transformationen auf die Kamera angewendet werden sollen) und
@@ -572,18 +579,18 @@ wir also die folgenden Transformationen durchzuführen</p>
 <div class="math notranslate nohighlight">
 \[\mbox{world_to_cam} = T(0, 16, 164) \cdot R_x(-30°) \cdot R_y(35°)\]</div>
 <section id="aufgabe-implementieren-sie-die-funktionen-world-to-camera">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-world-to-camera" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-world-to-camera" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>world_to_camera</em></p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">world_to_camera</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_camera</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">translate_3d</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">,</span> <span class="mf">164.0</span><span class="p">)</span> <span class="o">@</span> <span class="n">rotateX</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="o">-</span><span class="mf">30.0</span><span class="p">))</span> <span class="o">@</span> <span class="n">rotateY</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">35.0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="von-lokalen-koordinaten-nach-weltkoordinaten">
-<h3>Von lokalen Koordinaten nach Weltkoordinaten<a class="headerlink" href="#von-lokalen-koordinaten-nach-weltkoordinaten" title="Permalink to this heading"></a></h3>
+<h3>Von lokalen Koordinaten nach Weltkoordinaten<a class="headerlink" href="#von-lokalen-koordinaten-nach-weltkoordinaten" title="Link to this heading"></a></h3>
 <p>Um die lokalen Koordinaten unseres Objektes (z.B. eines Würfels) in globale Weltkoordiaten umzurechnen verwenden
 wir eine Kombination von Transformation in ganz bestimmter Reihenfolge.</p>
 <ul class="simple">
@@ -595,11 +602,11 @@ Dazu kann wieder :py:func`homogen.rotateXYZ` verwendet werden.</p></li>
 </ul>
 </section>
 <section id="aufgabe-implementieren-sie-die-funktionen-local-to-world">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>local_to_world</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-local-to-world" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>local_to_world</em></p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">local_to_world</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">local_to_world</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">rotateXYZ</span><span class="p">(</span><span class="n">objectOrbit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectOrbit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectOrbit</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span>\
            <span class="n">translate_3d</span><span class="p">(</span><span class="n">objectTranslate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectTranslate</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span>\
            <span class="n">rotateXYZ</span><span class="p">(</span><span class="n">objectRotate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">objectRotate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">objectRotate</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span>\
@@ -609,16 +616,16 @@ Dazu kann wieder :py:func`homogen.rotateXYZ` verwendet werden.</p></li>
 </div>
 </section>
 <section id="von-weltkoordiaten-nach-bildkoordinaten">
-<h3>Von Weltkoordiaten nach Bildkoordinaten<a class="headerlink" href="#von-weltkoordiaten-nach-bildkoordinaten" title="Permalink to this heading"></a></h3>
+<h3>Von Weltkoordiaten nach Bildkoordinaten<a class="headerlink" href="#von-weltkoordiaten-nach-bildkoordinaten" title="Link to this heading"></a></h3>
 <p>Solange die Kamera, die Projektion und das Mapping in Bildkoordinaten statisch ist (sich also nicht verändert)
 kann die Transformation von Welt- nach Bildkoordinaten einmalig im vorraus berechnet werden.</p>
 </section>
 <section id="id1">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em><a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>world_to_camera</em><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>world_to_image</em></p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">world_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ndc_to_image</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">@</span> <span class="n">projection</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">@</span> <span class="n">world_to_camera</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -626,11 +633,12 @@ kann die Transformation von Welt- nach Bildkoordinaten einmalig im vorraus berec
 </section>
 </section>
 <section id="die-datenstruktur-fur-geometriedaten">
-<h2>Die Datenstruktur für Geometriedaten<a class="headerlink" href="#die-datenstruktur-fur-geometriedaten" title="Permalink to this heading"></a></h2>
+<h2>Die Datenstruktur für Geometriedaten<a class="headerlink" href="#die-datenstruktur-fur-geometriedaten" title="Link to this heading"></a></h2>
 <p>Um Objekte in 3D zu repräsentieren (z.B. den Würfel) verwenden wir eine spezielle Datenstruktur.
 Insbesondere verwenden wir einen s.g. <strong>Vertex</strong>-Buffer welcher die Koordinaten alle Eckpunkte speichert sowie einen
 <strong>Index</strong>-Buffer, in dem gespeichert wird welche Ecken miteinander verbunden sind.</p>
-<a class="reference internal image-reference" href="../_images/datastructure.png"><img alt="Datenstruktur für Geometriedaten" class="align-center" src="../_images/datastructure.png" style="width: 1024px;" /></a>
+<a class="reference internal image-reference" href="../_images/datastructure.png"><img alt="Datenstruktur für Geometriedaten" class="align-center" src="../_images/datastructure.png" style="width: 1024px;" />
+</a>
 <p>Dabei werden die Vertexkoordinaten stets in lokalen Koordinaten gespeichert und über geeignete Transformationsmatrizen später
 ins Weltkoordiatensystem überführt. Im konkreten Falle des Würfels sieht der Vertex-Buffer so aus</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span> <span class="o">-</span><span class="mf">1.</span>  <span class="mf">1.</span><span class="p">]</span>
@@ -681,11 +689,11 @@ muß noch durch die <span class="math notranslate nohighlight">\(w\)</span>-Komp
 </pre></div>
 </div>
 <section id="aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>project_vertexbuffer</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-project-vertexbuffer" title="Link to this heading"></a></h3>
 <p>Implementieren Sie nun die Funktion <em>project_vertexbuffer</em></p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">project_vertexbuffer</span><span class="p">(</span><span class="n">local_to_image</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
     <span class="c1"># First, project all vertices using the given transformation</span>
     <span class="n">vertices</span> <span class="o">=</span> <span class="n">local_to_image</span> <span class="o">@</span> <span class="n">vertices</span>
 
@@ -699,11 +707,11 @@ muß noch durch die <span class="math notranslate nohighlight">\(w\)</span>-Komp
 </section>
 </section>
 <section id="die-vertices-zeichnen">
-<h2>Die Vertices zeichnen<a class="headerlink" href="#die-vertices-zeichnen" title="Permalink to this heading"></a></h2>
+<h2>Die Vertices zeichnen<a class="headerlink" href="#die-vertices-zeichnen" title="Link to this heading"></a></h2>
 <p>Um die Vertices nun zeichnen zu können müssen wir im Grunde nur noch den Indexbuffer abarbeiten.
 Immer zwei aufeinanderfolgende Indices entsprechen dabei einer zu zeichnenden Linie. Wir können diese Logik nun implementieren.</p>
 <section id="aufgabe-implementieren-sie-die-funktionen-draw">
-<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>draw</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-draw" title="Permalink to this heading"></a></h3>
+<h3><strong>Aufgabe</strong>: Implementieren Sie die Funktionen <em>draw</em><a class="headerlink" href="#aufgabe-implementieren-sie-die-funktionen-draw" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Als erstes entpacken Sie das Tupel <cite>mesh</cite> und extrahieren Sie so den Vertex- und den Indexbuffer.</p></li>
 <li><p>Projezieren Sie die Vertices dann mit der <code class="xref py py-func docutils literal notranslate"><span class="pre">project_vertexbuffer()</span></code> Methode in Bildkoordinaten.</p></li>
@@ -722,7 +730,7 @@ angegebenen Farbe zu zeichnen.</p></li>
 </ul>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">local_to_image</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
     <span class="c1"># Unpack mesh</span>
     <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">mesh</span>
 
@@ -744,7 +752,7 @@ angegebenen Farbe zu zeichnen.</p></li>
 </section>
 </section>
 <section id="musterlosung">
-<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Permalink to this heading"></a></h2>
+<h2>Musterlösung<a class="headerlink" href="#musterlosung" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">Homogene Koordinaten - Musterlösung</span></a></p>
 </section>
 </section>

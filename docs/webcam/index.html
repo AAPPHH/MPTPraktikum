@@ -1,13 +1,13 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="de">
+<html class="writer-html5" lang="de" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Die Webcam - Einfache Bildnormalisierungen &mdash; Machine Perception and Tracking - Praktikum  Dokumentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
 
@@ -15,14 +15,15 @@
     <link rel="canonical" href="https://dmu1981.github.io/MPTPraktikum/webcam/index.html" />
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cec59a4c"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=245627df"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
-      <script src="../_static/translations.js?v=70a09b52"></script>
+      <script src="../_static/translations.js?v=79cc9f76"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
       <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -73,6 +74,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../nonlinearmapping/index.html">Nichtlineare Abbildung normalverteilter Zufallsvariablen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multivariate/index.html">Minimum Varianz Fusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../forwardalgorithm/index.html">Der Vorwärts-Algorithmus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html">Das Kalman-Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kalman/index.html#bewegungs-und-messmodell">Bewegungs- und Messmodell</a></li>
 </ul>
 
         </div>
@@ -100,10 +103,10 @@
            <div itemprop="articleBody">
              
   <section id="die-webcam-einfache-bildnormalisierungen">
-<span id="webcam"></span><h1>Die Webcam - Einfache Bildnormalisierungen<a class="headerlink" href="#die-webcam-einfache-bildnormalisierungen" title="Permalink to this heading"></a></h1>
+<span id="webcam"></span><h1>Die Webcam - Einfache Bildnormalisierungen<a class="headerlink" href="#die-webcam-einfache-bildnormalisierungen" title="Link to this heading"></a></h1>
 <p>Mit OpenCV ist es recht einfach die Webcam zu öffnen.</p>
 <section id="aufgabe-1-ein-bild-von-der-webcam-anzeigen">
-<h2>Aufgabe 1: Ein Bild von der Webcam anzeigen<a class="headerlink" href="#aufgabe-1-ein-bild-von-der-webcam-anzeigen" title="Permalink to this heading"></a></h2>
+<h2>Aufgabe 1: Ein Bild von der Webcam anzeigen<a class="headerlink" href="#aufgabe-1-ein-bild-von-der-webcam-anzeigen" title="Link to this heading"></a></h2>
 <p>Öffnen Sie einen s.g. <a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html">VideoCapture</a>,
 lesen Sie ein Bild von der Webcam mit der <a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1">read</a>-Methode und zeigen Sie dieses
 mit <a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1">cv2.imshow</a> an. Übergeben Sie dann
@@ -128,7 +131,7 @@ um unendlich lange auf einen Tastendruck zu warten</p>
 </div>
 </section>
 <section id="aufgabe-2-eine-sinnvolle-endloszschleife">
-<h2>Aufgabe 2: Eine sinnvolle Endloßschleife<a class="headerlink" href="#aufgabe-2-eine-sinnvolle-endloszschleife" title="Permalink to this heading"></a></h2>
+<h2>Aufgabe 2: Eine sinnvolle Endloßschleife<a class="headerlink" href="#aufgabe-2-eine-sinnvolle-endloszschleife" title="Link to this heading"></a></h2>
 <p>Um immer wieder ein neues Bild von der Webcam zu lesen macht es Sinn das lesen des Bildes (<a class="reference external" href="https://docs.opencv.org/3.4/d8/dfe/classcv_1_1VideoCapture.html#a473055e77dd7faa4d26d686226b292c1">read</a>)
 sowie das Anzeigen in einer Endloßschleife durchzuführen. Diese können Sie recht leicht beginnen mit</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -152,12 +155,12 @@ sowie das Anzeigen in einer Endloßschleife durchzuführen. Diese können Sie re
 </div>
 </section>
 <section id="aufgabe-3-grauwertbilder-und-histogramme">
-<h2>Aufgabe 3: Grauwertbilder und Histogramme<a class="headerlink" href="#aufgabe-3-grauwertbilder-und-histogramme" title="Permalink to this heading"></a></h2>
+<h2>Aufgabe 3: Grauwertbilder und Histogramme<a class="headerlink" href="#aufgabe-3-grauwertbilder-und-histogramme" title="Link to this heading"></a></h2>
 <p>OpenCV verwendet im Unterbau die bekannte numpy-Bibliothek, so sind z.B. die Bilder stets NumPy-Arrays.</p>
 <p>Sie können das Bild von der Webcam leicht in ein Grauwertbild umrechnen. Verwenden Sie dazu die Methode
 <a class="reference external" href="https://www.geeksforgeeks.org/python-opencv-cv2-cvtcolor-method/">cv2.cvtColor</a> mit dem Parameter <cite>cv2.COLOR_BGR2GRAY</cite>.</p>
 <p>Implementieren Sie dann eine Methode</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
 </pre></div>
 </div>
 <p>welche das Grauwertbild erhält und ein neues Bild mit dem Histogram der Grauwerte zeichnet.</p>
@@ -173,7 +176,7 @@ Hinweis: Sie können ihre Hauptschleife im Programm so anpassen, das Sie zu jede
 und dieses dann ebenfalls anzeigen.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">drawHistogram</span><span class="p">(</span><span class="n">gray</span><span class="p">):</span>
   <span class="n">hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">))</span>
   <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
   <span class="n">hist</span> <span class="o">=</span> <span class="n">hist</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
@@ -191,9 +194,9 @@ und dieses dann ebenfalls anzeigen.</p>
 </div>
 </section>
 <section id="aufgabe-4-helligkeit-und-kontrast-normalisieren">
-<h2>Aufgabe 4: Helligkeit und Kontrast normalisieren<a class="headerlink" href="#aufgabe-4-helligkeit-und-kontrast-normalisieren" title="Permalink to this heading"></a></h2>
+<h2>Aufgabe 4: Helligkeit und Kontrast normalisieren<a class="headerlink" href="#aufgabe-4-helligkeit-und-kontrast-normalisieren" title="Link to this heading"></a></h2>
 <p>Schreiben Sie eine Methode <cite>adjustBrightness</cite> mit folgender Signatur</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">):</span>
 </pre></div>
 </div>
 <p>Berechnen Sie mit <a class="reference external" href="https://numpy.org/doc/2.2/reference/generated/numpy.mean.html">np.mean</a> und
@@ -206,7 +209,7 @@ Standardabweichung haben. Diese Normalisierung erreichen Sie, indem Sie setzen</
 und wandeln Sie das Bild in in <cite>np.uint8</cite>-Bild um. Multiplizieren Sie vorher mit 255.0 um dem neuen Datenbereich gerecht zu werden.</p>
 <div class="toggle admonition">
 <p class="admonition-title">Lösung anzeigen</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">adjustBrightness</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="p">):</span>
     <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">gray</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">gray</span><span class="p">)</span>
 
     <span class="n">norm</span> <span class="o">=</span> <span class="n">brightness</span> <span class="o">+</span> <span class="n">contrast</span> <span class="o">*</span> <span class="p">(</span><span class="n">gray</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span>
@@ -216,7 +219,7 @@ und wandeln Sie das Bild in in <cite>np.uint8</cite>-Bild um. Multiplizieren Sie
 </div>
 </section>
 <section id="aufgabe-5-interaktion">
-<h2>Aufgabe 5 - Interaktion<a class="headerlink" href="#aufgabe-5-interaktion" title="Permalink to this heading"></a></h2>
+<h2>Aufgabe 5 - Interaktion<a class="headerlink" href="#aufgabe-5-interaktion" title="Link to this heading"></a></h2>
 <p>Passen Sie ihre Hauptschleife so an, dass Sie zu jedem Bild das Grauwertbild berechnen und dieses
 mit der Methode <cite>adjustBrightness</cite> normalisieren (<span class="math notranslate nohighlight">\(\mu = 0.5, \sigma = 0.5\)</span>).
 Zeigen Sie dann beide Bilder inklusive dem dazugehörige Grauwerthistogram an. Machen Sie die gewünschte
@@ -265,7 +268,7 @@ Sie können z.B. mit <strong>+</strong> und <strong>-</strong> den Kontrast erh�
 </div>
 </section>
 <section id="webcam-musterlosung">
-<h2>WebCam - Musterlösung<a class="headerlink" href="#webcam-musterlosung" title="Permalink to this heading"></a></h2>
+<h2>WebCam - Musterlösung<a class="headerlink" href="#webcam-musterlosung" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="source.html"><span class="doc">WebCam - Musterlösung</span></a></p>
 </section>
 </section>

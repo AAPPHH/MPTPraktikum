@@ -29,7 +29,7 @@ class KalmanFilter(Module):
         self.X, self.P = None, None
         self.prediction, self.priorCov = None, None
 
-    def predict(self):
+    def predict(self, dt):
         """
         Predicts the next state and covariance of the system using the Kalman filter prediction step.
         This method applies the state transition model to estimate the next state vector (`self.X`)
@@ -46,32 +46,51 @@ class KalmanFilter(Module):
 
         Assuming constant velocity, the state transition matrix F is defined as:
 
-            F = [[1, 0, dt, 0],
-                [0, 1, 0, dt],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]]
+        .. math::
+                
+                F = \\begin{pmatrix}
+                    1&0&dt&0\\\\
+                    0&1&0&dt\\\\
+                    0&0&1&0\\\\
+                    0&0&0&1
+                \\end{pmatrix}
 
         where dt is the time step between predictions. In this case, we assume dt = 1 for simplicity.
 
         The process noise covariance matrix Q is defined as:  
 
-            Q = [[q_x, 0, 0, 0],
-                [0, q_y, 0, 0],
-                [0, 0, q_vx, 0],
-                [0, 0, 0, q_vy]]
+        .. math::
+                
+                F = \\begin{pmatrix}
+                    q_x&0&0&0\\\\
+                    0&q_y&0&0\\\\
+                    0&0&q_{vx}&0\\\\
+                    0&0&0&q_{vy}
+                \\end{pmatrix}
 
-        where q_x, q_y, q_vx, and q_vy are small values representing the process noise for position. 
+        where :math:`q_x, q_y, q_{vx}` and :math:`q_{vy}` are small values representing the process noise for position.
 
-        Use np.diag to create a diagonal matrix for Q, where the diagonal elements represent the process noise variances for each state variable.^
+        Use `np.diag <https://numpy.org/doc/2.0/reference/generated/numpy.diag.html>`_ to create a diagonal matrix for Q, where the diagonal elements represent the process noise variances for each state variable.
         Use small noise for position and larger noise for velocity to reflect the uncertainty in the process.
         The prediction step updates the state vector and covariance matrix as follows:  
         
-        - `X = F @ X`: This updates the state vector by applying the state transition matrix F.
-        - `P = F @ P @ F.T + Q`: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.
+        :math:`X = F \cdot X`: This updates the state vector by applying the state transition matrix F.
+
+        :math:`P = F \cdot P \cdot F^T + Q`: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.
         
-        Updates:
-          self.X: Predicted state vector after applying the state transition.
-          self.P: Predicted state covariance matrix after accounting for process noise.
+
+        Parameter
+        ---------
+        dt : float
+            The time step for the prediction, which is typically the time elapsed since the last prediction.
+        
+          
+        Updates
+        -------
+        self.X : np.ndarray, shape (4,1)
+            Predicted state vector after applying the state transition.
+        self.P : np.ndarray, shape (4,4) 
+            Predicted state covariance matrix after accounting for process noise.
         """
         # TODO: Define the state transition matrix F
 
@@ -99,8 +118,11 @@ class KalmanFilter(Module):
         and larger values for velocity to reflect the uncertainty in the initial state.
         
         Updates:
-          self.X: Predicted state vector after applying the state transition.
-          self.P: Predicted state covariance matrix after accounting for process noise.
+        --------
+        self.X : np.ndarray, shape (4,1)
+            Predicted state vector after applying the state transition.
+        self.P : np.ndarray, shape (4,4)
+            Predicted state covariance matrix after accounting for process noise.
         """
         # TODO: Initialize the state vector with the initial measurement, assuming a 2D position and velocity model. 
         # Use the X and Y component of the measurement z, and set the velocity components to 0.0.
@@ -115,33 +137,55 @@ class KalmanFilter(Module):
     def update(self, z, R):
         """
         Performs the Kalman filter update step with the given measurement.
-        Args:
-          z (np.ndarray): The measurement vector. Shape is (2,1) for 2D position (no velocity estimates from the measurement).
-          R (np.ndarray): The measurement noise covariance matrix. Shape is (2,2) for 2D position measurements.
-        Updates:
-          self.X (np.ndarray): The state estimate after incorporating the measurement.
-          self.P (np.ndarray): The state covariance matrix after the update.
 
         If the filter is not initialized (self.X is None), initializes the filter with the measurement.
         Otherwise, computes the Kalman gain, updates the state estimate and covariance matrix.
-
+       
         First, one needs to calculate the innovation (measurement residual) `y` and the innovation covariance `S`:
-        :math:`\begin{array}{ccc}
-                y &=& z - H\cdot X\\
-                S &=& H \cdot P \cdot H^T + R
-               \end{array}`
-        
-        where `z` is the measurement, `H` is the measurement matrix, `X` is the current state estimate, and `P` is the current covariance matrix.
 
-        Then, compute the Kalman gain `K`:
-        :math:`K = P \cdot H^T \cdot S^{-1}`
+        .. math::
+
+                \\begin{array}{ccl}
+                y &=& z - H\cdot X\\\\
+                S &=& H \cdot P \cdot H^T + R
+               \\end{array}
+
+        
+        where :math:`z` is the measurement, :math:`H` is the measurement matrix, :math:`X` is the current state estimate, and :math:`P` is the current covariance matrix.
+
+        Then, compute the Kalman gain :math:`K`:
+
+        .. math::
+                
+                K = P \cdot H^T \cdot S^{-1}
 
         Finally, update the state estimate and covariance matrix:
 
-        :math:`X = X + K  \cdot y`
-        :math:`P = (I - K \cdot H) \cdot P`
+        .. math::
+                
+                X = X + K  \cdot y
 
-        where `H` is the measurement matrix and `I` is the identity matrix
+        .. math::
+        
+                P = (I - K \cdot H) \cdot P
+
+        where :math:`H` is the measurement matrix and :math:`I` is the identity matrix
+
+        Parameter:
+        ----------
+        z : np.ndarray, shape (2,1)
+            The measurement vector for 2D position (no velocity estimates from the measurement).
+        R : np.ndarray, shape (2,2)
+            The measurement noise covariance matrix. .
+
+        Updates:
+        --------
+        self.X : np.ndarray, shape (4,1) 
+            The state estimate after incorporating the measurement.
+        self.P : np.ndarray, shape (4,4)
+            The state covariance matrix after the update.
+
+        
         """
         # TODO: If the filter is not initialized, initialize it with the first measurement and return
 
@@ -184,24 +228,24 @@ class KalmanFilter(Module):
             "posterior": {"state": self.X, "covariance": self.P},
         }
 
+if __name__ == "__main__":
+    ################################################# 
+    # Main program to run the Kalman filter example #
+    # Donot modify the code below this line        #
+    #################################################
 
-################################################# 
-# Main program to run the Kalman filter example #
-# Donot modify the code below this line        #
-#################################################
+    parser = argparse.ArgumentParser("Example Program")
+    parser.add_argument("--mode", action="store", default="none")
+    parser.add_argument("--recorder.file", action="store")
+    parser.add_argument("--engine.singlestep", action="store_true", default=False)
+    parser.add_argument("--webcam.width", required=False)
+    modules = [
+        ConfigParser(parser),
+        MeasurementGenerator(),
+        KalmanFilter(),
+        Visualization(),
+        TerminateAfter(),
+    ]
 
-parser = argparse.ArgumentParser("Example Program")
-parser.add_argument("--mode", action="store", default="none")
-parser.add_argument("--recorder.file", action="store")
-parser.add_argument("--engine.singlestep", action="store_true", default=False)
-parser.add_argument("--webcam.width", required=False)
-modules = [
-    ConfigParser(parser),
-    MeasurementGenerator(),
-    KalmanFilter(),
-    Visualization(),
-    TerminateAfter(),
-]
-
-engine = Engine(modules=modules, signals={})
-signals = engine.run({})
+    engine = Engine(modules=modules, signals={})
+    signals = engine.run({})

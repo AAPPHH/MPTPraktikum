@@ -8,7 +8,7 @@ from terminateafter import TerminateAfter
 class KalmanFilter(Module):
     def __init__(self):
         super().__init__(
-            inputSignals=["measurements"],
+            inputSignals=["measurements", "dt"],
             outputSchema={
                 "type": "object",
                 "properties": {
@@ -29,7 +29,7 @@ class KalmanFilter(Module):
         self.X, self.P = None, None
         self.prediction, self.priorCov = None, None
 
-    def predict(self):
+    def predict(self, dt):
         """
         Predicts the next state and covariance of the system using the Kalman filter prediction step.
         This method applies the state transition model to estimate the next state vector (`self.X`)
@@ -51,7 +51,7 @@ class KalmanFilter(Module):
                 [0, 0, 1, 0],
                 [0, 0, 0, 1]]
 
-        where dt is the time step between predictions. In this case, we assume dt = 1 for simplicity.
+        where dt is the time step between predictions.
 
         The process noise covariance matrix Q is defined as:  
 
@@ -70,15 +70,15 @@ class KalmanFilter(Module):
         - `P = F @ P @ F.T + Q`: This updates the state covariance matrix by applying the state transition matrix F, its transpose, and adding the process noise covariance matrix Q.
         
         Updates:
-          self.X: Predicted state vector after applying the state transition.
-          self.P: Predicted state covariance matrix after accounting for process noise.
+          self.X: (4,1) Vector with the predicted state vector after applying the state transition.
+          self.P: (4,4) Matrix with the predicted state covariance matrix after accounting for process noise.
         """
         
         # TODO: Define the state transition matrix F
         F = np.array(
             [
-                [1.0, 0.0, 1.0, 0.0],
-                [0.0, 1.0, 0.0, 1.0],
+                [1.0, 0.0, dt, 0.0],
+                [0.0, 1.0, 0.0, dt],
                 [0.0, 0.0, 1.0, 0.0],
                 [0.0, 0.0, 0.0, 1.0],
             ]
@@ -98,19 +98,22 @@ class KalmanFilter(Module):
         Initializes the Kalman filter with thje first measurement and covariance.
         
         Parameters:
-        - z: The first measurement (2D Vector with position in X and Y).
-        - R: The covariance matrix associated with the measurement, which represents the uncertainty in the measurement.
+        - z: (2,1) Vector with the first measurement (Position in X and Y).
+        - R: (2,2) Covariance matrix associated with the measurement, which represents the uncertainty in the measurement.
         
         This method sets the initial state and covariance for the Kalman filter, which will be used
         in subsequent prediction and update steps.
 
         The state vector `self.X` is initialized with the first measurement, assuming a 2D position and velocity model.
+        NOTE: The state vector is a 4D vector with the format [x_position, y_position, x_velocity, y_velocity].
+
         The covariance matrix `self.P` is initialized with the measurement noise covariance `R` for position, 
         and larger values for velocity to reflect the uncertainty in the initial state.
+        NOTE: The covariance matrix is a 4x4 matrix, where the diagonal elements represent the uncertainty in the position and velocity.
         
         Updates:
-          self.X: Predicted state vector after applying the state transition.
-          self.P: Predicted state covariance matrix after accounting for process noise.
+          self.X: (4,1) Vector with the predicted state vector after applying the state transition.
+          self.P: (4,4) Matrix with the state covariance matrix
         """
         # TODO: Initialize the state vector with the initial measurement, assuming a 2D position and velocity model. 
         # Use the X and Y component of the measurement z, and set the velocity components to 0.0.
@@ -130,8 +133,8 @@ class KalmanFilter(Module):
           z (np.ndarray): The measurement vector. Shape is (2,1) for 2D position (no velocity estimates from the measurement).
           R (np.ndarray): The measurement noise covariance matrix. Shape is (2,2) for 2D position measurements.
         Updates:
-          self.X (np.ndarray): The state estimate after incorporating the measurement.
-          self.P (np.ndarray): The state covariance matrix after the update.
+          self.X (np.ndarray): The state estimate after incorporating the measurement (4,1) Vector.
+          self.P (np.ndarray): The state covariance matrix after the update. (4,4) Matrix.
 
         If the filter is not initialized (self.X is None), initializes the filter with the measurement.
         Otherwise, computes the Kalman gain, updates the state estimate and covariance matrix.
@@ -154,7 +157,7 @@ class KalmanFilter(Module):
 
         where `H` is the measurement matrix and `I` is the identity matrix
         """
-        # TODO: If the filter is not initialized, initialize it with the first measurement and return
+        # TODO: If the filter is not initialized (self.X is None), initialize it with the first measurement and return
         if self.X is None:
             self.init_filter(z, R)
             return
@@ -178,7 +181,7 @@ class KalmanFilter(Module):
         # If there is a state already, predict the next state and covariance
         # Also, make a copy of the current state and covariance for visualization of the prior 
         if self.X is not None:
-            self.predict()
+            self.predict(data["dt"])
             self.prediction = self.X.copy()
             self.priorCov = self.P.copy()
 
